@@ -1,6 +1,7 @@
 *,cover
 .venv/*
 *~
+.#*
 .pytest_cache
 .coverage
 htmlcov
