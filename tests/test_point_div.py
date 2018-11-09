@@ -42,8 +42,6 @@ def test_point_inplace_truediv_with_scalars():
     assert p.x == 1 and p.y == 2
 
 
-
-
 def test_point_floordiv_with_zero_points():
     p = Point()
     q = Point()
@@ -80,4 +78,4 @@ def test_point_inplace_floordiv_with_scalars():
 
     p = Point(2, 4)
     p //= 2
-    assert p.x == 1 and p.y == 2    
+    assert p.x == 1 and p.y == 2

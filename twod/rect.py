@@ -1,9 +1,10 @@
-'''
-'''
+"""
+"""
 
 from .point import Point
 
 from dataclasses import dataclass
+
 
 @dataclass
 class Rect(Point):
@@ -32,7 +33,7 @@ class Rect(Point):
     @property
     def vertices(self):
         return [self.A, self.B, self.C, self.D]
-    
+
     @property
     def center(self):
         return self.A.midpoint(self.C)
@@ -49,13 +50,13 @@ class Rect(Point):
         for v in self.vertices:
             if v.between(other.A, other.C):
                 return True
-            
+
         return False
 
-
     def __add__(self, other):
-        return Rect(self.x + other.x, self.y + other.y,
-                    self.w + other.w, self.h + other.h)
+        return Rect(
+            self.x + other.x, self.y + other.y, self.w + other.w, self.h + other.h
+        )
 
     def __iadd__(self, other):
         self.x += other.x
@@ -65,9 +66,10 @@ class Rect(Point):
         return self
 
     def __sub__(self, other):
-      
-        return Rect(self.x - other.x, self.y - other.y,
-                    self.w - other.w, self.h - other.h)
+
+        return Rect(
+            self.x - other.x, self.y - other.y, self.w - other.w, self.h - other.h
+        )
 
     def __isub__(self, other):
         self.x -= other.x
@@ -77,9 +79,10 @@ class Rect(Point):
         return self
 
     def __mul__(self, other):
-        return Rect(self.x * other.x, self.y * other.y,
-                    self.w * other.w, self.h * other.h)
-                    
+        return Rect(
+            self.x * other.x, self.y * other.y, self.w * other.w, self.h * other.h
+        )
+
     def __imul__(self, other):
         self.x *= other.x
         self.y *= other.y
@@ -89,15 +92,16 @@ class Rect(Point):
 
     def __truediv__(self, other):
         try:
-            return Rect(self.x / other.x, self.y / other.y, 
-                        self.w / other.w, self.h / other.h)
+            return Rect(
+                self.x / other.x, self.y / other.y, self.w / other.w, self.h / other.h
+            )
         except ZeroDivisionError:
             raise ZeroDivisionError(value)
-    
+
     def __itruediv__(self, other):
         try:
             self.x /= other.x
-            self.y /= other.y            
+            self.y /= other.y
             self.w /= other.w
             self.h /= other.h
             return self
@@ -106,17 +110,21 @@ class Rect(Point):
 
     def __floordiv__(self, other):
         try:
-            return Rect(self.x // other.x, self.y // other.y,
-                        self.w // other.w, self.h // other.h)
+            return Rect(
+                self.x // other.x,
+                self.y // other.y,
+                self.w // other.w,
+                self.h // other.h,
+            )
         except ZeroDivisionError:
             raise ZeroDivisionError(value)
-    
+
     def __ifloordiv__(self, value):
         try:
             self.x //= other.x
-            self.y //= other.y            
+            self.y //= other.y
             self.w //= other.w
             self.h //= other.h
             return self
         except ZeroDivisionError:
-            raise ZeroDivisionError(value)    
+            raise ZeroDivisionError(value)

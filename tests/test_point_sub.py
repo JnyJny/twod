@@ -1,4 +1,3 @@
-
 from twod import Point
 
 
