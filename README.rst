@@ -49,6 +49,6 @@ Usage
    :target: https://pypi.org/project/twod
    :alt: Python Versions
 		    
-.. |license| image:: https//img.shields.io/badge/license-apache-blue.svg?style=flat-square
+.. |license| image:: https://img.shields.io/badge/license-apache-blue.svg?style=flat-square
    :target: https://github.com/jnyjny/twod/blob/master/LICENSE
    :alt: Apache License v2.0
