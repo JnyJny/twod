@@ -1,7 +1,7 @@
 
 # twod makefile
 
-EPHEMERAL= .coverage .pytest_cache htmlcov
+EPHEMERAL= .coverage .pytest_cache htmlcov dist twod.egg-info
 
 test:
 	pytest --cov=.
