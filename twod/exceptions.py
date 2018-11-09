@@ -1,0 +1,5 @@
+'''
+'''
+
+class ColinearPoints(Exception):
+    pass
