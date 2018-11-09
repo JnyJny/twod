@@ -4,8 +4,7 @@ twod - Two Dimensional Geometric Objects
 
 |pypi|  |license| |python|
 
-**twod** is a Python 3 package that supplies simple two dimensional
- geometric primitives. Primitives currently include:
+**twod** is a Python 3 package that supplies simple two dimensional geometric primitives. Primitives currently include:
 
 - twod.Point, a point class
 - twod.Rect, a rectangle class
@@ -38,6 +37,8 @@ Uninstall
 
 Usage
 -----
+
+``Missing``
 
 .. _poetry: https://pypi.org/project/poetry/
 
