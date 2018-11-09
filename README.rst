@@ -15,11 +15,15 @@ Install
 0. Install using pip:
    
 .. code:: bash
+	  
 	  $ pip3 install twod
+	  
 
 0. Install from Github using poetry_:
 
 .. code:: bash
+
+	  
 	  $ git clone https://github.com/JnyJny/twod.git
 	  $ cd twod; poetry install
 	  
@@ -28,7 +32,7 @@ Install
 Uninstall
 ---------
 
-0. Uninstall using pip:
+Uninstall using pip:
 
 .. code:: bash
 	  $ pip3 uninstall twod
