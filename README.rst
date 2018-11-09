@@ -1,7 +1,6 @@
 twod - Two Dimensional Geometric Objects
 ========================================
 
-
 |pypi|  |license| |python|
 
 **twod** is a Python 3 package that supplies simple two dimensional geometric primitives. Primitives currently include:
@@ -12,14 +11,15 @@ twod - Two Dimensional Geometric Objects
 Install
 -------
 
-0. Install using pip:
-   
-.. code:: bash
-	  $ pip3 install twod
-
-0. Install from Github using poetry_:
+1. Install using pip:
 
 .. code:: bash
+
+	$ pip3 install twod
+2. Install from Github using poetry_:
+
+.. code:: bash
+
 	  $ git clone https://github.com/JnyJny/twod.git
 	  $ cd twod; poetry install
 	  
@@ -28,9 +28,10 @@ Install
 Uninstall
 ---------
 
-0. Uninstall using pip:
+Uninstall using pip:
 
 .. code:: bash
+
 	  $ pip3 uninstall twod
 
 
