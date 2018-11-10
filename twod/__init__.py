@@ -1,6 +1,6 @@
-'''provides two dimensional geometric objects
+"""provides two dimensional geometric objects
 
-'''
+"""
 
 
 __version__ = "0.1.2"
