@@ -1,3 +1,8 @@
+'''provides two dimensional geometric objects
+
+'''
+
+
 __version__ = "0.1.2"
 
 from .point import Point
