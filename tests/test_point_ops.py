@@ -3,6 +3,46 @@ import pytest
 from twod import Point, ColinearPoints
 
 
+def test_point_invert_origin():
+    p = Point()
+    q = ~p
+    r = ~q
+    assert q.x == -1 and q.y == -1
+    assert r == p and r is not p
+
+
+def test_point_invert_positive():
+    p = Point(2, 2)
+    q = ~p
+    r = ~q
+    assert q.x == -3 and q.y == -3
+    assert r == p and r is not p
+
+
+def test_point_invert_negative():
+    p = Point(-2, -2)
+    q = ~p
+    r = ~q
+    assert q.x == 1 and q.y == 1
+    assert r == p and r is not p
+
+
+def test_point_invert_posneg():
+    p = Point(-2, 2)
+    q = ~p
+    r = ~q
+    assert q.x == 1 and q.y == -3
+    assert r == p and r is not p
+
+
+def test_point_invert_negpos():
+    p = Point(2, -2)
+    q = ~p
+    r = ~q
+    assert q.x == -3 and q.y == 1
+    assert r == p and r is not p
+
+
 def test_point_distance_to_self():
     p = Point()
     assert p.distance() == 0
@@ -52,13 +92,11 @@ def test_point_cross_origin():
     r = p.cross(q)
     assert r == 0
 
-
 def test_point_cross_nonzero():
     p = Point(7, 2)
     q = Point(4, 3)
     r = p.cross(q)
     assert r == 29
-
 
 def test_point_ccw_greater_than_zero():
     p = Point()
@@ -161,6 +199,36 @@ def test_point_between_false():
     b = Point(2, 2)
     p = Point(1, 1)
     assert not a.between(p, b)
+
+
+def test_point_inside_true():
+    a = Point()
+    b = Point(2, 2)
+    p = Point(1, 1)
+    assert p.inside(a, b)
+
+
+def test_point_inside_x_false():
+    a = Point()
+    b = Point(2, 2)
+    p = Point(0, 1)
+    r = Point(2, 1)
+    assert not p.inside(a, b) and not r.inside(a, b)
+
+
+def test_point_inside_y_false():
+    a = Point()
+    b = Point(2, 2)
+    p = Point(1, 0)
+    r = Point(1, 2)
+    assert not p.inside(a, b) and not r.inside(a, b)
+
+
+def test_point_inside_false():
+    a = Point()
+    b = Point(2, 2)
+    p = Point(1, 1)
+    assert not a.inside(p, b)
 
 
 def test_point_abs_origin():
