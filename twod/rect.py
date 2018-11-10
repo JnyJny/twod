@@ -55,7 +55,10 @@ class Rect(Point):
 
     def __add__(self, other):
         return Rect(
-            self.x + other.x, self.y + other.y, self.w + other.w, self.h + other.h
+            self.x + other.x,
+            self.y + other.y,
+            self.w + other.w,
+            self.h + other.h,
         )
 
     def __iadd__(self, other):
@@ -68,7 +71,10 @@ class Rect(Point):
     def __sub__(self, other):
 
         return Rect(
-            self.x - other.x, self.y - other.y, self.w - other.w, self.h - other.h
+            self.x - other.x,
+            self.y - other.y,
+            self.w - other.w,
+            self.h - other.h,
         )
 
     def __isub__(self, other):
@@ -80,7 +86,10 @@ class Rect(Point):
 
     def __mul__(self, other):
         return Rect(
-            self.x * other.x, self.y * other.y, self.w * other.w, self.h * other.h
+            self.x * other.x,
+            self.y * other.y,
+            self.w * other.w,
+            self.h * other.h,
         )
 
     def __imul__(self, other):
@@ -93,7 +102,10 @@ class Rect(Point):
     def __truediv__(self, other):
         try:
             return Rect(
-                self.x / other.x, self.y / other.y, self.w / other.w, self.h / other.h
+                self.x / other.x,
+                self.y / other.y,
+                self.w / other.w,
+                self.h / other.h,
             )
         except ZeroDivisionError:
             raise ZeroDivisionError(value)
