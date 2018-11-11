@@ -4,8 +4,8 @@ ROOT=.
 
 EPHEMERAL= .coverage .pytest_cache htmlcov dist twod.egg-info
 
-OLD= "0.1.3"
-NEW= "0.1.4"
+OLD= "0.1.4"
+NEW= "0.1.5"
 
 VERSIONED_FILES= pyproject.toml tests/test_twod.py twod/__init__.py
 
