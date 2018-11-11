@@ -1,5 +1,6 @@
 # twod makefile
 
+PACKAGE= twod
 ROOT=.
 
 EPHEMERAL= .coverage .pytest_cache htmlcov dist twod.egg-info
@@ -24,6 +25,7 @@ all:
 	@echo "   make publish"
 	@echo "   make test"
 	@echo "   make cov"
+	@echo "   make report - dumps HTML coverage report"
 	@echo "   make clean"
 
 version:
@@ -44,10 +46,13 @@ publish: build
 	$(POETRY) publish
 
 test:
-	pytest --cov=$(ROOT)
+	pytest
 
 cov:
-	pytest --cov=$(ROOT) --cov-report=html
+	pytest --cov=$(ROOT)/$(PACKAGE)
+
+report:
+	pytest --cov=$(ROOT)/$(PACKAGE) --cov-report=html
 
 clean:
 	-@find . -name \*,cover -exec rm '{}' \;
