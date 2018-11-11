@@ -26,7 +26,7 @@ class Point:
         return self.x == 0 and self.y == 0
 
     def __iter__(self):
-        """Returns a interator over x and y.
+        """Returns an iterator over tuple of classes' fields.
         """
         return iter(astuple(self))
 
