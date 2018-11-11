@@ -1,18 +1,15 @@
-"""
+"""a two dimensional Rectangle 
 """
 
 from .point import Point
 
-from dataclasses import dataclass
+from dataclasses import dataclass, astuple
 
 
 @dataclass
 class Rect(Point):
     w: int = 0
     h: int = 0
-
-    def __iter__(self):
-        return iter((self.x, self.y, self.w, self.h))
 
     @property
     def A(self):
@@ -54,89 +51,128 @@ class Rect(Point):
         return False
 
     def __add__(self, other):
-        return Rect(
-            self.x + other.x,
-            self.y + other.y,
-            self.w + other.w,
-            self.h + other.h,
-        )
+        """
+        """
+        x = self.x + other.x
+        y = self.y + other.y
+        try:
+            w = self.w + other.w
+            h = self.h + other.h
+        except AttributeError:
+            w = self.w
+            h = self.h
+        return Rect(x, y, w, h)
 
     def __iadd__(self, other):
+        """
+        """
         self.x += other.x
         self.y += other.y
-        self.w += other.w
-        self.h += other.h
+        try:
+            self.w += other.w
+            self.h += other.h
+        except AttributeError:
+            pass
         return self
 
     def __sub__(self, other):
-
-        return Rect(
-            self.x - other.x,
-            self.y - other.y,
-            self.w - other.w,
-            self.h - other.h,
-        )
+        """
+        """
+        x = self.x - other.x
+        y = self.y - other.y
+        try:
+            w = self.w - other.w
+            h = self.h - other.h
+        except AttributeError:
+            w = self.w
+            h = self.h
+        return Rect(x, y, w, h)
 
     def __isub__(self, other):
+        """
+        """
         self.x -= other.x
         self.y -= other.y
-        self.w -= other.w
-        self.h -= other.h
+        try:
+            self.w -= other.w
+            self.h -= other.h
+        except AttributeError:
+            pass
         return self
 
     def __mul__(self, other):
-        return Rect(
-            self.x * other.x,
-            self.y * other.y,
-            self.w * other.w,
-            self.h * other.h,
-        )
+        """
+        """
+        x = self.x * other.x
+        y = self.y * other.y
+        try:
+            w = self.w * other.w
+            h = self.h * other.h
+        except AttributeError:
+            w = self.w
+            h = self.h
+        return Rect(x, y, w, h)
 
     def __imul__(self, other):
         self.x *= other.x
         self.y *= other.y
-        self.w *= other.w
-        self.h *= other.h
+        try:
+            self.w *= other.w
+            self.h *= other.h
+        except AttributeError:
+            pass
         return self
 
     def __truediv__(self, other):
         try:
-            return Rect(
-                self.x / other.x,
-                self.y / other.y,
-                self.w / other.w,
-                self.h / other.h,
-            )
+            x = self.x / other.x
+            y = self.y / other.y
+            try:
+                w = self.w / other.w
+                h = self.h / other.h
+            except AttributeError:
+                w = self.w
+                h = self.h
+            return Rect(x, y, w, h)
         except ZeroDivisionError:
-            raise ZeroDivisionError(value)
+            raise ZeroDivisionError(other)
 
     def __itruediv__(self, other):
         try:
             self.x /= other.x
             self.y /= other.y
-            self.w /= other.w
-            self.h /= other.h
+            try:
+                self.w /= other.w
+                self.h /= other.h
+            except AttributeError:
+                pass
             return self
         except ZeroDivisionError:
-            raise ZeroDivisonError(value)
+            raise ZeroDivisionError(other)
 
     def __floordiv__(self, other):
         try:
-            return Rect(
-                self.x // other.x,
-                self.y // other.y,
-                self.w // other.w,
-                self.h // other.h,
-            )
+            x = self.x // other.x
+            y = self.y // other.y
+            try:
+                w = self.w // other.w
+                h = self.h // other.h
+            except AttributeError:
+                w = self.w
+                h = self.h
+            return Rect(x, y, w, h)
         except ZeroDivisionError:
-            raise ZeroDivisionError(value)
+            raise ZeroDivisionError(other)
 
-    def __ifloordiv__(self, value):
+    def __ifloordiv__(self, other):
         try:
             self.x //= other.x
             self.y //= other.y
-            self.w //= other.w
-            self.h //= other.h
+            try:
+                self.w //= other.w
+                self.h //= other.h
+            except AttributeError:
+                pass
             return self
         except ZeroDivisionError:
-            raise ZeroDivisionError(value)
+            raise ZeroDivisionError(other)
