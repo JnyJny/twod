@@ -350,7 +350,6 @@ class Point:
 
         return i and j
 
-
-@dataclass(unsafe_hash=True)
-class HashablePoint(Point):
-    pass
+#@dataclass(eq=True, order=True)
+#class HashablePoint(Point):
+#    pass
