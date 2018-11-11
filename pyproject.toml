@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "twod"
-version = "0.1.4"
+version = "0.1.5"
 description = ""
 authors = ["jnyjny <erik.oshaughnessy@gmail.com>"]
+readme = 'README.rst'
 
 [tool.poetry.dependencies]
 python = "^3.7"
