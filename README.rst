@@ -2,7 +2,7 @@
 twod - Two Dimensional Geometric Objects
 ========================================
 
-|pypi|  |license| |python| |coverage|
+|pypi|  |license| |python| |coverage| |build|
 
 **twod** is a Python 3 package that supplies simple two dimensional geometric primitives. Primitives currently include:
 
@@ -55,9 +55,13 @@ Usage
    :target: https://github.com/jnyjny/twod/blob/master/LICENSE
    :alt: Apache License v2.0
 
-.. |covrage| image:: https://coveralls.io/repos/github/JnyJny/twod/badge.svg?branch=master
+.. |coverage| image:: https://coveralls.io/repos/github/JnyJny/twod/badge.svg?branch=master
    :target: https://coveralls.io/github/JnyJny/twod?branch=master
    :alt: Code Coverage
+
+.. |build| image:: https://travis-ci.com/JnyJny/twod.svg?branch=master
+		 
+		   
 	 
 
 	 
