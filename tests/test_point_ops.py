@@ -92,11 +92,13 @@ def test_point_cross_origin():
     r = p.cross(q)
     assert r == 0
 
+
 def test_point_cross_nonzero():
     p = Point(7, 2)
     q = Point(4, 3)
     r = p.cross(q)
     assert r == 29
+
 
 def test_point_ccw_greater_than_zero():
     p = Point()
