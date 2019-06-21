@@ -1,9 +1,19 @@
 [tool.poetry]
 name = "twod"
-version = "0.1.5"
-description = ""
+version = "0.1.6"
+description = "A two-dimensional geometry library for humans."
 authors = ["jnyjny <erik.oshaughnessy@gmail.com>"]
 readme = 'README.rst'
+repository = 'https://github.com/JnyJny/twod.git'
+classifiers = [
+            "Development Status :: 3 - Alpha",
+            "Intended Audience :: Developers",
+            "License :: OSI Approved :: Apache Software License",
+            "Programming Language :: Python :: 3.7",
+	    "Topic :: Games/Entertainment",
+	    "Topic :: Multimedia :: Graphics",
+	    "Topic :: Scientific/Engineering :: Mathematics",
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
