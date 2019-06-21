@@ -4,6 +4,14 @@
 import math
 from dataclasses import dataclass, astuple
 from .exceptions import ColinearPoints
+from enum import IntEnum
+
+class Quadrant(IntEnum):
+    ORIGIN = -1
+    I = 0
+    II = 1
+    III = 2
+    IV = 3
 
 
 @dataclass
@@ -25,6 +33,65 @@ class Point:
         """
         return self.x == 0 and self.y == 0
 
+    @property
+    def quadrant(self):
+        """Which quadrant in the cartesian plane this point is located in.
+        """
+        if self.x > 0:
+            if self.y > 0:
+                return Quadrant.I
+            if self.y < 0:
+                return Quadrant.IV
+        if self.x < 0:
+            if self.y > 0:
+                return Quadrant.II
+            if self.y < 0:
+                return Quadrant.III
+            
+        return Quadrant.ORIGIN
+            
+    @property
+    def polar(self):
+        """Polar coordinates in a tuple of (R, ϴ).
+        R is distance from the origin to this point.
+        ϴ is expressed in radians.
+        """
+
+        theta = math.atan(self.y / self.x)
+        
+        if self.quadrant in [Quadrant.II, Quadrant.III]:
+            theta += math.radians(180)
+            
+        if self.quadrant == Quadrant.IV:
+            theta += math.radians(360)        
+        
+        return (self.distance(), theta)
+
+    @polar.setter
+    def polar(self, newValues):
+        """
+        """
+        r, theta = newValues[:2]
+
+        self.x = r * math.cos(theta)
+        self.y = r * math.sin(theta)
+
+    @property
+    def polar_deg(self):
+        """Polar coordinates in a tuple of (R, ϴ).
+        R is distance from the origin to this point.
+        ϴ is expressed in degrees.
+        """
+        r,theta = self.polar
+        return (r, math.degrees(theta))
+
+    @polar_deg.setter
+    def polar_deg(self, newValues):
+        """
+        """
+        r, theta = newValues[:2]
+        self.polar = (r, math.radians(theta))
+        
     def __iter__(self):
         """Returns an iterator over tuple of classes' fields.
         """
@@ -259,12 +326,14 @@ class Point:
         If other is not specified, the distance from self to the origin
         is calculated.
 
-        Note: This method is implemented with math.sqrt and may incur
-              a performance penalty making it not suitable for tight loops.
-              For partial ordering, see the distance_squared method.
+        Note: This method is implemented with by raising
+              distance_squared to the power 0.5 and may incur a
+              performance penalty making it not suitable for tight
+              loops.  For partial ordering, see the distance_squared
+              method.
 
         """
-        return math.sqrt(self.distance_squared(other or Point()))
+        return (self.distance_squared(other or Point())) ** 0.5
 
     def distance_squared(self, other=None):
         """Returns the floating point squared distance between self and other.
