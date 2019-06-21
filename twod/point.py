@@ -1,18 +1,12 @@
-""" a two-dimensional geometric point.
+""" a two-dimensional point for humans™.
 """
 
+import sys
 import math
 from dataclasses import dataclass, astuple
 from .exceptions import ColinearPoints
-from enum import IntEnum
-
-class Quadrant(IntEnum):
-    ORIGIN = -1
-    I = 0
-    II = 1
-    III = 2
-    IV = 3
-
+from .constants import Quadrant
+from .constants import EPSILON_EXP_MINUS_1
 
 @dataclass
 class Point:
@@ -27,6 +21,19 @@ class Point:
     True
     """
 
+    @classmethod
+    def polar(cls, radius, theta, is_radians=True):
+        """
+        :param numeric radius:
+        :param numeric theta:
+        :param bool is_radians:
+        :return: Point
+        """
+        theta = theta if is_radians else math.radians(theta)
+        point = cls()
+        point.polar = (radius, theta)
+        return point
+
     @property
     def is_origin(self):
         """Returns True iff x == 0 and y == 0.
@@ -35,8 +42,9 @@ class Point:
 
     @property
     def quadrant(self):
-        """Which quadrant in the cartesian plane this point is located in.
+        """The quadrant in the cartesian plane this point is located in.
         """
+        
         if self.x > 0:
             if self.y > 0:
                 return Quadrant.I
@@ -52,18 +60,12 @@ class Point:
             
     @property
     def polar(self):
-        """Polar coordinates in a tuple of (R, ϴ).
-        R is distance from the origin to this point.
-        ϴ is expressed in radians.
+        """Polar coordinates tuple: (R, ϴ).
+        R is the distance from the origin to this point.
+        ϴ is the angle measured counter-clockwise from 3 o'clock, expressed in radians.
         """
 
-        theta = math.atan(self.y / self.x)
-        
-        if self.quadrant in [Quadrant.II, Quadrant.III]:
-            theta += math.radians(180)
-            
-        if self.quadrant == Quadrant.IV:
-            theta += math.radians(360)        
+        theta = math.atan2(self.y, self.x)
         
         return (self.distance(), theta)
 
@@ -71,16 +73,28 @@ class Point:
     def polar(self, newValues):
         """
         """
-        r, theta = newValues[:2]
+        try:
+            r, theta = newValues[:2]
+            # X and Y coordinates are rounded to truncate any weird
+            # epsilon remainders that can occur when we use trigonemetric
+            # functions. This allows the following to work:
+            # >> p,q = Point(), Point(1,1)
+            # >> p.polar = q.polar
+            # >>p == q
+            # True
+            self.x = round(r * math.cos(theta), EPSILON_EXP_MINUS_1)
+            self.y = round(r * math.sin(theta), EPSILON_EXP_MINUS_1)
+            return
+        except TypeError:
+            pass
+        raise TypeError(f"Expected a numeric iterable, got {type(newValues)}")
 
-        self.x = r * math.cos(theta)
-        self.y = r * math.sin(theta)
-
+    
     @property
     def polar_deg(self):
-        """Polar coordinates in a tuple of (R, ϴ).
-        R is distance from the origin to this point.
-        ϴ is expressed in degrees.
+        """Polar coordinates tuple: (R, ϴ).
+        R is the distance from the origin to this point.
+        ϴ is the angle measured counter-clockwise from 3 o'clock, expressed in degrees.
         """
         r,theta = self.polar
         return (r, math.degrees(theta))
@@ -89,8 +103,14 @@ class Point:
     def polar_deg(self, newValues):
         """
         """
-        r, theta = newValues[:2]
-        self.polar = (r, math.radians(theta))
+        try:
+            r, theta = newValues[:2]
+            self.polar = (r, math.radians(theta))
+            return
+        except TypeError:
+            pass
+        raise TypeError(f"Expected a numeric iterable, got {type(newValues)}")        
+
         
     def __iter__(self):
         """Returns an iterator over tuple of classes' fields.
