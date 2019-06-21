@@ -1,9 +1,9 @@
 """a rectangle for humans™
 """
 
-from .point import Point
+from dataclasses import astuple, dataclass
 
-from dataclasses import dataclass, astuple
+from .point import Point
 
 
 @dataclass
