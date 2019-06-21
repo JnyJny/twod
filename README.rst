@@ -1,6 +1,6 @@
 
-twod - Two Dimensional Geometric Objects
-========================================
+twod - A Two-Dimensional Geomety Library for Human™
+===================================================
 
 |pypi|  |license| |python| |coverage| |build|
 
