@@ -7,7 +7,7 @@ def test_point_truediv_with_zero_points():
     p = Point()
     q = Point()
     with pytest.raises(ZeroDivisionError):
-        r = p / q
+        _ = p / q
 
 
 def test_point_truediv_with_nonzero_points():
@@ -46,7 +46,7 @@ def test_point_floordiv_with_zero_points():
     p = Point()
     q = Point()
     with pytest.raises(ZeroDivisionError):
-        r = p // q
+        _ = p // q
 
 
 def test_point_floordiv_with_nonzero_points():

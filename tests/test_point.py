@@ -42,25 +42,25 @@ def test_point_inequality():
 
 
 def test_point_polar_assignment():
-     p = Point()
-     q = Point(1, 1)
-     assert p.polar != q.polar and p != q and p is not q
-     p.polar = q.polar
-     assert p == q
+    p = Point()
+    q = Point(1, 1)
+    assert p.polar != q.polar and p != q and p is not q
+    p.polar = q.polar
+    assert p == q
 
-     with pytest.raises(TypeError):
-         p.polar = 1
-     
+    with pytest.raises(TypeError):
+        p.polar = 1
+
 
 def test_point_polar_deg_assignment():
-     p = Point()
-     q = Point(1, 1)
-     assert p.polar_deg != q.polar_deg and p != q and p is not q
-     p.polar_deg = q.polar_deg
-     assert p == q
+    p = Point()
+    q = Point(1, 1)
+    assert p.polar_deg != q.polar_deg and p != q and p is not q
+    p.polar_deg = q.polar_deg
+    assert p == q
 
-     with pytest.raises(TypeError):
-         p.polar_deg = 1
+    with pytest.raises(TypeError):
+        p.polar_deg = 1
 
 
 def test_point_quadrant_location():
@@ -69,6 +69,7 @@ def test_point_quadrant_location():
     assert Point(-1, 1).quadrant == Quadrant.II
     assert Point(-1, -1).quadrant == Quadrant.III
     assert Point(1, -1).quadrant == Quadrant.IV
+
 
 def test_point_polar_calculation():
     assert Point().polar_deg[1] == 0
@@ -80,15 +81,12 @@ def test_point_polar_calculation():
     assert Point(0, 1).polar_deg[1] == 90
     assert Point(-1, 0).polar_deg[1] == 180
     assert Point(0, -1).polar_deg[1] == -90
-    d = (1**2 + 1**2) ** 0.5
-    assert Point(1,1).polar_deg[0] == d
+    d = (1 ** 2 + 1 ** 2) ** 0.5
+    assert Point(1, 1).polar_deg[0] == d
     assert Point(-1, 1).polar_deg[0] == d
     assert Point(-1, -1).polar_deg[0] == d
     assert Point(1, -1).polar_deg[0] == d
-    assert Point(1,1).polar_deg[1] == 45
+    assert Point(1, 1).polar_deg[1] == 45
     assert Point(-1, 1).polar_deg[1] == 135
     assert Point(-1, -1).polar_deg[1] == -135
-    assert Point(1, -1).polar_deg[1] == -45    
-
-
-
+    assert Point(1, -1).polar_deg[1] == -45
