@@ -1,4 +1,4 @@
-"""a two dimensional Rectangle 
+"""a rectangle for humans™
 """
 
 from .point import Point

@@ -1,12 +1,17 @@
-"""provides two dimensional geometric objects
+"""two-dimensional geometric objects for humans™
 
 """
 
-
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 from .point import Point
+from .constants import Quadrant
 from .rect import Rect
 from .exceptions import ColinearPoints
 
-__all__ = ["Point", "Rect", "ColinearPoints"]
+__all__ = [
+    "ColinearPoints",
+    "Point",
+    "Quadrant",
+    "Rect",
+]
