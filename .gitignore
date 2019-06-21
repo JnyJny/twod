@@ -8,3 +8,4 @@ htmlcov
 .DS_Store
 *egg-info*
 dist/*
+pip-wheel-metadata/*
