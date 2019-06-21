@@ -1,5 +1,5 @@
 
-twod - A Two-Dimensional Geomety Library for Human™
+twod - A Two-Dimensional Geomety Library for Humans™
 ===================================================
 
 |pypi|  |license| |python| |coverage| |build|
