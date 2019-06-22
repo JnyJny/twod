@@ -12,4 +12,3 @@ pip-wheel-metadata/*
 .idea/*
 .mypy_cache/*
 */__pycache__/*
-
