@@ -4,18 +4,18 @@
 import math
 import sys
 from dataclasses import astuple, dataclass
-from typing import Union
-
+from typing import Iterable
+from .types import Numeric, Coordinate, PointOrScalar, PointType
 from .constants import EPSILON_EXP_MINUS_1, Quadrant
 from .exceptions import ColinearPoints
 
 
 @dataclass
 class Point:
-    x: Union[float, int] = 0
-    y: Union[float, int] = 0
+    x: float = 0
+    y: float = 0
     """The Point class is a representation of a two dimensional
-    geometric point. It has an 'x' coordinate and a 'y' coordinate.
+    geometric point. It has 'x' and 'y' coordinates.
 
 
     >>> p = Point()
@@ -24,10 +24,11 @@ class Point:
     """
 
     @classmethod
-    def from_polar(cls, radius, theta, is_radians=True):
-        """
-        :param numeric radius:
-        :param numeric theta:
+    def from_polar(cls, radius: float, theta: float, is_radians: bool = True):
+        """Returns a Point with polar coordinates (R, ϴ).
+
+        :param float radius:
+        :param float theta:
         :param bool is_radians:
         :return: Point
         """
@@ -37,13 +38,13 @@ class Point:
         return point
 
     @property
-    def is_origin(self):
+    def is_origin(self) -> bool:
         """Returns True iff x == 0 and y == 0.
         """
         return self.x == 0 and self.y == 0
 
     @property
-    def quadrant(self):
+    def quadrant(self) -> int:
         """The quadrant in the cartesian plane this point is located in.
         """
 
@@ -61,7 +62,7 @@ class Point:
         return Quadrant.ORIGIN
 
     @property
-    def polar(self):
+    def polar(self) -> Coordinate:
         """Polar coordinates tuple: (R, ϴ).
         R is the distance from the origin to this point.
         ϴ is the angle measured counter-clockwise from 3 o'clock, expressed in radians.
@@ -72,7 +73,7 @@ class Point:
         return self.distance(), theta
 
     @polar.setter
-    def polar(self, new_values):
+    def polar(self, new_values: Coordinate):
         """
         """
         try:
@@ -92,7 +93,7 @@ class Point:
         raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
 
     @property
-    def polar_deg(self):
+    def polar_deg(self) -> Coordinate:
         """Polar coordinates tuple: (R, ϴ).
         R is the distance from the origin to this point.
         ϴ is the angle measured counter-clockwise from 3 o'clock, expressed in degrees.
@@ -101,7 +102,7 @@ class Point:
         return r, math.degrees(theta)
 
     @polar_deg.setter
-    def polar_deg(self, new_values):
+    def polar_deg(self, new_values: Coordinate) -> None:
         """
         """
         try:
@@ -112,12 +113,12 @@ class Point:
             pass
         raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
 
-    def __iter__(self):
-        """Returns an iterator over tuple of classes' fields.
+    def __iter__(self) -> Iterable[Coordinate]:
+        """Returns an iterator over tuple of the classes' fields.
         """
         return iter(astuple(self))
 
-    def __add__(self, other):
+    def __add__(self, other: PointOrScalar) -> PointType:
         """Adds other to self and returns a new Point.
 
         If other has attributes x and y, returns a new
@@ -137,7 +138,7 @@ class Point:
             pass
         return Point(self.x + other, self.y + other)
 
-    def __iadd__(self, other):
+    def __iadd__(self, other: PointOrScalar) -> PointType:
         """Adds other to self in-place and returns self.
 
         If other has attributes x and y, adds those
@@ -156,7 +157,7 @@ class Point:
         self.y += other
         return self
 
-    def __sub__(self, other):
+    def __sub__(self, other: PointOrScalar) -> PointType:
         """Subtracts other from self and returns a new Point.
 
         If other has attributes x and y, returns a new
@@ -175,7 +176,7 @@ class Point:
             pass
         return Point(self.x - other, self.y - other)
 
-    def __isub__(self, other):
+    def __isub__(self, other: PointOrScalar) -> PointType:
         """Subtracts other from self in-place and returns self.
 
         If other has attributes x and y, subtracts those
@@ -194,7 +195,7 @@ class Point:
         self.y -= other
         return self
 
-    def __mul__(self, other):
+    def __mul__(self, other: PointOrScalar) -> PointType:
         """Multiplies other to self and returns a new Point.
 
         If other has attributes x and y, returns a new
@@ -213,7 +214,7 @@ class Point:
             pass
         return Point(self.x * other, self.y * other)
 
-    def __imul__(self, other):
+    def __imul__(self, other: PointOrScalar) -> PointType:
         """Multiplies other to self in-place and returns self.
 
         If other has attributes x and y, multiplies those
@@ -232,7 +233,7 @@ class Point:
         self.y *= other
         return self
 
-    def __truediv__(self, other):
+    def __truediv__(self, other: PointOrScalar) -> PointType:
         """Divides self with other and returns a new Point.
 
         If other has attributes x and y, returns a new
@@ -252,7 +253,7 @@ class Point:
             pass
         return Point(self.x / other, self.y / other)
 
-    def __itruediv__(self, other):
+    def __itruediv__(self, other: PointOrScalar) -> PointType:
         """Divides self with other in-place and returns self.
 
         If other has attributes x and y, self is divided by
@@ -271,7 +272,7 @@ class Point:
         self.y /= other
         return self
 
-    def __floordiv__(self, other):
+    def __floordiv__(self, other: PointOrScalar) -> PointType:
         """Divides self with other and returns a new Point.
 
         If other has attributes x and y, returns a new
@@ -290,7 +291,7 @@ class Point:
             pass
         return Point(self.x // other, self.y // other)
 
-    def __ifloordiv__(self, other):
+    def __ifloordiv__(self, other: PointOrScalar) -> PointType:
         """Divides self with other in-place and returns self.
 
         If other has attributes x and y, self is divided by
@@ -309,14 +310,14 @@ class Point:
         self.y //= other
         return self
 
-    def __pow__(self, exponent):
+    def __pow__(self, exponent: float) -> PointType:
         """Raises each coordinate to the given exponent and
         returns a new Point.
 
         """
         return Point(self.x ** exponent, self.y ** exponent)
 
-    def __ipow__(self, exponent):
+    def __ipow__(self, exponent: float) -> PointType:
         """Raises each coordinate to the given exponent
         in-place and returns self.
         """
@@ -324,24 +325,24 @@ class Point:
         self.y **= exponent
         return self
 
-    def __abs__(self):
+    def __abs__(self) -> PointType:
         """Applies the absolute value function to each
         coordinate and returns a new Point.
         """
         return Point(abs(self.x), abs(self.y))
 
-    def __neg__(self):
+    def __neg__(self) -> PointType:
         """Applies negation to each coordinate and returns
         a new Point.
         """
         return self * -1
 
-    def __invert__(self):
-        """Inverts each coordinate of self and returns a new Point.
+    def __invert__(self) -> PointType:
+        """Inverts each coordinate and returns a new Point.
         """
         return Point(~self.x, ~self.y)
 
-    def distance(self, other=None):
+    def distance(self, other: PointType = None) -> float:
         """Returns the floating point distance between self and other.
         If other is not specified, the distance from self to the origin
         is calculated.
@@ -355,7 +356,7 @@ class Point:
         """
         return (self.distance_squared(other or Point())) ** 0.5
 
-    def distance_squared(self, other=None):
+    def distance_squared(self, other: PointType = None) -> float:
         """Returns the floating point squared distance between self and other.
         If other is not specified, the sequared distance from self to the
         origin is calculated.
@@ -365,17 +366,17 @@ class Point:
         """
         return sum((((other or Point()) - self) ** 2))
 
-    def dot(self, other):
+    def dot(self, other: PointOrScalar) -> float:
         """Returns a scalar dot product of self with other.
         """
         return sum(self * other)
 
-    def cross(self, other):
+    def cross(self, other: PointOrScalar) -> float:
         """Returns a scalar cross product of self with other.
         """
         return (self.x * other.y) + (self.y * other.x)
 
-    def ccw(self, b, c):
+    def ccw(self, b: PointType, c: PointType) -> float:
         """Returns a floating point value indicating the winding
         direction of the points [self, b, c].
 
@@ -388,7 +389,7 @@ class Point:
         """
         return ((b.x - self.x) * (c.y - self.y)) - ((c.x - self.x) * (b.y - self.y))
 
-    def is_ccw(self, b, c):
+    def is_ccw(self, b: PointType, c: PointType) -> bool:
         """Returns True if the angle [self, b, c] has counter clock-wise
         winding, else False.
 
@@ -400,18 +401,18 @@ class Point:
             raise ColinearPoints(self, b, c)
         return result > 0
 
-    def is_colinear(self, b, c):
+    def is_colinear(self, b: PointType, c: PointType) -> bool:
         """Returns True if the angle [self, b, c ] is a line, else False.
         """
         return self.ccw(b, c) == 0
 
-    def midpoint(self, other=None):
+    def midpoint(self, other: PointType = None) -> PointType:
         """Returns a new Point between self and other. If other is not
         specified, the midpoint between self and the origin is calculated.
         """
         return (self + (other or Point())) / 2
 
-    def between(self, p, q):
+    def between(self, p: PointType, q: PointType) -> bool:
         """Returns True if self is bounded by the points [p, q], else False
 
         The bounds are checked by less than or equal to (<=) so self is
@@ -424,7 +425,7 @@ class Point:
 
         return i and j
 
-    def inside(self, p, q):
+    def inside(self, p: PointType, q: PointType) -> bool:
         """Returns True if self is bounded by the points (p, q), else False
 
         The bounds are checked by less than (<) so self is considered
