@@ -1,4 +1,5 @@
 import pytest
+import math
 
 from twod import Point, Quadrant
 
@@ -90,3 +91,9 @@ def test_point_polar_calculation():
     assert Point(-1, 1).polar_deg[1] == 135
     assert Point(-1, -1).polar_deg[1] == -135
     assert Point(1, -1).polar_deg[1] == -45
+
+
+def test_point_from_polar():
+    assert Point.from_polar(0, 0).is_origin
+    d = math.hypot(1, 1)
+    assert Point.from_polar(d, math.radians(45)) == Point(1, 1)

@@ -24,7 +24,7 @@ class Point:
     """
 
     @classmethod
-    def polar(cls, radius, theta, is_radians=True):
+    def from_polar(cls, radius, theta, is_radians=True):
         """
         :param numeric radius:
         :param numeric theta:
@@ -139,10 +139,10 @@ class Point:
 
     def __iadd__(self, other):
         """Adds other to self in-place and returns self.
-        
+
         If other has attributes x and y, adds those
         values to self in-place.
-        
+
         Otherwise, other is treated as a scalar value and
         added to both x and y in-place.
         """
@@ -177,10 +177,10 @@ class Point:
 
     def __isub__(self, other):
         """Subtracts other from self in-place and returns self.
-        
+
         If other has attributes x and y, subtracts those
         values from self in-place.
-        
+
         Otherwise, other is treated as a scalar value and
         subtracted from both x and y in-place.
         """
@@ -215,10 +215,10 @@ class Point:
 
     def __imul__(self, other):
         """Multiplies other to self in-place and returns self.
-        
+
         If other has attributes x and y, multiplies those
         values with self in-place.
-        
+
         Otherwise, other is treated as a scalar value and
         multiplied with both x and y in-place.
         """
@@ -254,10 +254,10 @@ class Point:
 
     def __itruediv__(self, other):
         """Divides self with other in-place and returns self.
-        
+
         If other has attributes x and y, self is divided by
         those values in-place.
-        
+
         Otherwise, other is treated as a scalar value and
         divides both x and y in-place.
         """
@@ -292,10 +292,10 @@ class Point:
 
     def __ifloordiv__(self, other):
         """Divides self with other in-place and returns self.
-        
+
         If other has attributes x and y, self is divided by
         those values in-place.
-        
+
         Otherwise, other is treated as a scalar value and
         divides both x and y in-place.
         """
@@ -312,7 +312,7 @@ class Point:
     def __pow__(self, exponent):
         """Raises each coordinate to the given exponent and
         returns a new Point.
-        
+
         """
         return Point(self.x ** exponent, self.y ** exponent)
 
@@ -359,9 +359,9 @@ class Point:
         """Returns the floating point squared distance between self and other.
         If other is not specified, the sequared distance from self to the
         origin is calculated.
-        
-        Note: 
-        
+
+        Note:
+
         """
         return sum((((other or Point()) - self) ** 2))
 
@@ -377,14 +377,14 @@ class Point:
 
     def ccw(self, b, c):
         """Returns a floating point value indicating the winding
-        direction of the points [self, b, c]. 
+        direction of the points [self, b, c].
 
         If ccw < 0,  clock-wise winding
         If ccw > 0,  counter clock-wise winding
         If ccw == 0, the three points are colinear
-        
+
         Note: ccw is also 2*area of the triangle [self, b, c].
-        
+
         """
         return ((b.x - self.x) * (c.y - self.y)) - ((c.x - self.x) * (b.y - self.y))
 
@@ -413,10 +413,10 @@ class Point:
 
     def between(self, p, q):
         """Returns True if self is bounded by the points [p, q], else False
-        
+
         The bounds are checked by less than or equal to (<=) so self is
         considered between if it resides on any of the lines constructed
-        using [p,q]. 
+        using [p,q].
         """
 
         i = min(p.x, q.x) <= self.x <= max(p.x, q.x)
