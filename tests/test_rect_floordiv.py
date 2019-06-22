@@ -7,21 +7,21 @@ def test_rect_floordiv_empty():
     r = Rect()
     s = Rect()
     with pytest.raises(ZeroDivisionError):
-        q = r // s
+        _ = r // s
 
 
 def test_rect_floordiv_xy():
     r = Rect(1, 2)
     s = Rect(3, 4)
     with pytest.raises(ZeroDivisionError):
-        q = r // s
+        _ = r // s
 
 
 def test_rect_floordiv_wh():
     r = Rect(w=1, h=2)
     s = Rect(w=3, h=4)
     with pytest.raises(ZeroDivisionError):
-        q = r // s
+        _ = r // s
 
 
 def test_rect_floordiv_xywh():
@@ -35,7 +35,7 @@ def test_rect_floordiv_empty_point():
     p = Point()
     r = Rect(1, 2, 3, 4)
     with pytest.raises(ZeroDivisionError):
-        q = r // p
+        _ = r // p
 
 
 def test_rect_floordiv_nonempty_point():

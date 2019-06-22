@@ -1,17 +1,19 @@
 """ a two-dimensional point for humans™.
 """
 
-import sys
 import math
-from dataclasses import dataclass, astuple
+import sys
+from dataclasses import astuple, dataclass
+from typing import Union
+
+from .constants import EPSILON_EXP_MINUS_1, Quadrant
 from .exceptions import ColinearPoints
-from .constants import Quadrant
-from .constants import EPSILON_EXP_MINUS_1
+
 
 @dataclass
 class Point:
-    x: int = 0
-    y: int = 0
+    x: Union[float, int] = 0
+    y: Union[float, int] = 0
     """The Point class is a representation of a two dimensional
     geometric point. It has an 'x' coordinate and a 'y' coordinate.
 
@@ -44,7 +46,7 @@ class Point:
     def quadrant(self):
         """The quadrant in the cartesian plane this point is located in.
         """
-        
+
         if self.x > 0:
             if self.y > 0:
                 return Quadrant.I
@@ -55,9 +57,9 @@ class Point:
                 return Quadrant.II
             if self.y < 0:
                 return Quadrant.III
-            
+
         return Quadrant.ORIGIN
-            
+
     @property
     def polar(self):
         """Polar coordinates tuple: (R, ϴ).
@@ -66,15 +68,15 @@ class Point:
         """
 
         theta = math.atan2(self.y, self.x)
-        
-        return (self.distance(), theta)
+
+        return self.distance(), theta
 
     @polar.setter
-    def polar(self, newValues):
+    def polar(self, new_values):
         """
         """
         try:
-            r, theta = newValues[:2]
+            r, theta = new_values[:2]
             # X and Y coordinates are rounded to truncate any weird
             # epsilon remainders that can occur when we use trigonemetric
             # functions. This allows the following to work:
@@ -87,31 +89,29 @@ class Point:
             return
         except TypeError:
             pass
-        raise TypeError(f"Expected a numeric iterable, got {type(newValues)}")
+        raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
 
-    
     @property
     def polar_deg(self):
         """Polar coordinates tuple: (R, ϴ).
         R is the distance from the origin to this point.
         ϴ is the angle measured counter-clockwise from 3 o'clock, expressed in degrees.
         """
-        r,theta = self.polar
-        return (r, math.degrees(theta))
+        r, theta = self.polar
+        return r, math.degrees(theta)
 
     @polar_deg.setter
-    def polar_deg(self, newValues):
+    def polar_deg(self, new_values):
         """
         """
         try:
-            r, theta = newValues[:2]
+            r, theta = new_values[:2]
             self.polar = (r, math.radians(theta))
             return
         except TypeError:
             pass
-        raise TypeError(f"Expected a numeric iterable, got {type(newValues)}")        
+        raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
 
-        
     def __iter__(self):
         """Returns an iterator over tuple of classes' fields.
         """
@@ -386,9 +386,7 @@ class Point:
         Note: ccw is also 2*area of the triangle [self, b, c].
         
         """
-        return ((b.x - self.x) * (c.y - self.y)) - (
-            (c.x - self.x) * (b.y - self.y)
-        )
+        return ((b.x - self.x) * (c.y - self.y)) - ((c.x - self.x) * (b.y - self.y))
 
     def is_ccw(self, b, c):
         """Returns True if the angle [self, b, c] has counter clock-wise
@@ -421,8 +419,8 @@ class Point:
         using [p,q]. 
         """
 
-        i = self.x >= min(p.x, q.x) and self.x <= max(p.x, q.x)
-        j = self.y >= min(p.y, q.y) and self.y <= max(p.y, q.y)
+        i = min(p.x, q.x) <= self.x <= max(p.x, q.x)
+        j = min(p.y, q.y) <= self.y <= max(p.y, q.y)
 
         return i and j
 
@@ -434,11 +432,12 @@ class Point:
         using (p,q).
         """
 
-        i = self.x > min(p.x, q.x) and self.x < max(p.x, q.x)
-        j = self.y > min(p.y, q.y) and self.y < max(p.y, q.y)
+        i = min(p.x, q.x) < self.x < max(p.x, q.x)
+        j = min(p.y, q.y) < self.y < max(p.y, q.y)
 
         return i and j
 
-#@dataclass(eq=True, order=True)
-#class HashablePoint(Point):
+
+# @dataclass(eq=True, order=True)
+# class HashablePoint(Point):
 #    pass
