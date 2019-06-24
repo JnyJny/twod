@@ -61,6 +61,46 @@ class Point:
 
         return Quadrant.ORIGIN
 
+    def _set_xy_with_polar(self, radius=None, theta=None):
+        """
+        """
+        radius = radius or self.radius
+        theta = theta or self.radians
+        self.x = round(radius * math.cos(theta), EPSILON_EXP_MINUS_1)
+        self.y = round(radius * math.sin(theta), EPSILON_EXP_MINUS_1)
+
+    @property
+    def radius(self) -> float:
+        """
+        """
+        return self.distance()
+
+    @radius.setter
+    def radius(self, new_value):
+        self._set_xy_with_polar(radius=new_value)
+
+    @property
+    def radians(self) -> float:
+        """
+        """
+        return math.atan2(self.y, self.x)
+
+    @radians.setter
+    def radians(self, new_value):
+
+        self._set_xy_with_polar(radius=self.radius)
+
+    @property
+    def degrees(self) -> float:
+        """
+        """
+        return math.degrees(self.radians)
+
+    @degrees.setter
+    def degrees(self, new_value):
+
+        self.radians = math.radians(new_value)
+
     @property
     def polar(self) -> Coordinate:
         """Polar coordinates tuple: (R, ϴ).
@@ -68,9 +108,7 @@ class Point:
         ϴ is the angle measured counter-clockwise from 3 o'clock, expressed in radians.
         """
 
-        theta = math.atan2(self.y, self.x)
-
-        return self.distance(), theta
+        return self.distance(), self.radians
 
     @polar.setter
     def polar(self, new_values: Coordinate):
@@ -85,8 +123,7 @@ class Point:
             # >> p.polar = q.polar
             # >>p == q
             # True
-            self.x = round(r * math.cos(theta), EPSILON_EXP_MINUS_1)
-            self.y = round(r * math.sin(theta), EPSILON_EXP_MINUS_1)
+            self._set_xy_with_polar(radius=r, radians=theta)
             return
         except TypeError:
             pass
@@ -107,7 +144,7 @@ class Point:
         """
         try:
             r, theta = new_values[:2]
-            self.polar = (r, math.radians(theta))
+            self._set_xy_with_polar(radius=r, radians=math.radians(theta))
             return
         except TypeError:
             pass
