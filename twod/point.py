@@ -15,8 +15,8 @@ class Point:
     x: float = 0
     y: float = 0
     """The Point class is a representation of a two dimensional
-    geometric point. It has 'x' and 'y' coordinates.
-
+    geometric point with 'x' and 'y' attributes and many helpful
+    properties and methods.
 
     >>> p = Point()
     >>> p.is_origin
@@ -61,45 +61,49 @@ class Point:
 
         return Quadrant.ORIGIN
 
-    def _set_xy_with_polar(self, radius=None, theta=None):
-        """
+    def _set_xy_with_polar(self, radius: float = None, radians: float = None) -> None:
+        """Computes cartesian coordinates from polar coordinates expressed
+        as a dimensionless radius and angle in radians.
+
+        :param float radius:
+        :param float radians:
+
         """
         radius = radius or self.radius
-        theta = theta or self.radians
-        self.x = round(radius * math.cos(theta), EPSILON_EXP_MINUS_1)
-        self.y = round(radius * math.sin(theta), EPSILON_EXP_MINUS_1)
+        radians = radians or self.radians
+        self.x = round(radius * math.cos(radians), EPSILON_EXP_MINUS_1)
+        self.y = round(radius * math.sin(radians), EPSILON_EXP_MINUS_1)
 
     @property
     def radius(self) -> float:
+        """The distance from this point to the origin.
         """
-        """
-        return self.distance()
+        return math.hypot(self.x, self.y)
 
     @radius.setter
-    def radius(self, new_value):
+    def radius(self, new_value: float):
         self._set_xy_with_polar(radius=new_value)
 
     @property
     def radians(self) -> float:
-        """
+        """The angle in radians measured counter-clockwise from 3 o'clock.
         """
         return math.atan2(self.y, self.x)
 
     @radians.setter
-    def radians(self, new_value):
+    def radians(self, new_value: float) -> None:
 
-        self._set_xy_with_polar(radius=self.radius)
+        self._set_xy_with_polar(radians=new_value)
 
     @property
     def degrees(self) -> float:
-        """
+        """The angle in degrees measured counter-clockwise from 3 o'clock.
         """
         return math.degrees(self.radians)
 
     @degrees.setter
-    def degrees(self, new_value):
-
-        self.radians = math.radians(new_value)
+    def degrees(self, new_value: float) -> None:
+        self._set_xy_with_polar(radians=math.radians(new_value))
 
     @property
     def polar(self) -> Coordinate:
@@ -108,22 +112,13 @@ class Point:
         ϴ is the angle measured counter-clockwise from 3 o'clock, expressed in radians.
         """
 
-        return self.distance(), self.radians
+        return (self.radius, self.radians)
 
     @polar.setter
-    def polar(self, new_values: Coordinate):
-        """
-        """
+    def polar(self, new_values: Coordinate) -> None:
         try:
-            r, theta = new_values[:2]
-            # X and Y coordinates are rounded to truncate any weird
-            # epsilon remainders that can occur when we use trigonemetric
-            # functions. This allows the following to work:
-            # >> p,q = Point(), Point(1,1)
-            # >> p.polar = q.polar
-            # >>p == q
-            # True
-            self._set_xy_with_polar(radius=r, radians=theta)
+            radius, radians, *_ = new_values
+            self._set_xy_with_polar(radius=radius, radians=radians)
             return
         except TypeError:
             pass
@@ -135,23 +130,21 @@ class Point:
         R is the distance from the origin to this point.
         ϴ is the angle measured counter-clockwise from 3 o'clock, expressed in degrees.
         """
-        r, theta = self.polar
-        return r, math.degrees(theta)
+        radius, radians = self.polar
+        return (radius, math.degrees(radians))
 
     @polar_deg.setter
     def polar_deg(self, new_values: Coordinate) -> None:
-        """
-        """
         try:
-            r, theta = new_values[:2]
-            self._set_xy_with_polar(radius=r, radians=math.radians(theta))
+            radius, degrees, *_ = new_values
+            self._set_xy_with_polar(radius=radius, radians=math.radians(degrees))
             return
         except TypeError:
             pass
         raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
 
     def __iter__(self) -> Iterable[Coordinate]:
-        """Returns an iterator over tuple of the classes' fields.
+        """Returns an iterator over tuple of the classes' fields; x and y.
         """
         return iter(astuple(self))
 
