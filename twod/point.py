@@ -39,13 +39,14 @@ class Point:
 
     @property
     def is_origin(self) -> bool:
-        """Returns True iff x == 0 and y == 0.
+        """Returns True if and only if x == 0 and y == 0.
         """
         return self.x == 0 and self.y == 0
 
     @property
     def quadrant(self) -> int:
-        """The quadrant in the cartesian plane this point is located in.
+        """The quadrant in the cartesian plane this point is located in:
+        Quadrant.I, Quadrant.II, Quadrant.III, Quadrant.IV or Quadrant.ORIGIN.
         """
 
         if self.x > 0:
@@ -61,7 +62,7 @@ class Point:
 
         return Quadrant.ORIGIN
 
-    def _set_xy_with_polar(self, radius: float = None, radians: float = None) -> None:
+    def _polar_to_cartesian(self, radius: float, radians: float) -> None:
         """Computes cartesian coordinates from polar coordinates expressed
         as a dimensionless radius and angle in radians.
 
@@ -69,8 +70,6 @@ class Point:
         :param float radians:
 
         """
-        radius = radius or self.radius
-        radians = radians or self.radians
         self.x = round(radius * math.cos(radians), EPSILON_EXP_MINUS_1)
         self.y = round(radius * math.sin(radians), EPSILON_EXP_MINUS_1)
 
@@ -82,7 +81,7 @@ class Point:
 
     @radius.setter
     def radius(self, new_value: float):
-        self._set_xy_with_polar(radius=new_value)
+        self._polar_to_cartesian(new_value, self.radians)
 
     @property
     def radians(self) -> float:
@@ -92,8 +91,7 @@ class Point:
 
     @radians.setter
     def radians(self, new_value: float) -> None:
-
-        self._set_xy_with_polar(radians=new_value)
+        self._polar_to_cartesian(self.radius, new_value)
 
     @property
     def degrees(self) -> float:
@@ -103,7 +101,7 @@ class Point:
 
     @degrees.setter
     def degrees(self, new_value: float) -> None:
-        self._set_xy_with_polar(radians=math.radians(new_value))
+        self._polar_to_cartesian(self.radius, math.radians(new_value))
 
     @property
     def polar(self) -> Coordinate:
@@ -111,17 +109,17 @@ class Point:
         R is the distance from the origin to this point.
         ϴ is the angle measured counter-clockwise from 3 o'clock, expressed in radians.
         """
-
         return (self.radius, self.radians)
 
     @polar.setter
     def polar(self, new_values: Coordinate) -> None:
         try:
-            radius, radians, *_ = new_values
-            self._set_xy_with_polar(radius=radius, radians=radians)
+            radius, radians, *_ = map(float, new_values)
+            self._polar_to_cartesian(radius, radians)
             return
-        except TypeError:
+        except (TypeError, ValueError):
             pass
+
         raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
 
     @property
@@ -136,10 +134,25 @@ class Point:
     @polar_deg.setter
     def polar_deg(self, new_values: Coordinate) -> None:
         try:
-            radius, degrees, *_ = new_values
-            self._set_xy_with_polar(radius=radius, radians=math.radians(degrees))
+            radius, degrees, *_ = map(float, new_values)
+            self._polar_to_cartesian(radius=radius, radians=math.radians(degrees))
             return
-        except TypeError:
+        except (TypeError, ValueError):
+            pass
+        raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
+
+    @property
+    def xy(self) -> Coordinate:
+        """A tuple of this point's x and y coordinates.
+        """
+        return (self.x, self.y)
+
+    @xy.setter
+    def xy(self, new_values: Coordinate) -> None:
+        try:
+            self.x, self.y, *_ = map(float, new_values)
+            return
+        except (TypeError, ValueError):
             pass
         raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
 
@@ -376,13 +389,6 @@ class Point:
         """Returns the floating point distance between self and other.
         If other is not specified, the distance from self to the origin
         is calculated.
-
-        Note: This method is implemented with by raising
-              distance_squared to the power 0.5 and may incur a
-              performance penalty making it not suitable for tight
-              loops.  For partial ordering, see the distance_squared
-              method.
-
         """
         return (self.distance_squared(other or Point())) ** 0.5
 
@@ -390,9 +396,6 @@ class Point:
         """Returns the floating point squared distance between self and other.
         If other is not specified, the sequared distance from self to the
         origin is calculated.
-
-        Note:
-
         """
         return sum((((other or Point()) - self) ** 2))
 

@@ -48,3 +48,20 @@ def test_point_quadrant_location():
     assert Point(-1, 1).quadrant == Quadrant.II
     assert Point(-1, -1).quadrant == Quadrant.III
     assert Point(1, -1).quadrant == Quadrant.IV
+
+
+def test_point_xy_property():
+
+    p = Point(4, 5)
+
+    assert p.xy == (4, 5)
+
+    p.xy = (2, 3)
+
+    assert p.x == 2 and p.y == 3
+
+    with pytest.raises(TypeError):
+        p.xy = "nonsense"
+
+    with pytest.raises(TypeError):
+        p.xy = 1

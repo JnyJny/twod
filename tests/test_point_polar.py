@@ -42,6 +42,9 @@ def test_point_polar_assignment():
     with pytest.raises(TypeError):
         p.polar = 1
 
+    with pytest.raises(TypeError):
+        p.polar = "foobar"
+
 
 def test_point_polar_deg_assignment():
     p = Point()
@@ -52,6 +55,9 @@ def test_point_polar_deg_assignment():
 
     with pytest.raises(TypeError):
         p.polar_deg = 1
+
+    with pytest.raises(TypeError):
+        p.polar_deg = "ackqux"
 
 
 def test_point_polar_calculation():
@@ -76,12 +82,19 @@ def test_point_polar_calculation():
 
 
 def test_point_radius_property():
-    pass
+    p = Point(1, 1)
+    r = math.hypot(1, 1)
+    assert p.radius == r
+
+    p.radius *= 3
+    # XXX epsilons are biting me here.
+    assert round(p.radius, 13) == round(3 * r, 13)
+
+    p.radius = 0
+    assert p.radius == 0 and p.is_origin
 
 
 def test_point_radians_property():
-    pass
-
-
-def test_point_degrees_property():
-    pass
+    p = Point(1, 1)
+    a = math.atan2(1, 1)
+    assert p.radians == a
