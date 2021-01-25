@@ -2,8 +2,6 @@
 
 """
 
-__version__ = "0.1.7"
-
 from .constants import Quadrant
 from .exceptions import ColinearPoints
 from .point import Point
