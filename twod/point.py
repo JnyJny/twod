@@ -5,7 +5,7 @@ import math
 import sys
 
 from dataclasses import astuple, dataclass
-from typing import Iterable
+from typing import Iterable, Tuple
 
 from .types import Numeric, PointOrScalar, PointType
 from .constants import EPSILON_EXP_MINUS_1, Quadrant
