@@ -3,9 +3,11 @@
 
 import math
 import sys
+
 from dataclasses import astuple, dataclass
 from typing import Iterable
-from .types import Numeric, Coordinate, PointOrScalar, PointType
+
+from .types import Numeric, PointOrScalar, PointType
 from .constants import EPSILON_EXP_MINUS_1, Quadrant
 from .exceptions import ColinearPoints
 
@@ -14,9 +16,10 @@ from .exceptions import ColinearPoints
 class Point:
     x: float = 0
     y: float = 0
-    """The Point class is a representation of a two dimensional
-    geometric point with 'x' and 'y' attributes and many helpful
-    properties and methods.
+    """A two dimensional geometric point.
+
+    The Point class represents a geometric point with 'x' and 'y' attributes
+    and has many helpful properties and methods.
 
     >>> p = Point()
     >>> p.is_origin
@@ -24,8 +27,12 @@ class Point:
     """
 
     @classmethod
-    def from_polar(cls, radius: float, theta: float, is_radians: bool = True):
+    def from_polar(
+        cls, radius: float, theta: float, is_radians: bool = True
+    ) -> PointType:
         """Returns a Point with polar coordinates (R, ϴ).
+
+        The point is genrated relative to the origin.
 
         :param float radius:
         :param float theta:
@@ -39,14 +46,19 @@ class Point:
 
     @property
     def is_origin(self) -> bool:
-        """Returns True if and only if x == 0 and y == 0.
-        """
+        """True if and only if x == 0 and y == 0."""
         return self.x == 0 and self.y == 0
 
     @property
-    def quadrant(self) -> int:
-        """The quadrant in the cartesian plane this point is located in:
-        Quadrant.I, Quadrant.II, Quadrant.III, Quadrant.IV or Quadrant.ORIGIN.
+    def quadrant(self) -> Quadrant:
+        """The quadrant in the cartesian plane this point is located in.
+
+        Possible values are:
+        - Quadrant.I
+        - Quadrant.II
+        - Quadrant.III
+        - Quadrant.IV
+        - Quadrant.ORIGIN.
         """
 
         if self.x > 0:
@@ -63,30 +75,29 @@ class Point:
         return Quadrant.ORIGIN
 
     def _polar_to_cartesian(self, radius: float, radians: float) -> None:
-        """Computes cartesian coordinates from polar coordinates expressed
-        as a dimensionless radius and angle in radians.
+        """Computes cartesian coordinates from polar coordinates.
+
+        The polar coordinates are expected to be a dimensionless radius
+        and angle in radians.
 
         :param float radius:
         :param float radians:
-
         """
         self.x = round(radius * math.cos(radians), EPSILON_EXP_MINUS_1)
         self.y = round(radius * math.sin(radians), EPSILON_EXP_MINUS_1)
 
     @property
     def radius(self) -> float:
-        """The distance from this point to the origin.
-        """
+        """The distance from this point to the origin."""
         return math.hypot(self.x, self.y)
 
     @radius.setter
-    def radius(self, new_value: float):
+    def radius(self, new_value: float) -> None:
         self._polar_to_cartesian(new_value, self.radians)
 
     @property
     def radians(self) -> float:
-        """The angle in radians measured counter-clockwise from 3 o'clock.
-        """
+        """The angle in radians measured counter-clockwise from 3 o'clock."""
         return math.atan2(self.y, self.x)
 
     @radians.setter
@@ -95,8 +106,7 @@ class Point:
 
     @property
     def degrees(self) -> float:
-        """The angle in degrees measured counter-clockwise from 3 o'clock.
-        """
+        """The angle in degrees measured counter-clockwise from 3 o'clock."""
         return math.degrees(self.radians)
 
     @degrees.setter
@@ -104,15 +114,16 @@ class Point:
         self._polar_to_cartesian(self.radius, math.radians(new_value))
 
     @property
-    def polar(self) -> Coordinate:
+    def polar(self) -> Tuple[float, float]:
         """Polar coordinates tuple: (R, ϴ).
+
         R is the distance from the origin to this point.
-        ϴ is the angle measured counter-clockwise from 3 o'clock, expressed in radians.
+        ϴ is the angle (radians) measured counter-clockwise from 3 o'clock.
         """
         return (self.radius, self.radians)
 
     @polar.setter
-    def polar(self, new_values: Coordinate) -> None:
+    def polar(self, new_values: Tuple[Numeric, Numeric]) -> None:
         try:
             radius, radians, *_ = map(float, new_values)
             self._polar_to_cartesian(radius, radians)
@@ -123,16 +134,17 @@ class Point:
         raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
 
     @property
-    def polar_deg(self) -> Coordinate:
+    def polar_deg(self) -> Tuple[float, float]:
         """Polar coordinates tuple: (R, ϴ).
+
         R is the distance from the origin to this point.
-        ϴ is the angle measured counter-clockwise from 3 o'clock, expressed in degrees.
+        ϴ is the angle (degrees) measured counter-clockwise from 3 o'clock.
         """
         radius, radians = self.polar
         return (radius, math.degrees(radians))
 
     @polar_deg.setter
-    def polar_deg(self, new_values: Coordinate) -> None:
+    def polar_deg(self, new_values: Tuple[Numeric, Numeric]) -> None:
         try:
             radius, degrees, *_ = map(float, new_values)
             self._polar_to_cartesian(radius=radius, radians=math.radians(degrees))
@@ -142,13 +154,12 @@ class Point:
         raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
 
     @property
-    def xy(self) -> Coordinate:
-        """A tuple of this point's x and y coordinates.
-        """
+    def xy(self) -> Tuple[Numeric, Numeric]:
+        """A tuple of this point's x and y coordinates."""
         return (self.x, self.y)
 
     @xy.setter
-    def xy(self, new_values: Coordinate) -> None:
+    def xy(self, new_values: Tuple[Numeric, Numeric]) -> None:
         try:
             self.x, self.y, *_ = map(float, new_values)
             return
@@ -156,9 +167,8 @@ class Point:
             pass
         raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
 
-    def __iter__(self) -> Iterable[Coordinate]:
-        """Returns an iterator over tuple of the classes' fields; x and y.
-        """
+    def __iter__(self) -> Iterable[Tuple[float, float]]:
+        """Returns an iterator over tuple of the classes' fields; x and y."""
         return iter(astuple(self))
 
     def __add__(self, other: PointOrScalar) -> PointType:
@@ -173,7 +183,6 @@ class Point:
         to both x and y:
 
         Point(self.x + other, self.y + other)
-
         """
         try:
             return Point(self.x + other.x, self.y + other.y)
@@ -381,31 +390,44 @@ class Point:
         return self * -1
 
     def __invert__(self) -> PointType:
-        """Inverts each coordinate and returns a new Point.
-        """
+        """Inverts each coordinate and returns a new Point."""
         return Point(~self.x, ~self.y)
 
     def distance(self, other: PointType = None) -> float:
         """Returns the floating point distance between self and other.
+
         If other is not specified, the distance from self to the origin
         is calculated.
+
+        :param other: PointType
+        :return: float
         """
         return (self.distance_squared(other or Point())) ** 0.5
 
     def distance_squared(self, other: PointType = None) -> float:
         """Returns the floating point squared distance between self and other.
-        If other is not specified, the sequared distance from self to the
+
+        If other is not specified, the squared distance from self to the
         origin is calculated.
+
+        :param other: PointType
+        :return: float
         """
         return sum((((other or Point()) - self) ** 2))
 
     def dot(self, other: PointOrScalar) -> float:
         """Returns a scalar dot product of self with other.
+
+        :param other: PointOrScalar
+        :return: float
         """
         return sum(self * other)
 
     def cross(self, other: PointOrScalar) -> float:
         """Returns a scalar cross product of self with other.
+
+        :param other: PointOrScalar
+        :return: float
         """
         return (self.x * other.y) + (self.y * other.x)
 
@@ -419,6 +441,9 @@ class Point:
 
         Note: ccw is also 2*area of the triangle [self, b, c].
 
+        :param b: Point
+        :param c: Point
+        :return: float
         """
         return ((b.x - self.x) * (c.y - self.y)) - ((c.x - self.x) * (b.y - self.y))
 
@@ -426,8 +451,11 @@ class Point:
         """Returns True if the angle [self, b, c] has counter clock-wise
         winding, else False.
 
-        Raises the exception ColinearPoints if the points are
-        colinear.
+        Raises the exception `ColinearPoints` if the points compose a line.
+
+        :param b: Point
+        :param c: Point
+        :return: bool
         """
         result = self.ccw(b, c)
         if result == 0:
@@ -436,12 +464,19 @@ class Point:
 
     def is_colinear(self, b: PointType, c: PointType) -> bool:
         """Returns True if the angle [self, b, c ] is a line, else False.
+
+        :param b: Point
+        :param c: Point
+        :return: bool
         """
         return self.ccw(b, c) == 0
 
     def midpoint(self, other: PointType = None) -> PointType:
         """Returns a new Point between self and other. If other is not
         specified, the midpoint between self and the origin is calculated.
+
+        :param other: Point
+        :return: Point
         """
         return (self + (other or Point())) / 2
 
@@ -451,6 +486,10 @@ class Point:
         The bounds are checked by less than or equal to (<=) so self is
         considered between if it resides on any of the lines constructed
         using [p,q].
+
+        :param p: Point
+        :param q: Point
+        :return: bool
         """
 
         i = min(p.x, q.x) <= self.x <= max(p.x, q.x)
@@ -464,6 +503,10 @@ class Point:
         The bounds are checked by less than (<) so self is considered
         inside if it does not reside on any of the lines constructed
         using (p,q).
+
+        :param p: Point
+        :param q: Point
+        :return: bool
         """
 
         i = min(p.x, q.x) < self.x < max(p.x, q.x)
