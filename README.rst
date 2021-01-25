@@ -1,6 +1,6 @@
 
 twod - A Two-Dimensional Geometry Library for Humans™
-====================================================
+=====================================================
 
 |pypi|  |license| |python| |coverage| |build|
 
