@@ -2,12 +2,17 @@
 """
 
 import math
+import operator
 import sys
 
-from dataclasses import astuple, dataclass
-from typing import Iterable, Tuple
+from dataclasses import dataclass
+from typing import Callable, Iterable, Tuple, Union
 
-from .types import Numeric, PointOrScalar, PointType
+from .types import Numeric
+from .types import PointType
+from .types import PointOrIterable
+from .types import PointOrIterableOrScalar
+
 from .constants import EPSILON_EXP_MINUS_1, Quadrant
 from .exceptions import ColinearPoints
 
@@ -28,7 +33,11 @@ class Point:
 
     @classmethod
     def from_polar(
-        cls, radius: float, theta: float, is_radians: bool = True
+        cls,
+        radius: float,
+        theta: float,
+        is_radians: bool = True,
+        translate: PointType = None,
     ) -> PointType:
         """Returns a Point with polar coordinates (R, ϴ).
 
@@ -42,6 +51,8 @@ class Point:
         theta = theta if is_radians else math.radians(theta)
         point = cls()
         point.polar = (radius, theta)
+        if translate:
+            point += translate
         return point
 
     @property
@@ -123,7 +134,7 @@ class Point:
         return (self.radius, self.radians)
 
     @polar.setter
-    def polar(self, new_values: Tuple[Numeric, Numeric]) -> None:
+    def polar(self, new_values: Iterable[Numeric]) -> None:
         try:
             radius, radians, *_ = map(float, new_values)
             self._polar_to_cartesian(radius, radians)
@@ -131,7 +142,9 @@ class Point:
         except (TypeError, ValueError):
             pass
 
-        raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
+        raise TypeError(
+            f"Expected a Iterable[Union[int, float]], got {type(new_values)}"
+        )
 
     @property
     def polar_deg(self) -> Tuple[float, float]:
@@ -151,288 +164,204 @@ class Point:
             return
         except (TypeError, ValueError):
             pass
-        raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
+        raise TypeError(
+            f"Expected a Iterable[Union[int, float]], got {type(new_values)}"
+        )
 
     @property
-    def xy(self) -> Tuple[Numeric, Numeric]:
+    def xy(self) -> Tuple[float, float]:
         """A tuple of this point's x and y coordinates."""
         return (self.x, self.y)
 
     @xy.setter
-    def xy(self, new_values: Tuple[Numeric, Numeric]) -> None:
+    def xy(self, new_values: Iterable[Numeric]) -> None:
         try:
             self.x, self.y, *_ = map(float, new_values)
             return
         except (TypeError, ValueError):
             pass
-        raise TypeError(f"Expected a numeric iterable, got {type(new_values)}")
+        raise TypeError(
+            f"Expected a Iterable[Union[int, float]], got {type(new_values)}"
+        )
 
     def __iter__(self) -> Iterable[Tuple[float, float]]:
-        """Returns an iterator over tuple of the classes' fields; x and y."""
-        return iter(astuple(self))
+        """An iterator over x and y coordinates."""
+        return iter([self.x, self.y])
 
-    def __add__(self, other: PointOrScalar) -> PointType:
-        """Adds other to self and returns a new Point.
+    def __len__(self) -> int:
+        return 2
 
-        If other has attributes x and y, returns a new
-        Point:
+    def __eq__(self, other: PointOrIterable) -> bool:
 
-        Point(self.x + other.x, self.y + other.y)
-
-        Otherwise, other is treated as a scalar and added
-        to both x and y:
-
-        Point(self.x + other, self.y + other)
-        """
         try:
-            return Point(self.x + other.x, self.y + other.y)
+            return self.x == other.x and self.y == other.y
         except AttributeError:
             pass
-        return Point(self.x + other, self.y + other)
 
-    def __iadd__(self, other: PointOrScalar) -> PointType:
-        """Adds other to self in-place and returns self.
+        return all(a == b for a, b in zip(self, other))
 
-        If other has attributes x and y, adds those
-        values to self in-place.
+    def __getitem__(self, key: Union[int, slice]) -> float:
 
-        Otherwise, other is treated as a scalar value and
-        added to both x and y in-place.
-        """
+        if isinstance(key, int):
+            if key == 0:
+                return self.x
+            if key == 1:
+                return self.y
+            raise IndexError("key out of range: {key}")
+
+        if isinsance(key, slice):
+            return [self.x, self.y][key]
+
+        raise TypeError(f"Expected int or slice, not {type(key)}")
+
+    def __setitem__(self, key: int, value: Numeric):
+        if key == 0:
+            self.x = value
+            return
+        if key == 1:
+            self.y = value
+            return
+        raise IndexError(f"key out of range: {key}")
+
+    def __op(self, other: PointOrIterableOrScalar, op: Callable) -> PointType:
+        """"""
+
         try:
-            self.x += other.x
-            self.y += other.y
+            return Point(op(self.x, other.x), op(self.y, other.y))
+        except AttributeError:
+            pass
+        try:
+            return Point(*[op(a, b) for a, b in zip(self, other)])
+        except TypeError:
+            pass
+        return Point(op(self.x, other), op(self.y, other))
+
+    def __iop(self, other: PointOrIterableOrScalar, op: Callable) -> PointType:
+        """"""
+        try:
+            self.x = op(self.x, other.x)
+            self.y = op(self.y, other.y)
             return self
         except AttributeError:
             pass
-        self.x += other
-        self.y += other
-        return self
 
-    def __sub__(self, other: PointOrScalar) -> PointType:
-        """Subtracts other from self and returns a new Point.
-
-        If other has attributes x and y, returns a new
-        Point:
-
-        Point(self.x - other.x, self.y - other.y)
-
-        Otherwise, other is treated as a scalar and subtracted
-        from both x and y:
-
-        Point(self.x - other, self.y - other)
-        """
         try:
-            return Point(self.x - other.x, self.y - other.y)
-        except AttributeError:
-            pass
-        return Point(self.x - other, self.y - other)
-
-    def __isub__(self, other: PointOrScalar) -> PointType:
-        """Subtracts other from self in-place and returns self.
-
-        If other has attributes x and y, subtracts those
-        values from self in-place.
-
-        Otherwise, other is treated as a scalar value and
-        subtracted from both x and y in-place.
-        """
-        try:
-            self.x -= other.x
-            self.y -= other.y
+            self.x = op(self.x, other[0])
+            self.y = op(self.y, other[1])
             return self
-        except AttributeError:
+        except TypeError:
             pass
-        self.x -= other
-        self.y -= other
+
+        self.x = op(self.x, other)
+        self.y = op(self.y, other)
         return self
 
-    def __mul__(self, other: PointOrScalar) -> PointType:
-        """Multiplies other to self and returns a new Point.
+    def __add__(self, other: PointOrIterableOrScalar) -> PointType:
+        """Add `other` to `self` and return a new Point."""
+        return self.__op(other, operator.add)
 
-        If other has attributes x and y, returns a new
-        Point:
+    def __iadd__(self, other: PointOrIterableOrScalar) -> PointType:
+        """Add `other` to `self` in-place and returns `self`."""
+        return self.__iop(other, operator.add)
 
-        Point(self.x * other.x, self.y * other.y)
+    def __sub__(self, other: PointOrIterableOrScalar) -> PointType:
+        """Subtract `other` from `self` and return a new Point."""
+        return self.__op(other, operator.sub)
 
-        Otherwise, other is treated as a scalar and multiplied
-        with both x and y:
+    def __isub__(self, other: PointOrIterableOrScalar) -> PointType:
+        """Subtract `other` from `self` in-place and return `self`."""
+        return self.__iop(other, operator.sub)
 
-        Point(self.x * other, self.y * other)
-        """
-        try:
-            return Point(self.x * other.x, self.y * other.y)
-        except AttributeError:
-            pass
-        return Point(self.x * other, self.y * other)
+    def __mul__(self, other: PointOrIterableOrScalar) -> PointType:
+        """Multiply `self` with `other` and return a new Point."""
+        return self.__op(other, operator.mul)
 
-    def __imul__(self, other: PointOrScalar) -> PointType:
-        """Multiplies other to self in-place and returns self.
+    def __imul__(self, other: PointOrIterableOrScalar) -> PointType:
+        """Multiply `self` with `other` in-place and return `self`."""
+        return self.__iop(other, operator.mul)
 
-        If other has attributes x and y, multiplies those
-        values with self in-place.
+    def __truediv__(self, other: PointOrIterableOrScalar) -> PointType:
+        """Divide `self` by `other` and return a new Point."""
+        return self.__op(other, operator.truediv)
 
-        Otherwise, other is treated as a scalar value and
-        multiplied with both x and y in-place.
-        """
-        try:
-            self.x *= other.x
-            self.y *= other.y
-            return self
-        except AttributeError:
-            pass
-        self.x *= other
-        self.y *= other
-        return self
+    def __itruediv__(self, other: PointOrIterableOrScalar) -> PointType:
+        """Divide `self` by `other` in-place and return `self`."""
+        return self.__iop(other, operator.truediv)
 
-    def __truediv__(self, other: PointOrScalar) -> PointType:
-        """Divides self with other and returns a new Point.
+    def __floordiv__(self, other: PointOrIterableOrScalar) -> PointType:
+        """Divide `self` by `other` and return a new Point."""
+        return self.__op(other, operator.floordiv)
 
-        If other has attributes x and y, returns a new
-        Point:
-
-        Point(self.x / other.x, self.y / other.y)
-
-        Otherwise, other is treated as a scalar and divides
-        both x and y:
-
-        Point(self.x / other, self.y / other)
-
-        """
-        try:
-            return Point(self.x / other.x, self.y / other.y)
-        except AttributeError:
-            pass
-        return Point(self.x / other, self.y / other)
-
-    def __itruediv__(self, other: PointOrScalar) -> PointType:
-        """Divides self with other in-place and returns self.
-
-        If other has attributes x and y, self is divided by
-        those values in-place.
-
-        Otherwise, other is treated as a scalar value and
-        divides both x and y in-place.
-        """
-        try:
-            self.x /= other.x
-            self.y /= other.y
-            return self
-        except AttributeError:
-            pass
-        self.x /= other
-        self.y /= other
-        return self
-
-    def __floordiv__(self, other: PointOrScalar) -> PointType:
-        """Divides self with other and returns a new Point.
-
-        If other has attributes x and y, returns a new
-        Point:
-
-        Point(self.x // other.x, self.y // other.y)
-
-        Otherwise, other is treated as a scalar and divides
-        both x and y:
-
-        Point(self.x // other, self.y // other)
-        """
-        try:
-            return Point(self.x // other.x, self.y // other.y)
-        except AttributeError:
-            pass
-        return Point(self.x // other, self.y // other)
-
-    def __ifloordiv__(self, other: PointOrScalar) -> PointType:
-        """Divides self with other in-place and returns self.
-
-        If other has attributes x and y, self is divided by
-        those values in-place.
-
-        Otherwise, other is treated as a scalar value and
-        divides both x and y in-place.
-        """
-        try:
-            self.x //= other.x
-            self.y //= other.y
-            return self
-        except AttributeError:
-            pass
-        self.x //= other
-        self.y //= other
-        return self
+    def __ifloordiv__(self, other: PointOrIterableOrScalar) -> PointType:
+        """Divide `self` by `other` in-place and return `self`."""
+        return self.__iop(other, operator.floordiv)
 
     def __pow__(self, exponent: float) -> PointType:
-        """Raises each coordinate to the given exponent and
-        returns a new Point.
-
-        """
+        """Raise each coordinate by `exponent` and return a new Point."""
         return Point(self.x ** exponent, self.y ** exponent)
 
     def __ipow__(self, exponent: float) -> PointType:
-        """Raises each coordinate to the given exponent
-        in-place and returns self.
-        """
+        """Raise each coordinate by `exponent` in-place and return self."""
         self.x **= exponent
         self.y **= exponent
         return self
 
     def __abs__(self) -> PointType:
-        """Applies the absolute value function to each
-        coordinate and returns a new Point.
-        """
+        """Apply absolute value to each coordinate and return a new Point."""
         return Point(abs(self.x), abs(self.y))
 
     def __neg__(self) -> PointType:
-        """Applies negation to each coordinate and returns
-        a new Point.
-        """
+        """Negate each coordinate and return a new Point."""
         return self * -1
 
     def __invert__(self) -> PointType:
-        """Inverts each coordinate and returns a new Point."""
+        """Inverts each coordinate and return a new Point."""
         return Point(~self.x, ~self.y)
 
-    def distance(self, other: PointType = None) -> float:
-        """Returns the floating point distance between self and other.
+    def distance(self, other: PointOrIterable = None) -> float:
+        """Return the floating point distance between `self` and `other`.
 
-        If other is not specified, the distance from self to the origin
-        is calculated.
+        If other is not given, the distance from self to the origin is
+        returned.
 
         :param other: PointType
         :return: float
         """
         return (self.distance_squared(other or Point())) ** 0.5
 
-    def distance_squared(self, other: PointType = None) -> float:
-        """Returns the floating point squared distance between self and other.
+    def distance_squared(self, other: PointOrIterable = None) -> float:
+        """Return the floating point squared distance between self and other.
 
-        If other is not specified, the squared distance from self to the
-        origin is calculated.
+        If other is not given, the squared distance from self to the
+        origin is returned.
 
         :param other: PointType
         :return: float
         """
         return sum((((other or Point()) - self) ** 2))
 
-    def dot(self, other: PointOrScalar) -> float:
-        """Returns a scalar dot product of self with other.
+    def dot(self, other: PointOrIterable) -> float:
+        """Return a scalar dot product of self with other.
 
-        :param other: PointOrScalar
+        :param other: PointOrIterableOrScalar
         :return: float
         """
         return sum(self * other)
 
-    def cross(self, other: PointOrScalar) -> float:
-        """Returns a scalar cross product of self with other.
+    def cross(self, other: PointOrIterable) -> float:
+        """Return a scalar cross product of self with other.
 
-        :param other: PointOrScalar
+        :param other: PointOrIterableOrScalar
         :return: float
         """
-        return (self.x * other.y) + (self.y * other.x)
+        try:
+            return (self.x * other.y) + (self.y * other.x)
+        except AttributeError:
+            pass
+        return (self.x * other[1]) + (self.y * other[0])
 
-    def ccw(self, b: PointType, c: PointType) -> float:
-        """Returns a floating point value indicating the winding
+    def ccw(self, b: PointOrIterable, c: PointOrIterable) -> float:
+        """Return a floating point value indicating the winding
         direction of the points [self, b, c].
 
         If ccw < 0,  clock-wise winding
@@ -445,10 +374,15 @@ class Point:
         :param c: Point
         :return: float
         """
-        return ((b.x - self.x) * (c.y - self.y)) - ((c.x - self.x) * (b.y - self.y))
+        try:
+            return ((b.x - self.x) * (c.y - self.y)) - ((c.x - self.x) * (b.y - self.y))
+        except AttributeError:
+            pass
 
-    def is_ccw(self, b: PointType, c: PointType) -> bool:
-        """Returns True if the angle [self, b, c] has counter clock-wise
+        return ((b[0] - self.x) * (c[1] - self.y)) - ((c[0] - self.x) * (b[1] - self.y))
+
+    def is_ccw(self, b: PointOrIterable, c: PointOrIterable) -> bool:
+        """Return True if the angle [self, b, c] has counter clock-wise
         winding, else False.
 
         Raises the exception `ColinearPoints` if the points compose a line.
@@ -463,7 +397,7 @@ class Point:
         return result > 0
 
     def is_colinear(self, b: PointType, c: PointType) -> bool:
-        """Returns True if the angle [self, b, c ] is a line, else False.
+        """True if the angle [self, b, c ] is a line, else False.
 
         :param b: Point
         :param c: Point
@@ -472,8 +406,10 @@ class Point:
         return self.ccw(b, c) == 0
 
     def midpoint(self, other: PointType = None) -> PointType:
-        """Returns a new Point between self and other. If other is not
-        specified, the midpoint between self and the origin is calculated.
+        """Return a new Point midway between `self` and `other`.
+
+        If other is not given, the midpoint between self and the
+        origin is returned.
 
         :param other: Point
         :return: Point
@@ -481,7 +417,7 @@ class Point:
         return (self + (other or Point())) / 2
 
     def between(self, p: PointType, q: PointType) -> bool:
-        """Returns True if self is bounded by the points [p, q], else False
+        """True if self is bounded by the points [p, q], else False
 
         The bounds are checked by less than or equal to (<=) so self is
         considered between if it resides on any of the lines constructed
@@ -498,7 +434,7 @@ class Point:
         return i and j
 
     def inside(self, p: PointType, q: PointType) -> bool:
-        """Returns True if self is bounded by the points (p, q), else False
+        """True if self is bounded by the points (p, q), else False
 
         The bounds are checked by less than (<) so self is considered
         inside if it does not reside on any of the lines constructed
@@ -508,6 +444,8 @@ class Point:
         :param q: Point
         :return: bool
         """
+
+        # XXX re-implement with ccw and a list of points instead of a pair
 
         i = min(p.x, q.x) < self.x < max(p.x, q.x)
         j = min(p.y, q.y) < self.y < max(p.y, q.y)
