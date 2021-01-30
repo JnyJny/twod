@@ -58,7 +58,7 @@ def test_point_distance_many_points():
 
 def test_point_distance_to_self():
     p = Point()
-    assert p.distance() == 0
+    assert p.distance(p) == 0
 
 
 def test_point_distance_reflexive():
@@ -85,32 +85,32 @@ def test_point_distance_squared_to_other():
     assert p.distance_squared(q) == 4
 
 
-def test_point_dot_origin():
-    p = Point()
-    q = Point()
+@pytest.mark.parametrize(
+    "A,B,result",
+    [
+        [(0, 0), (0, 0), 0],
+        [(1, 2), (3, 4), 11],
+    ],
+)
+def test_point_dot(A, B, result):
+    p = Point(*A)
+    q = Point(*B)
     r = p.dot(q)
-    assert r == 0
+    assert r == result
 
 
-def test_point_dot_nonzero():
-    p = Point(1, 2)
-    q = Point(3, 4)
-    r = p.dot(q)
-    assert r == 11
-
-
-def test_point_cross_origin():
-    p = Point()
-    q = Point()
+@pytest.mark.parametrize(
+    "A,B,result",
+    [
+        [(0, 0), (0, 0), 0],
+        [(7, 2), (4, 3), 29],
+    ],
+)
+def test_point_cross(A, B, result):
+    p = Point(*A)
+    q = Point(*B)
     r = p.cross(q)
-    assert r == 0
-
-
-def test_point_cross_nonzero():
-    p = Point(7, 2)
-    q = Point(4, 3)
-    r = p.cross(q)
-    assert r == 29
+    assert r == result
 
 
 def test_point_ccw_greater_than_zero():
@@ -246,58 +246,36 @@ def test_point_inside_false():
     assert not a.inside(p, b)
 
 
-def test_point_abs_origin():
-    o = Point()
+@pytest.mark.parametrize(
+    "A, x, y",
+    [
+        [[0, 0], 0, 0],
+        [[-1, 0], 1, 0],
+        [[0, -1], 0, 1],
+        [[1, 1], 1, 1],
+        [[-1, -1], 1, 1],
+    ],
+)
+def test_point_abs(A, x, y):
+    o = Point(*A)
     p = abs(o)
-    assert p.x == 0 and p.y == 0
+    assert p.x == x and p.y == y
 
 
-def test_point_abs_positive():
-    p = Point(2, 3)
-    q = abs(p)
-    assert q.x == 2 and q.y == 3
-
-
-def test_point_abs_mixed_sign():
-    p = Point(-1, 1)
-    q = Point(1, -1)
-    r = abs(p)
-    s = abs(q)
-    assert r.x == 1 and r.y == 1
-    assert s.x == 1 and s.y == 1
-
-
-def test_point_abs_negative():
-    p = Point(-1, -2)
-    q = abs(p)
-    assert q.x == 1 and q.y == 2
-
-
-def test_point_neg_origin():
-    o = Point()
+@pytest.mark.parametrize(
+    "A, x, y",
+    [
+        [[0, 0], 0, 0],
+        [[1, 2], -1, -2],
+        [[-1, 2], 1, -2],
+        [[1, -2], -1, 2],
+        [[-1, -2], 1, 2],
+    ],
+)
+def test_point_neg(A, x, y):
+    o = Point(*A)
     p = -o
-    assert p.x == 0 and p.y == 0
-
-
-def test_point_neg_positive():
-    p = Point(2, 3)
-    q = -p
-    assert q.x == -2 and q.y == -3
-
-
-def test_point_neg_mixed_sign():
-    p = Point(-1, 1)
-    q = Point(1, -1)
-    r = -p
-    s = -q
-    assert r.x == 1 and r.y == -1
-    assert s.x == -1 and s.y == 1
-
-
-def test_point_neg_negative():
-    p = Point(-1, -2)
-    q = -p
-    assert q.x == 1 and q.y == 2
+    assert p.x == x and p.y == y
 
 
 def test_point_is_colinear_x_true():

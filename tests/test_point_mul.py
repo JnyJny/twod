@@ -1,39 +1,102 @@
+""" test Point multiplication like a human™
+"""
+
+import pytest
+
 from twod import Point
 
 
-def test_point_multiplication_with_zero_points():
-    p = Point()
-    q = Point()
+@pytest.mark.parametrize(
+    "A, B, result",
+    [
+        [[0, 0], [0, 0], [0, 0]],
+        [[0, 0], [1, 1], [0, 0]],
+        [[1, 1], [0, 0], [0, 0]],
+        [[1, 1], [1, 1], [1, 1]],
+    ],
+)
+def test_point_multiplication_with_point(A, B, result):
+    p = Point(*A)
+    q = Point(*B)
     r = p * q
-    assert r.x == 0 and r.y == 0
+    assert r == result
 
 
-def test_point_multiplication_with_nonzero_points():
-    p = Point()
-    q = Point(1, 1)
-    r = p * q
-    assert r.x == 0 and r.y == 0
+@pytest.mark.parametrize(
+    "A, iterable, result",
+    [
+        [[0, 0], [0, 0], [0, 0]],
+        [[0, 0], [1, 1], [0, 0]],
+        [[1, 1], [0, 0], [0, 0]],
+        [[1, 1], [1, 1], [1, 1]],
+        [[0, 0], (0, 0), [0, 0]],
+        [[0, 0], (1, 1), [0, 0]],
+        [[1, 1], (0, 0), [0, 0]],
+        [[1, 1], (1, 1), [1, 1]],
+    ],
+)
+def test_point_multiplication_with_iterable(A, iterable, result):
+    p = Point(*A) * iterable
+    assert p == result
 
 
-def test_point_multiplication_with_scalars():
-    p = Point() * 1
-    assert p.x == 0 and p.y == 0
+@pytest.mark.parametrize(
+    "A, scalar, result",
+    [
+        [[0, 0], 1, [0, 0]],
+    ],
+)
+def test_point_multiplication_with_scalar(A, scalar, result):
+    p = Point(*A) * scalar
+    assert p == result
 
 
-def test_point_inplace_multiplication_with_zero_points():
-    p = Point()
-    p *= Point()
-    assert p.x == 0 and p.y == 0
+@pytest.mark.parametrize(
+    "A, B, result",
+    [
+        [[0, 0], [0, 0], [0, 0]],
+        [[0, 0], [1, 1], [0, 0]],
+        [[1, 1], [0, 0], [0, 0]],
+        [[1, 1], [1, 1], [1, 1]],
+        [[0, 0], (0, 0), [0, 0]],
+        [[0, 0], (1, 1), [0, 0]],
+        [[1, 1], (0, 0), [0, 0]],
+        [[1, 1], (1, 1), [1, 1]],
+    ],
+)
+def test_point_inplace_multiplication_with_point(A, B, result):
+    p = Point(*A)
+    p *= Point(*B)
+    assert p == result
 
 
-def test_point_inplace_multiplication_with_nonzero_points():
-    p = Point(1, 2)
-    p *= Point(2, 3)
-    assert p.x == 2 and p.y == 6
+@pytest.mark.parametrize(
+    "A, iterable, result",
+    [
+        [[0, 0], [0, 0], [0, 0]],
+        [[0, 0], [1, 1], [0, 0]],
+        [[1, 1], [0, 0], [0, 0]],
+        [[1, 1], [1, 1], [1, 1]],
+        [[0, 0], (0, 0), [0, 0]],
+        [[0, 0], (1, 1), [0, 0]],
+        [[1, 1], (0, 0), [0, 0]],
+        [[1, 1], (1, 1), [1, 1]],
+    ],
+)
+def test_point_inplace_multiplication_with_iterable(A, iterable, result):
+    p = Point(*A)
+    p *= iterable
+    assert p == result
 
 
-def test_point_inplace_multiplication_with_scalars():
+@pytest.mark.parametrize(
+    "A, scalar, result",
+    [
+        [[0, 0], 1, [0, 0]],
+    ],
+)
+def test_point_inplace_multiplication_with_scalar(A, scalar, result):
 
-    p = Point(1, 2)
-    p *= 2
-    assert p.x == 2 and p.y == 4
+    p = Point(*A)
+    p *= scalar
+    assert p == result

@@ -1,81 +1,93 @@
+""" test Point division like a human™
+"""
 import pytest
 
 from twod import Point
 
 
-def test_point_truediv_with_zero_points():
-    p = Point()
-    q = Point()
+@pytest.mark.parametrize("zero", [0, 0.0, [0, 0], (0, 0), Point()])
+def test_point_truediv_by_zero(zero):
     with pytest.raises(ZeroDivisionError):
-        _ = p / q
+        Point() / zero
 
 
-def test_point_truediv_with_nonzero_points():
-    p = Point(1, 1)
-    q = Point(1, 1)
-
-    r = p / q
-    assert r.x == 1 and r.y == 1
-
-
-def test_point_truediv_with_scalars():
-    p = Point(1, 1) / 1
-    assert p.x == 1 and p.y == 1
-
-
-def test_point_inplace_truediv_with_zero_points():
-    p = Point(1, 1)
-    p /= Point(1, 1)
-    assert p.x == 1 and p.y == 1
+@pytest.mark.parametrize(
+    "A, B, result",
+    [
+        [[0, 0], [1, 1], [0, 0]],
+        [[1, 1], [1, 1], [1, 1]],
+    ],
+)
+def test_point_truediv_with_point(A, B, result):
+    r = Point(*A) / Point(*B)
+    assert r == result
 
 
-def test_point_inplace_truediv_with_nonzero_points():
-    p = Point(2, 4)
-    p /= Point(2, 2)
-    assert p.x == 1 and p.y == 2
+@pytest.mark.parametrize(
+    "A, iterable, result",
+    [
+        [[0, 0], [1, 1], [0, 0]],
+        [[1, 1], [1, 1], [1, 1]],
+    ],
+)
+def test_point_truediv_with_iterable(A, iterable, result):
+    p = Point(*A)
+    r = p / iterable
+    assert r == result
 
 
-def test_point_inplace_truediv_with_scalars():
+@pytest.mark.parametrize(
+    "A, scalar, result",
+    [
+        [[0, 0], 1, [0, 0]],
+        [[1, 1], 1, [1, 1]],
+    ],
+)
+def test_point_truediv_with_scalar(A, scalar, result):
+    p = Point(*A)
+    r = p / scalar
+    assert result == result
 
-    p = Point(2, 4)
-    p /= 2
-    assert p.x == 1 and p.y == 2
 
-
-def test_point_floordiv_with_zero_points():
-    p = Point()
-    q = Point()
+@pytest.mark.parametrize("zero", [0, 0.0, [0, 0], (0, 0), Point()])
+def test_point_floordiv_by_zero(zero):
     with pytest.raises(ZeroDivisionError):
-        _ = p // q
+        Point() // zero
 
 
-def test_point_floordiv_with_nonzero_points():
-    p = Point(1, 1)
-    q = Point(1, 1)
-
-    r = p // q
-    assert r.x == 1 and r.y == 1
-
-
-def test_point_floordiv_with_scalars():
-    p = Point(1, 1) // 1
-    assert p.x == 1 and p.y == 1
-
-
-def test_point_inplace_floordiv_with_zero_points():
-    p = Point(1, 1)
-    p //= Point(1, 1)
-    assert p.x == 1 and p.y == 1
+@pytest.mark.parametrize(
+    "A, B, result",
+    [
+        [[0, 0], [1, 1], [0, 0]],
+        [[1, 1], [1, 1], [1, 1]],
+    ],
+)
+def test_point_floordiv_with_point(A, B, result):
+    r = Point(*A) // Point(*B)
+    assert r == result
 
 
-def test_point_inplace_floordiv_with_nonzero_points():
-    p = Point(2, 4)
-    p //= Point(2, 2)
-    assert p.x == 1 and p.y == 2
+@pytest.mark.parametrize(
+    "A, iterable, result",
+    [
+        [[0, 0], [1, 1], [0, 0]],
+        [[1, 1], [1, 1], [1, 1]],
+    ],
+)
+def test_point_floordiv_with_iterable(A, iterable, result):
+    p = Point(*A)
+    r = p // iterable
+    assert r == result
 
 
-def test_point_inplace_floordiv_with_scalars():
-
-    p = Point(2, 4)
-    p //= 2
-    assert p.x == 1 and p.y == 2
+@pytest.mark.parametrize(
+    "A, scalar, result",
+    [
+        [[0, 0], 1, [0, 0]],
+        [[1, 1], 1, [1, 1]],
+    ],
+)
+def test_point_floordiv_with_scalar(A, scalar, result):
+    p = Point(*A)
+    r = p // scalar
+    assert result == result

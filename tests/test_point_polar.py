@@ -7,29 +7,35 @@ import math
 from twod import Point
 
 
-def test_point_from_polar_origin():
-
+def test_point_from_polar_origin_radians():
     p = Point.from_polar(0, 0)
-    q = Point.from_polar(0, 0, is_radians=False)
-
     assert p.is_origin
-    assert q.is_origin
+
+
+def test_point_from_polar_origin_degrees():
+    p = Point.from_polar(0, 0, is_radians=False)
+    assert p.is_origin
+
+
+@pytest.mark.parametrize("to", [Point(1, 1), (1, 1), [1, 1]])
+def test_point_from_polar_translated_iterable(to):
+    p = Point.from_polar(0, 0, translate=to)
+    assert p == to
+
+
+@pytest.mark.parametrize("x, y", [(1, 1), (-1, 1), (-1, -1), (1, -1)])
+def test_point_from_polar_not_origin_all_quadrants(x, y):
+
+    radius = math.hypot(x, y)
+    radians = math.atan2(y, x)
+    degrees = math.degrees(radians)
+
+    p = Point.from_polar(radius, radians)
+    q = Point.from_polar(radius, degrees, is_radians=False)
+
+    assert p.x == x and p.y == y
+    assert q.x == x and q.y == y
     assert p == q
-
-
-def test_point_from_polar_not_origin_all_quadrants():
-
-    for x, y in [(1, 1), (-1, 1), (-1, -1), (1, -1)]:
-        radius = math.hypot(x, y)
-        radians = math.atan2(y, x)
-        degrees = math.degrees(radians)
-
-        p = Point.from_polar(radius, radians)
-        q = Point.from_polar(radius, degrees, is_radians=False)
-
-        assert p.x == x and p.y == y
-        assert q.x == x and q.y == y
-        assert p == q
 
 
 def test_point_polar_assignment():
