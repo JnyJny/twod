@@ -1,9 +1,11 @@
 """ twod typing hinting for humans™.
 """
 
-from typing import TypeVar, Union, Tuple
+from typing import Iterable, TypeVar, Union
 
 Numeric = Union[float, int]
-Coordinate = Tuple[Numeric, Numeric]
-PointOrScalar = TypeVar("PointOrScalar")
+
 PointType = TypeVar("PointType")
+PointOrScalar = Union[PointType, Numeric]
+PointOrIterable = Union[PointType, Iterable[Numeric]]
+PointOrIterableOrScalar = Union[PointType, Iterable[Numeric], Numeric]
