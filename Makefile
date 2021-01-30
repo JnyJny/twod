@@ -5,22 +5,14 @@ ROOT=.
 
 EPHEMERAL= .coverage .pytest_cache htmlcov dist twod.egg-info
 
-OLD= "0.1.4"
-NEW= "0.1.5"
-
-VERSIONED_FILES= pyproject.toml tests/test_twod.py twod/__init__.py
-
-POETRY= poetry
-
-BLACK_OPTS= -l 79 -q
-
-.PHONY: build publish test cov $(VERSIONED_FILES)
+.PHONY: major_release minor_release patch_release \
+   MAJOR MINOR PATCH update push publish test cov report
 
 all:
-
 	@echo Help:
-	@echo "   make version $(OLD) to $(NEW)"
-	@echo "   make format, runs black $(BLACK_OPTS)"
+	@echo "   make major_release"
+	@echo "   make minor_release"
+	@echo "   make patch_release"
 	@echo "   make build"
 	@echo "   make publish"
 	@echo "   make test"
@@ -28,25 +20,37 @@ all:
 	@echo "   make report - dumps HTML coverage report"
 	@echo "   make clean"
 
-version:
-	sed -i '' -e 's/$(OLD)/$(NEW)/' pyproject.toml
-	sed -i '' -e 's/$(OLD)/$(NEW)/' twod/__init__.py
-	sed -i '' -e 's/$(OLD)/$(NEW)/' tests/test_twod.py
-	git commit -m 'updated VERSION to $(NEW)' $(VERSIONED_FILES)
-	git tag $(NEW)
-	git push --tags
 
-format:
-	black $(BLACK_OPTS) $(ROOT)
+major_release: test MAJOR update push publish
 
-build:
-	$(POETRY) build
+minor_release: test MINOR update push publish
 
-publish: build
-	$(POETRY) publish
+patch_release: test PATCH update push publish
+
+
+MAJOR:
+	@poetry version major
+
+MINOR:
+	@poetry version minor
+
+PATCH:
+	@poetry version patch
+
+update:
+	@git add pyproject.toml
+	@git commit -m `poetry version -s`
+	@git tag `poetry version -s`
+
+push: 
+	@git push --tags origin master
+
+publish: 
+	@poetry build
+	@poetry publish
 
 test:
-	pytest
+	@pytest
 
 cov:
 	pytest --cov=$(ROOT)/$(PACKAGE)
