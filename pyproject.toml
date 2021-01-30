@@ -3,7 +3,7 @@ name = "twod"
 version = "0.2.1"
 description = "A two-dimensional geometry library for humans."
 authors = ["jnyjny <erik.oshaughnessy@gmail.com>"]
-readme = 'README.rst'
+readme = 'README.md'
 repository = 'https://github.com/JnyJny/twod.git'
 classifiers = [
             "Development Status :: 3 - Alpha",
