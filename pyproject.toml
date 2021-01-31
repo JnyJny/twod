@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "twod"
-version = "0.2.2"
+version = "0.2.3"
 description = "A two-dimensional geometry library for humans."
 authors = ["jnyjny <erik.oshaughnessy@gmail.com>"]
 readme = 'README.md'
