@@ -1,4 +1,4 @@
-""" test Point division like a human™
+""" test in-place Point division like a human™
 """
 import pytest
 
@@ -6,9 +6,9 @@ from twod import Point
 
 
 @pytest.mark.parametrize("zero", [0, 0.0, [0, 0], (0, 0), Point()])
-def test_point_truediv_by_zero(zero):
+def test_point_inplace_truediv_by_zero(zero, point):
     with pytest.raises(ZeroDivisionError):
-        Point() / zero
+        point /= zero
 
 
 @pytest.mark.parametrize(
@@ -18,9 +18,10 @@ def test_point_truediv_by_zero(zero):
         [[1, 1], [1, 1], [1, 1]],
     ],
 )
-def test_point_truediv_with_point(A, B, expected):
-    result = Point(*A) / Point(*B)
-    assert result == expected
+def test_point_inplace_truediv_with_point(A, B, expected):
+    p = Point(*A)
+    p /= Point(*B)
+    assert p == expected
 
 
 @pytest.mark.parametrize(
@@ -30,10 +31,10 @@ def test_point_truediv_with_point(A, B, expected):
         [[1, 1], [1, 1], [1, 1]],
     ],
 )
-def test_point_truediv_with_iterable(A, iterable, expected):
+def test_point_inplace_truediv_with_iterable(A, iterable, expected):
     p = Point(*A)
-    result = p / iterable
-    assert result == expected
+    p /= iterable
+    assert p == expected
 
 
 @pytest.mark.parametrize(
@@ -43,16 +44,16 @@ def test_point_truediv_with_iterable(A, iterable, expected):
         [[1, 1], 1, [1, 1]],
     ],
 )
-def test_point_truediv_with_scalar(A, scalar, expected):
+def test_point_inplace_truediv_with_scalar(A, scalar, expected):
     p = Point(*A)
-    result = p / scalar
-    assert result == expected
+    p /= scalar
+    assert p == expected
 
 
 @pytest.mark.parametrize("zero", [0, 0.0, [0, 0], (0, 0), Point()])
-def test_point_floordiv_by_zero(zero):
+def test_point_inplace_floordiv_by_zero(zero, point):
     with pytest.raises(ZeroDivisionError):
-        Point() // zero
+        point //= zero
 
 
 @pytest.mark.parametrize(
@@ -62,9 +63,10 @@ def test_point_floordiv_by_zero(zero):
         [[1, 1], [1, 1], [1, 1]],
     ],
 )
-def test_point_floordiv_with_point(A, B, expected):
-    result = Point(*A) // Point(*B)
-    assert result == expected
+def test_point_inplace_floordiv_with_point(A, B, expected):
+    p = Point(*A)
+    p //= Point(*B)
+    assert p == expected
 
 
 @pytest.mark.parametrize(
@@ -74,10 +76,10 @@ def test_point_floordiv_with_point(A, B, expected):
         [[1, 1], [1, 1], [1, 1]],
     ],
 )
-def test_point_floordiv_with_iterable(A, iterable, expected):
+def test_point_inplace_floordiv_with_iterable(A, iterable, expected):
     p = Point(*A)
-    r = p // iterable
-    assert r == expected
+    p //= iterable
+    assert p == expected
 
 
 @pytest.mark.parametrize(
@@ -87,7 +89,7 @@ def test_point_floordiv_with_iterable(A, iterable, expected):
         [[1, 1], 1, [1, 1]],
     ],
 )
-def test_point_floordiv_with_scalar(A, scalar, expected):
+def test_point_inplace_floordiv_with_scalar(A, scalar, expected):
     p = Point(*A)
-    r = p // scalar
-    assert r == expected
+    p //= scalar
+    assert p == expected

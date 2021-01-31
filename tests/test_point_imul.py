@@ -1,4 +1,4 @@
-""" test Point multiplication like a human™
+""" test in-place Point multiplication like a human™
 """
 
 import pytest
@@ -13,13 +13,16 @@ from twod import Point
         [[0, 0], [1, 1], [0, 0]],
         [[1, 1], [0, 0], [0, 0]],
         [[1, 1], [1, 1], [1, 1]],
+        [[0, 0], (0, 0), [0, 0]],
+        [[0, 0], (1, 1), [0, 0]],
+        [[1, 1], (0, 0), [0, 0]],
+        [[1, 1], (1, 1), [1, 1]],
     ],
 )
-def test_point_multiplication_with_point(A, B, result):
+def test_point_inplace_multiplication_with_point(A, B, result):
     p = Point(*A)
-    q = Point(*B)
-    r = p * q
-    assert r == result
+    p *= Point(*B)
+    assert p == result
 
 
 @pytest.mark.parametrize(
@@ -35,8 +38,9 @@ def test_point_multiplication_with_point(A, B, result):
         [[1, 1], (1, 1), [1, 1]],
     ],
 )
-def test_point_multiplication_with_iterable(A, iterable, result):
-    p = Point(*A) * iterable
+def test_point_inplace_multiplication_with_iterable(A, iterable, result):
+    p = Point(*A)
+    p *= iterable
     assert p == result
 
 
@@ -46,6 +50,8 @@ def test_point_multiplication_with_iterable(A, iterable, result):
         [[0, 0], 1, [0, 0]],
     ],
 )
-def test_point_multiplication_with_scalar(A, scalar, result):
-    p = Point(*A) * scalar
+def test_point_inplace_multiplication_with_scalar(A, scalar, result):
+
+    p = Point(*A)
+    p *= scalar
     assert p == result

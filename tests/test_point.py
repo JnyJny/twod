@@ -65,3 +65,52 @@ def test_point_xy_property():
 
     with pytest.raises(TypeError):
         p.xy = 1
+
+
+def test_point_getitem_int_key():
+
+    p = Point(1, 2)
+
+    assert p[0] == 1
+    assert p[1] == 2
+
+    with pytest.raises(IndexError):
+        p[2]
+
+
+@pytest.mark.parametrize(
+    "A, key, expected",
+    [
+        [(1, 2), slice(0, 1), 1],
+        [(1, 2), slice(1, 2), 2],
+    ],
+)
+def test_point_getitem_slice_key(A, key, expected):
+    p = Point(*A)
+    assert p[key] == expected
+
+
+@pytest.mark.parametrize("key", [0.0, "foo", {}])
+def test_point_getitem_invalid_key(key, point):
+    with pytest.raises(TypeError):
+        point[key]
+
+
+def test_point_setitem_valid_key(point):
+
+    assert point == (0, 0)
+    point[0] = 1
+    point[1] = 2
+    assert point == (1, 2)
+
+
+@pytest.mark.parametrize("key", range(-16, 16, 3))
+def test_point_setitem_key_out_of_range(key, point):
+    with pytest.raises(IndexError):
+        point[key] = 0
+
+
+@pytest.mark.parametrize("key", [0.0, "foo", {}])
+def test_point_setitem_invalid_key(key, point):
+    with pytest.raises(TypeError):
+        point[key] = 0
