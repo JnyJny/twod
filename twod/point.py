@@ -157,7 +157,7 @@ class Point:
         return (radius, math.degrees(radians))
 
     @polar_deg.setter
-    def polar_deg(self, new_values: Tuple[Numeric, Numeric]) -> None:
+    def polar_deg(self, new_values: Iterable[Numeric]) -> None:
         try:
             radius, degrees, *_ = map(float, new_values)
             self._polar_to_cartesian(radius=radius, radians=math.radians(degrees))
