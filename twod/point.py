@@ -207,21 +207,23 @@ class Point:
                 return self.x
             if key == 1:
                 return self.y
-            raise IndexError("key out of range: {key}")
+            raise IndexError("Key out of range: {key}")
 
-        if isinsance(key, slice):
-            return [self.x, self.y][key]
+        if isinstance(key, slice):
+            return [self.x, self.y][key][0]
 
-        raise TypeError(f"Expected int or slice, not {type(key)}")
+        raise TypeError(f"Expected int or slice key, not {type(key)}")
 
     def __setitem__(self, key: int, value: Numeric):
+        if not isinstance(key, int):
+            raise TypeError(f"Expected int key, not {type(key)}")
         if key == 0:
             self.x = value
             return
         if key == 1:
             self.y = value
             return
-        raise IndexError(f"key out of range: {key}")
+        raise IndexError(f"Key out of range: {key}")
 
     def __op(self, other: PointOrIterableOrScalar, op: Callable) -> PointType:
         """"""
