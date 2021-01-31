@@ -25,7 +25,7 @@ def test_point_from_polar_origin_degrees():
         [1, 1],
     ],
 )
-def test_point_from_polar_translated_iterable(to):
+def test_point_from_polar_translate(to):
     p = Point.from_polar(0, 0, translate=to)
     assert p == to
 
@@ -117,7 +117,9 @@ def test_point_radius_property():
     assert p.radius == 0 and p.is_origin
 
 
-def test_point_radians_property():
+def test_point_radians_degrees_properties():
     p = Point(1, 1)
-    a = math.atan2(1, 1)
-    assert p.radians == a
+    r = math.atan2(1, 1)
+    d = math.degrees(r)
+    assert p.radians == r
+    assert p.degrees == d

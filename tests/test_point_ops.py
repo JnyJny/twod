@@ -86,31 +86,60 @@ def test_point_distance_squared_to_other():
 
 
 @pytest.mark.parametrize(
-    "A,B,result",
+    "A,B,expected",
     [
         [(0, 0), (0, 0), 0],
         [(1, 2), (3, 4), 11],
     ],
 )
-def test_point_dot(A, B, result):
+def test_point_dot(A, B, expected):
     p = Point(*A)
     q = Point(*B)
     r = p.dot(q)
-    assert r == result
+    assert r == expected
 
 
 @pytest.mark.parametrize(
-    "A,B,result",
+    "A,B,expected",
     [
         [(0, 0), (0, 0), 0],
         [(7, 2), (4, 3), 29],
     ],
 )
-def test_point_cross(A, B, result):
+def test_point_cross_point(A, B, expected):
     p = Point(*A)
     q = Point(*B)
-    r = p.cross(q)
-    assert r == result
+    result = p.cross(q)
+    assert result == expected
+
+
+@pytest.mark.parametrize(
+    "A,B,expected",
+    [
+        [(0, 0), (0, 0), 0],
+        [(7, 2), (4, 3), 29],
+    ],
+)
+def test_point_cross_iterable(A, B, expected):
+    p = Point(*A)
+    result = p.cross(B)
+    assert result == expected
+
+
+@pytest.mark.parametrize(
+    "A, B, C",
+    [
+        [[0, 0], [1, 0], [1, 1]],
+    ],
+)
+def test_point_ccw_iterable(A, B, C):
+    p = Point(*A)
+    q = Point(*B)
+    r = Point(*C)
+
+    assert p.ccw(q, C) > 0
+    assert p.ccw(B, r) > 0
+    assert p.ccw(B, C) > 0
 
 
 def test_point_ccw_greater_than_zero():
