@@ -1,7 +1,6 @@
 <!-- 2d two-dimension vector point geometry humans -->
 # twod - A Two-Dimensional Geometry Library for Humans™
 ![version][pypi-version]
-![dependencies][dependencies]
 ![pytest][pytest-action]
 ![license][license]
 ![monthly-downloads][monthly-downloads]
@@ -50,5 +49,4 @@ assert b.distance(o) == 10.0
 [code-style-black]: https://img.shields.io/badge/code%20style-black-000000.svg
 [pypi-version]: https://img.shields.io/pypi/v/twod
 [license]: https://img.shields.io/pypi/l/twod
-[dependencies]: https://img.shields.io/librariesio/github/JnyJny/twod
 [monthly-downloads]: https://img.shields.io/pypi/dm/twod
