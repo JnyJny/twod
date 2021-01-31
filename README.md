@@ -1,5 +1,5 @@
 <!-- 2d two-dimension vector point geometry humans -->
-# twod - A Two-Dimensional Geometry Libray for Humans™
+# twod - A Two-Dimensional Geometry Library for Humans™
 ![version][pypi-version]
 ![dependencies][dependencies]
 ![pytest][pytest-action]
@@ -7,7 +7,7 @@
 ![monthly-downloads][monthly-downloads]
 ![Code style: black][code-style-black]
 
-[twod][0] "two dee" is a geometry library that supplies
+[twod][0] (pronounced "two dee") is a geometry library that supplies
 simple two-dimensional geometric primtives:
 
 - `twod.Point`
