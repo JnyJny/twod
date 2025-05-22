@@ -1,9 +1,11 @@
-import pytest
+""" """
 
-import random
 import math
+import random
+import sys
 
-from twod import Point, ColinearPoints
+import pytest
+from twod import ColinearPoints, Point
 
 
 def test_point_invert_origin():
@@ -48,8 +50,8 @@ def test_point_invert_negpos():
 
 def test_point_distance_many_points():
     for _ in range(1000):
-        x = random.randint(-1e9, 1e9)
-        y = random.randint(-1e9, 1e9)
+        x = random.randint(-sys.maxsize, sys.maxsize)
+        y = random.randint(-sys.maxsize, sys.maxsize)
         d = math.hypot(x, y)
         p = Point(x, y)
         assert p.x == x and p.y == y
@@ -62,7 +64,6 @@ def test_point_distance_to_self():
 
 
 def test_point_distance_reflexive():
-
     p = Point()
     q = Point(1, 1)
     assert p.distance(q) == q.distance(p)
