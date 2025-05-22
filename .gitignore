@@ -12,3 +12,5 @@ pip-wheel-metadata/*
 .idea/*
 .mypy_cache/*
 */__pycache__/*
+.envrc
+.python-version
