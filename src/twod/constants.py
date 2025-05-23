@@ -1,15 +1,14 @@
-"""geometric constants for humans™
-"""
+"""geometric constants for humans™"""
 
-from enum import IntEnum
+from enum import Enum, IntEnum, auto
 
 
-class Quadrant(IntEnum):
-    ORIGIN: int = -1
-    I: int = 0
-    II: int = 1
-    III: int = 2
-    IV: int = 3
+class Quadrant(int, Enum):
+    ORIGIN = auto()
+    I = auto()
+    II = auto()
+    III = auto()
+    IV = auto()
 
 
 EPSILON_EXP_MINUS_1 = 15
