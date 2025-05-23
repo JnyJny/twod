@@ -1,11 +1,11 @@
 [project]
 name = "twod"
-version = "0.3.0"
+version = "0.3.1"
 description = "A two-dimensional geometry library for humans."
 repository = 'https://github.com/JnyJny/twod.git'
 readme = "README.md"
 authors = [
-    { name = "JnyJny", email = "erik.oshaughnessy@gmail" }
+    { name = "JnyJny", email = "erik.oshaughnessy@gmail.com" }
 ]
 classifiers = [
             "Development Status :: 3 - Alpha",
