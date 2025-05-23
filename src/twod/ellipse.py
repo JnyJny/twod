@@ -2,7 +2,6 @@
 """
 
 from dataclasses import dataclass
-from math import pi, tau
 
 from .point import Point
 
