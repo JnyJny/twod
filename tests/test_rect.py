@@ -1,98 +1,138 @@
-import pytest
+""" """
 
+import pytest
 from twod.point import Point
 from twod.rect import Rect
 
+A_RANGE = list(range(-10, 10))
 
-def test_rect_creation_no_args():
+
+def test_rect_creation_no_args() -> None:
     r = Rect()
     assert r.x == 0 and r.y == 0 and r.w == 0 and r.h == 0
 
 
-def test_rect_creation_x_args():
-    r = Rect(1)
-    q = Rect(x=2)
-    assert r.x == 1 and r.y == 0 and r.w == 0 and r.h == 0
-    assert q.x == 2 and q.y == 0 and q.w == 0 and q.h == 0
+@pytest.mark.parametrize("x", A_RANGE)
+def test_rect_creation_x_args(x) -> None:
+    r = Rect(x)
+    q = Rect(x=x)
+    assert r.x == x and r.y == 0 and r.w == 0 and r.h == 0
+    assert q.x == x and q.y == 0 and q.w == 0 and q.h == 0
 
 
-def test_rect_creation_y_arg():
-    r = Rect(y=1)
-    assert r.x == 0 and r.y == 1 and r.w == 0 and r.h == 0
+@pytest.mark.parametrize("y", A_RANGE)
+def test_rect_creation_y_arg(y) -> None:
+    r = Rect(y=y)
+    assert r.x == 0 and r.y == y and r.w == 0 and r.h == 0
 
 
-def test_rect_creation_xy_args():
-    r = Rect(1, 2)
-    assert r.x == 1 and r.y == 2 and r.w == 0 and r.h == 0
+@pytest.mark.parametrize("x,y", list(zip(A_RANGE, A_RANGE)))
+def test_rect_creation_xy_args(x, y) -> None:
+    r = Rect(x, y)
+    assert r.x == x and r.y == y and r.w == 0 and r.h == 0
 
 
-def test_rect_creation_wh_args():
-    r = Rect(w=1, h=2)
-    assert r.x == 0 and r.y == 0 and r.w == 1 and r.h == 2
+@pytest.mark.parametrize("w,h", list(zip(A_RANGE, A_RANGE)))
+def test_rect_creation_wh_args(w, h) -> None:
+    r = Rect(w=w, h=h)
+    assert r.x == 0 and r.y == 0 and r.w == w and r.h == h
 
 
-def test_rect_creation_all_args():
-    r = Rect(1, 2, 3, 4)
-    assert r.x == 1 and r.y == 2 and r.w == 3 and r.h == 4
+@pytest.mark.parametrize("x,y,w,h", list(zip(A_RANGE, A_RANGE, A_RANGE, A_RANGE)))
+def test_rect_creation_all_args(x, y, w, h) -> None:
+    r = Rect(x, y, w, h)
+    assert r.x == x and r.y == y and r.w == w and r.h == h
 
 
-def test_rect_equality_empty():
+def test_rect_equality_empty() -> None:
     r = Rect()
     q = Rect()
     assert r == q
+    assert r == r
+    assert q == r
+    assert q == q
 
 
-def test_rect_equality_nonempty():
-    r = Rect(1, 2, 3, 4)
-    q = Rect(1, 2, 3, 4)
+@pytest.mark.parametrize("x,y,w,h", list(zip(A_RANGE, A_RANGE, A_RANGE, A_RANGE)))
+def test_rect_equality_nonempty(x, y, w, h) -> None:
+    r = Rect(x, y, w, h)
+    q = Rect(x, y, w, h)
     assert r == q
+    assert r == r
+    assert q == r
+    assert q == q
 
 
-def test_rect_vertex_properties():
-    r = Rect(1, 2, 3, 4)
-    expected = [(1, 2), (4, 2), (4, 6), (1, 6)]
+@pytest.mark.parametrize(
+    "x,y,w,h, A, B, C, D",
+    [
+        (1, 2, 3, 4, (1, 2), (4, 2), (4, 6), (1, 6)),
+    ],
+)
+def test_rect_vertex_properties(x, y, w, h, A, B, C, D) -> None:
+    r = Rect(x, y, w, h)
 
-    assert tuple(r.A) == expected[0]
-    assert tuple(r.B) == expected[1]
-    assert tuple(r.C) == expected[2]
-    assert tuple(r.D) == expected[3]
+    assert tuple(r.A) == A
+    assert tuple(r.B) == B
+    assert tuple(r.C) == C
+    assert tuple(r.D) == D
 
-    for vertex, value in zip(r.vertices, expected):
+    for vertex, value in zip(r.vertices, [A, B, C, D]):
         assert tuple(vertex) == value
 
 
-def test_rect_sides():
+def test_rect_sides() -> None:
     expected = [10, 5, 10, 5]
 
     assert Rect(w=10, h=5).sides == expected
     assert Rect(w=5, h=10).sides == expected[::-1]
 
 
-def test_rect_perimeter():
-    assert Rect().perimeter == 0
-    assert Rect(w=1, h=1).perimeter == 4
-    assert Rect(1, 2, 3, 4).perimeter == 14
+@pytest.mark.parametrize(
+    "x,y,w,h,expected",
+    [
+        (0, 0, 0, 0, 0),
+        (0, 0, 1, 1, 4),
+        (1, 2, 3, 4, 14),
+    ],
+)
+def test_rect_perimeter(x, y, w, h, expected) -> None:
+    assert Rect(x, y, w, h).perimeter == expected
 
 
-def test_rect_area():
-    assert Rect().area == 0
-    assert Rect(w=1, h=1).area == 1
-    assert Rect(1, 2, 3, 4).area == 12
+@pytest.mark.parametrize(
+    "x,y,w,h,expected",
+    [
+        (0, 0, 0, 0, 0),
+        (0, 0, 1, 1, 1),
+        (1, 2, 3, 4, 12),
+    ],
+)
+def test_rect_area(x, y, w, h, expected) -> None:
+    assert Rect(x, y, w, h).area == expected
 
 
-def test_rect_center_getter():
+@pytest.mark.parametrize(
+    "x,y,w,h,expected",
+    [
+        (0, 0, 0, 0, Point()),
+        (0, 0, 2, 2, Point(1, 1)),
+        (1, 2, 3, 4, Point(2.5, 4)),
+    ],
+)
+def test_rect_center_getter(x, y, w, h, expected):
+    assert Rect(x, y, w, h).center == expected
 
-    assert Rect().center == Point()
-    assert Rect(w=2, h=2).center == Point(1, 1)
-    assert Rect(1, 2, 3, 4).center == Point(2.5, 4)
 
-
-def test_rect_center_setter():
+def test_rect_center_setter() -> None:
 
     r = Rect(0, 0, w=2, h=2)
     q = Rect(0, 0, w=2, h=2)
 
     assert r.center == q.center
+    assert r.perimeter == q.perimeter
+    assert r.area == q.area
+    assert r.sides == q.sides
 
     new_center = (0, 0)
 

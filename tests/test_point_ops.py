@@ -8,46 +8,6 @@ import pytest
 from twod import ColinearPoints, Point
 
 
-def test_point_invert_origin():
-    p = Point()
-    q = ~p
-    r = ~q
-    assert q.x == -1 and q.y == -1
-    assert r == p and r is not p
-
-
-def test_point_invert_positive():
-    p = Point(2, 2)
-    q = ~p
-    r = ~q
-    assert q.x == -3 and q.y == -3
-    assert r == p and r is not p
-
-
-def test_point_invert_negative():
-    p = Point(-2, -2)
-    q = ~p
-    r = ~q
-    assert q.x == 1 and q.y == 1
-    assert r == p and r is not p
-
-
-def test_point_invert_posneg():
-    p = Point(-2, 2)
-    q = ~p
-    r = ~q
-    assert q.x == 1 and q.y == -3
-    assert r == p and r is not p
-
-
-def test_point_invert_negpos():
-    p = Point(2, -2)
-    q = ~p
-    r = ~q
-    assert q.x == -3 and q.y == 1
-    assert r == p and r is not p
-
-
 def test_point_distance_many_points():
     for _ in range(1000):
         x = random.randint(-sys.maxsize, sys.maxsize)
@@ -112,35 +72,6 @@ def test_point_cross_point(A, B, expected):
     q = Point(*B)
     result = p.cross(q)
     assert result == expected
-
-
-@pytest.mark.parametrize(
-    "A,B,expected",
-    [
-        [(0, 0), (0, 0), 0],
-        [(7, 2), (4, 3), 29],
-    ],
-)
-def test_point_cross_iterable(A, B, expected):
-    p = Point(*A)
-    result = p.cross(B)
-    assert result == expected
-
-
-@pytest.mark.parametrize(
-    "A, B, C",
-    [
-        [[0, 0], [1, 0], [1, 1]],
-    ],
-)
-def test_point_ccw_iterable(A, B, C):
-    p = Point(*A)
-    q = Point(*B)
-    r = Point(*C)
-
-    assert p.ccw(q, C) > 0
-    assert p.ccw(B, r) > 0
-    assert p.ccw(B, C) > 0
 
 
 def test_point_ccw_greater_than_zero():

@@ -1,6 +1,6 @@
-import pytest
 import math
 
+import pytest
 from twod import Point, Quadrant
 
 
@@ -42,12 +42,20 @@ def test_point_inequality():
     assert p != r and p is not r
 
 
-def test_point_quadrant_location():
-    assert Point(0, 0).quadrant == Quadrant.ORIGIN
-    assert Point(1, 1).quadrant == Quadrant.I
-    assert Point(-1, 1).quadrant == Quadrant.II
-    assert Point(-1, -1).quadrant == Quadrant.III
-    assert Point(1, -1).quadrant == Quadrant.IV
+@pytest.mark.parametrize(
+    "x,y,expected",
+    [
+        (0, 0, Quadrant.ORIGIN),
+        (1, 1, Quadrant.FIRST),
+        (-1, 1, Quadrant.SECOND),
+        (-1, -1, Quadrant.THIRD),
+        (1, -1, Quadrant.FOURTH),
+        (0, 1, Quadrant.Y_AXIS),
+        (1, 0, Quadrant.X_AXIS),
+    ],
+)
+def test_point_quadrant_location(x, y, expected) -> None:
+    assert Point(x, y).quadrant == expected
 
 
 def test_point_xy_property():

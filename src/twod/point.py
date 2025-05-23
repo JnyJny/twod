@@ -1,17 +1,11 @@
-""" a two-dimensional point for humans™.
-"""
+"""a two-dimensional point for humans™."""
+
+from __future__ import annotations
 
 import math
 import operator
-import sys
-
 from dataclasses import dataclass
-from typing import Callable, Iterable, Tuple, Union
-
-from .types import Numeric
-from .types import PointType
-from .types import PointOrIterable
-from .types import PointOrIterableOrScalar
+from typing import Any, Callable, Iterable, Optional
 
 from .constants import EPSILON_EXP_MINUS_1, Quadrant
 from .exceptions import ColinearPoints
@@ -19,8 +13,8 @@ from .exceptions import ColinearPoints
 
 @dataclass
 class Point:
-    x: float = 0
-    y: float = 0
+    x: float = 0.0
+    y: float = 0.0
     """A two dimensional geometric point.
 
     The Point class represents a geometric point with 'x' and 'y' attributes
@@ -37,8 +31,8 @@ class Point:
         radius: float,
         theta: float,
         is_radians: bool = True,
-        translate: PointType = None,
-    ) -> PointType:
+        translate: Optional[Point] = None,
+    ) -> Point:
         """Returns a Point with polar coordinates (R, ϴ).
 
         The point is genrated relative to the origin.
@@ -65,25 +59,28 @@ class Point:
         """The quadrant in the cartesian plane this point is located in.
 
         Possible values are:
-        - Quadrant.I
-        - Quadrant.II
-        - Quadrant.III
-        - Quadrant.IV
-        - Quadrant.ORIGIN.
+        - Quadrant.FIRST
+        - Quadrant.SECOND
+        - Quadrant.THIRD
+        - Quadrant.FOURTH
+        - Quadrant.ORIGIN
+        - Quadrant.X_AXIS
+        - Quadrant.Y_AXIS
         """
 
-        if self.x > 0:
-            if self.y > 0:
-                return Quadrant.I
-            if self.y < 0:
-                return Quadrant.IV
-        if self.x < 0:
-            if self.y > 0:
-                return Quadrant.II
-            if self.y < 0:
-                return Quadrant.III
+        if self.is_origin:
+            return Quadrant.ORIGIN
 
-        return Quadrant.ORIGIN
+        if self.x == 0 and self.y != 0:
+            return Quadrant.Y_AXIS
+
+        if self.y == 0 and self.x != 0:
+            return Quadrant.X_AXIS
+
+        if self.x > 0:
+            return Quadrant.FIRST if self.y > 0 else Quadrant.FOURTH
+        else:
+            return Quadrant.SECOND if self.y > 0 else Quadrant.THIRD
 
     def _polar_to_cartesian(self, radius: float, radians: float) -> None:
         """Computes cartesian coordinates from polar coordinates.
@@ -125,7 +122,7 @@ class Point:
         self._polar_to_cartesian(self.radius, math.radians(new_value))
 
     @property
-    def polar(self) -> Tuple[float, float]:
+    def polar(self) -> tuple[float, float]:
         """Polar coordinates tuple: (R, ϴ).
 
         R is the distance from the origin to this point.
@@ -134,20 +131,18 @@ class Point:
         return (self.radius, self.radians)
 
     @polar.setter
-    def polar(self, new_values: Iterable[Numeric]) -> None:
+    def polar(self, new_values: Iterable[int | float]) -> None:
         try:
             radius, radians, *_ = map(float, new_values)
             self._polar_to_cartesian(radius, radians)
             return
         except (TypeError, ValueError):
-            pass
-
-        raise TypeError(
-            f"Expected a Iterable[Union[int, float]], got {type(new_values)}"
-        )
+            raise TypeError(
+                f"Expected a Iterable[int |float], got {new_values!r}"
+            ) from None
 
     @property
-    def polar_deg(self) -> Tuple[float, float]:
+    def polar_deg(self) -> tuple[float, float]:
         """Polar coordinates tuple: (R, ϴ).
 
         R is the distance from the origin to this point.
@@ -157,50 +152,49 @@ class Point:
         return (radius, math.degrees(radians))
 
     @polar_deg.setter
-    def polar_deg(self, new_values: Iterable[Numeric]) -> None:
+    def polar_deg(self, new_values: Iterable[int | float]) -> None:
         try:
             radius, degrees, *_ = map(float, new_values)
             self._polar_to_cartesian(radius=radius, radians=math.radians(degrees))
             return
         except (TypeError, ValueError):
-            pass
-        raise TypeError(
-            f"Expected a Iterable[Union[int, float]], got {type(new_values)}"
-        )
+            raise TypeError(
+                f"Expected a Iterable[int|float], got {new_values!r}"
+            ) from None
 
     @property
-    def xy(self) -> Tuple[float, float]:
+    def xy(self) -> tuple[float, float]:
         """A tuple of this point's x and y coordinates."""
         return (self.x, self.y)
 
     @xy.setter
-    def xy(self, new_values: Iterable[Numeric]) -> None:
+    def xy(self, new_values: Iterable[int | float]) -> None:
         try:
             self.x, self.y, *_ = map(float, new_values)
             return
         except (TypeError, ValueError):
-            pass
-        raise TypeError(
-            f"Expected a Iterable[Union[int, float]], got {type(new_values)}"
-        )
+            raise TypeError(
+                f"Expected a Iterable[int | float], got {new_values!r}"
+            ) from None
 
-    def __iter__(self) -> Iterable[Tuple[float, float]]:
+    def __iter__(self) -> Iterable[float]:
         """An iterator over x and y coordinates."""
-        return iter([self.x, self.y])
+        return iter(self.xy)
 
     def __len__(self) -> int:
         return 2
 
-    def __eq__(self, other: PointOrIterable) -> bool:
+    def __eq__(self, other: object) -> bool:
 
-        try:
+        if isinstance(other, Point):
             return self.x == other.x and self.y == other.y
-        except AttributeError:
-            pass
 
-        return all(a == b for a, b in zip(self, other))
+        if isinstance(other, (tuple, list)):
+            return self.x == other[0] and self.y == other[1]
 
-    def __getitem__(self, key: Union[int, slice]) -> float:
+        raise NotImplementedError
+
+    def __getitem__(self, key: int | slice) -> float:
 
         if isinstance(key, int):
             if key == 0:
@@ -212,11 +206,11 @@ class Point:
         if isinstance(key, slice):
             return [self.x, self.y][key][0]
 
-        raise TypeError(f"Expected int or slice key, not {type(key)}")
+        raise TypeError(f"Expected int or slice key, not {key!r}")
 
-    def __setitem__(self, key: int, value: Numeric):
+    def __setitem__(self, key: int, value: int | float) -> None:
         if not isinstance(key, int):
-            raise TypeError(f"Expected int key, not {type(key)}")
+            raise TypeError(f"Expected int key, not {key!r}")
         if key == 0:
             self.x = value
             return
@@ -225,144 +219,140 @@ class Point:
             return
         raise IndexError(f"Key out of range: {key}")
 
-    def __op(self, other: PointOrIterableOrScalar, op: Callable) -> PointType:
-        """"""
+    def _op(self, other: Any, op: Callable) -> Point:
+        """Applies op to each component of Point and other."""
 
-        try:
+        if isinstance(other, Point):
             return Point(op(self.x, other.x), op(self.y, other.y))
-        except AttributeError:
-            pass
-        try:
-            return Point(*[op(a, b) for a, b in zip(self, other)])
-        except TypeError:
-            pass
-        return Point(op(self.x, other), op(self.y, other))
 
-    def __iop(self, other: PointOrIterableOrScalar, op: Callable) -> PointType:
-        """"""
-        try:
+        if isinstance(other, (list, tuple)):
+            return Point(op(self[0], other[0]), op(self[1], other[1]))
+
+        if isinstance(other, (float, int)):
+            return Point(op(self.x, other), op(self.y, other))
+
+        return NotImplemented
+
+    def _iop(self, other: Any, op: Callable) -> Point:
+        """Updates the current Point by applying op to each component
+        of other."""
+
+        if isinstance(other, Point):
             self.x = op(self.x, other.x)
             self.y = op(self.y, other.y)
             return self
-        except AttributeError:
-            pass
 
-        try:
+        if isinstance(other, (list, tuple)):
             self.x = op(self.x, other[0])
             self.y = op(self.y, other[1])
             return self
-        except TypeError:
-            pass
 
-        self.x = op(self.x, other)
-        self.y = op(self.y, other)
-        return self
+        if isinstance(other, (float, int)):
+            self.x = op(self.x, other)
+            self.y = op(self.y, other)
+            return self
 
-    def __add__(self, other: PointOrIterableOrScalar) -> PointType:
-        """Add `other` to `self` and return a new Point."""
-        return self.__op(other, operator.add)
+        return NotImplemented
 
-    def __iadd__(self, other: PointOrIterableOrScalar) -> PointType:
-        """Add `other` to `self` in-place and returns `self`."""
-        return self.__iop(other, operator.add)
+    def __add__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+        return self._op(other, operator.add)
 
-    def __sub__(self, other: PointOrIterableOrScalar) -> PointType:
-        """Subtract `other` from `self` and return a new Point."""
-        return self.__op(other, operator.sub)
+    def __iadd__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+        return self._iop(other, operator.add)
 
-    def __isub__(self, other: PointOrIterableOrScalar) -> PointType:
-        """Subtract `other` from `self` in-place and return `self`."""
-        return self.__iop(other, operator.sub)
+    def __sub__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+        return self._op(other, operator.sub)
 
-    def __mul__(self, other: PointOrIterableOrScalar) -> PointType:
-        """Multiply `self` with `other` and return a new Point."""
-        return self.__op(other, operator.mul)
+    def __isub__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+        return self._iop(other, operator.sub)
 
-    def __imul__(self, other: PointOrIterableOrScalar) -> PointType:
-        """Multiply `self` with `other` in-place and return `self`."""
-        return self.__iop(other, operator.mul)
+    def __mul__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+        return self._op(other, operator.mul)
 
-    def __truediv__(self, other: PointOrIterableOrScalar) -> PointType:
-        """Divide `self` by `other` and return a new Point."""
-        return self.__op(other, operator.truediv)
+    def __imul__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+        try:
+            return self._iop(other, operator.mul)
+        except ZeroDivisionError:
+            raise ZeroDivisionError(repr(other)) from None
 
-    def __itruediv__(self, other: PointOrIterableOrScalar) -> PointType:
-        """Divide `self` by `other` in-place and return `self`."""
-        return self.__iop(other, operator.truediv)
+    def __truediv__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+        try:
+            return self._op(other, operator.truediv)
+        except ZeroDivisionError:
+            raise ZeroDivisionError(repr(other)) from None
 
-    def __floordiv__(self, other: PointOrIterableOrScalar) -> PointType:
-        """Divide `self` by `other` and return a new Point."""
-        return self.__op(other, operator.floordiv)
+    def __itruediv__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+        try:
+            return self._iop(other, operator.truediv)
+        except ZeroDivisionError:
+            raise ZeroDivisionError(repr(other)) from None
 
-    def __ifloordiv__(self, other: PointOrIterableOrScalar) -> PointType:
-        """Divide `self` by `other` in-place and return `self`."""
-        return self.__iop(other, operator.floordiv)
+    def __floordiv__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+        try:
+            return self._op(other, operator.floordiv)
+        except ZeroDivisionError:
+            raise ZeroDivisionError(repr(other)) from None
 
-    def __pow__(self, exponent: float) -> PointType:
-        """Raise each coordinate by `exponent` and return a new Point."""
-        return Point(self.x ** exponent, self.y ** exponent)
+    def __ifloordiv__(
+        self, other: Point | Iterable[int | float] | int | float
+    ) -> Point:
+        return self._iop(other, operator.floordiv)
 
-    def __ipow__(self, exponent: float) -> PointType:
-        """Raise each coordinate by `exponent` in-place and return self."""
+    def __pow__(self, exponent: float) -> Point:
+        return Point(self.x**exponent, self.y**exponent)
+
+    def __ipow__(self, exponent: float) -> Point:
         self.x **= exponent
         self.y **= exponent
         return self
 
-    def __abs__(self) -> PointType:
-        """Apply absolute value to each coordinate and return a new Point."""
+    def __abs__(self) -> Point:
         return Point(abs(self.x), abs(self.y))
 
-    def __neg__(self) -> PointType:
-        """Negate each coordinate and return a new Point."""
+    def __neg__(self) -> Point:
         return self * -1
 
-    def __invert__(self) -> PointType:
-        """Inverts each coordinate and return a new Point."""
-        return Point(~self.x, ~self.y)
-
-    def distance(self, other: PointOrIterable = None) -> float:
-        """Return the floating point distance between `self` and `other`.
+    def distance(self, other: Optional[Point] = None) -> float:
+        """Return the floating point distance between self and other.
 
         If other is not given, the distance from self to the origin is
         returned.
 
-        :param other: PointType
+        :param other: Point
         :return: float
         """
-        return (self.distance_squared(other or Point())) ** 0.5
+        other = other or Point()
+        return (self.distance_squared(other)) ** 0.5
 
-    def distance_squared(self, other: PointOrIterable = None) -> float:
+    def distance_squared(self, other: Optional[Point] = None) -> float:
         """Return the floating point squared distance between self and other.
 
         If other is not given, the squared distance from self to the
         origin is returned.
 
-        :param other: PointType
+        :param other: Point
         :return: float
         """
-        return sum((((other or Point()) - self) ** 2))
+        other = other or Point()
+        return sum(((other - self) ** 2).xy)
 
-    def dot(self, other: PointOrIterable) -> float:
+    def dot(self, other: Point) -> float:
         """Return a scalar dot product of self with other.
 
-        :param other: PointOrIterableOrScalar
+        :param other: Point
         :return: float
         """
-        return sum(self * other)
+        return sum((self * other).xy)
 
-    def cross(self, other: PointOrIterable) -> float:
+    def cross(self, other: Point) -> float:
         """Return a scalar cross product of self with other.
 
-        :param other: PointOrIterableOrScalar
+        :param other: Point
         :return: float
         """
-        try:
-            return (self.x * other.y) + (self.y * other.x)
-        except AttributeError:
-            pass
-        return (self.x * other[1]) + (self.y * other[0])
+        return (self.x * other.y) + (self.y * other.x)
 
-    def ccw(self, b: PointOrIterable, c: PointOrIterable) -> float:
+    def ccw(self, b: Point, c: Point) -> float:
         """Return a floating point value indicating the winding
         direction of the points [self, b, c].
 
@@ -376,39 +366,36 @@ class Point:
         :param c: Point
         :return: float
         """
-        try:
-            return ((b.x - self.x) * (c.y - self.y)) - ((c.x - self.x) * (b.y - self.y))
-        except AttributeError:
-            pass
+        return ((b.x - self.x) * (c.y - self.y)) - ((c.x - self.x) * (b.y - self.y))
 
-        return ((b[0] - self.x) * (c[1] - self.y)) - ((c[0] - self.x) * (b[1] - self.y))
-
-    def is_ccw(self, b: PointOrIterable, c: PointOrIterable) -> bool:
+    def is_ccw(self, b: Point, c: Point) -> bool:
         """Return True if the angle [self, b, c] has counter clock-wise
         winding, else False.
 
-        Raises the exception `ColinearPoints` if the points compose a line.
+        Raises the exception ColinearPoints if the points compose a line.
 
         :param b: Point
         :param c: Point
         :return: bool
         """
+        # EJO ccw can raise IndexError if len(b)|len(c) < 2
         result = self.ccw(b, c)
         if result == 0:
             raise ColinearPoints(self, b, c)
         return result > 0
 
-    def is_colinear(self, b: PointType, c: PointType) -> bool:
+    def is_colinear(self, b: Point, c: Point) -> bool:
         """True if the angle [self, b, c ] is a line, else False.
 
         :param b: Point
         :param c: Point
         :return: bool
         """
+        # EJO ccw can raise IndexError if len(b)|len(c) < 2
         return self.ccw(b, c) == 0
 
-    def midpoint(self, other: PointType = None) -> PointType:
-        """Return a new Point midway between `self` and `other`.
+    def midpoint(self, other: Optional[Point] = None) -> Point:
+        """Return a new Point midway between self and other..
 
         If other is not given, the midpoint between self and the
         origin is returned.
@@ -416,9 +403,10 @@ class Point:
         :param other: Point
         :return: Point
         """
-        return (self + (other or Point())) / 2
+        other = other or Point()
+        return (self + other) / 2
 
-    def between(self, p: PointType, q: PointType) -> bool:
+    def between(self, p: Point, q: Point) -> bool:
         """True if self is bounded by the points [p, q], else False
 
         The bounds are checked by less than or equal to (<=) so self is
@@ -435,10 +423,10 @@ class Point:
 
         return i and j
 
-    def inside(self, p: PointType, q: PointType) -> bool:
-        """True if self is bounded by the points (p, q), else False
+    def inside(self, p: Point, q: Point) -> bool:
+        """True if point is bounded by the points (p, q), else False
 
-        The bounds are checked by less than (<) so self is considered
+        The bounds are checked by less than (<) so point is considered
         inside if it does not reside on any of the lines constructed
         using (p,q).
 
@@ -453,8 +441,3 @@ class Point:
         j = min(p.y, q.y) < self.y < max(p.y, q.y)
 
         return i and j
-
-
-# @dataclass(eq=True, order=True)
-# class HashablePoint(Point):
-#    pass
