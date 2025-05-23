@@ -27,6 +27,9 @@ _open_report = "open htmlcov/index.html"
 coverage = [ "_generate_coverage", "_open_report"]
 
 mypy = "mypy --config-file pyproject.toml src/twod"
+ty = "ty check src/twod"
+
+check = [ "mypy", "ty"]
 
 # requirements
 
