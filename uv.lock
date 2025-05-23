@@ -450,7 +450,7 @@ wheels = [
 
 [[package]]
 name = "twod"
-version = "0.2.9"
+version = "0.3.0"
 source = { editable = "." }
 
 [package.dev-dependencies]
