@@ -13,4 +13,10 @@ class Quadrant(int, Enum):
     Y_AXIS = auto()
 
 
+class Winding(int, Enum):
+    CW = auto()
+    CCW = auto()
+    Colinear = auto()
+
+
 EPSILON_EXP_MINUS_1 = 15
