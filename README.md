@@ -33,7 +33,7 @@ $ poetry shell
 (twod-...) $ 
 ```
 
-## Usage Exmaples
+## Usage Examples
 
 ```python
 
