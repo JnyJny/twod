@@ -11,7 +11,7 @@ from .constants import EPSILON_EXP_MINUS_1, Quadrant
 from .exceptions import ColinearPoints
 
 
-@dataclass
+@dataclass(slots=True)
 class Point:
     x: float = 0.0
     y: float = 0.0

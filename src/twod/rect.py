@@ -23,6 +23,11 @@ class Rect:
         self._p = Point(x, y)
         self._d = Point(w, h)
 
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}(x={self.x}, y={self.y}, w={self.w}, h={self.h})"
+        )
+
     @property
     def x(self) -> float:
         return self._p.x
