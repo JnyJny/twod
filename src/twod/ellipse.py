@@ -15,7 +15,7 @@ class Ellipse(Point):
     def e(self):
         """The eccentricity of this ellipse expressed as a float.
         """
-        return (1 + (self.minor_axis ** 2 / self.major_axis ** 2)) ** 0.5
+        return (1 - (self.minor_axis ** 2 / self.major_axis ** 2)) ** 0.5
 
     @property
     def focus1(self):

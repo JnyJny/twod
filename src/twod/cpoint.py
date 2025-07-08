@@ -47,7 +47,6 @@ class CPoint:
 
     @classmethod
     def from_complex(cls, z: complex) -> CPoint:
-        print("z", z)
         return cls(z.real, z.imag)
 
     @classmethod
@@ -61,10 +60,6 @@ class CPoint:
 
         if not is_radians:
             theta = math.radians(theta)
-
-        r = cmath.rect(radius, theta)
-
-        print(f"{radius=} {theta=} {r=}")
 
         p = cls.from_complex(cmath.rect(radius, theta))
 
@@ -263,7 +258,6 @@ class CPoint:
 
     def midpoint(self, other: Any = None) -> CPoint:
         other = self.__class__.from_any(other)
-        print(other, self + other, (self + other) / 2)
         return (self + other) / 2
 
     def _bounds(self, p: Any, q: Any, op: Callable) -> bool:
