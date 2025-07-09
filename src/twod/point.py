@@ -350,7 +350,7 @@ class Point:
         :param other: Point
         :return: float
         """
-        return (self.x * other.y) + (self.y * other.x)
+        return (self.x * other.y) - (self.y * other.x)
 
     def ccw(self, b: Point, c: Point) -> float:
         """Return a floating point value indicating the winding
