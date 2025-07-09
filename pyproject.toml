@@ -71,6 +71,16 @@ publish_major.help = "Update major version and push a commit with updated versio
 publish.ref = "publish_patch"
 publish.help = "Publish a patch update."
 
+# documentation
+docs_serve.cmd = "mkdocs serve"
+docs_serve.help = "Serve documentation locally for development."
+
+docs_build.cmd = "mkdocs build"
+docs_build.help = "Build documentation site."
+
+docs_deploy.cmd = "mkdocs gh-deploy"
+docs_deploy.help = "Deploy documentation to GitHub Pages."
+
 
 [build-system]
 requires = ["hatchling"]
@@ -87,4 +97,13 @@ dev = [
     "pytest-cov>=6.1.1",
     "ruff>=0.11.11",
     "ty>=0.0.1a6",
+]
+
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.26.0",
+    "mkdocs-gen-files>=0.5.0",
+    "mkdocs-literate-nav>=0.6.0",
+    "mkdocs-section-index>=0.3.0",
 ]
