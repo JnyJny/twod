@@ -29,6 +29,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `uv add <package>` - Add new dependency
 - `uv remove <package>` - Remove dependency
 
+### Documentation
+- `poe docs_serve` - Serve documentation locally for development
+- `poe docs_build` - Build documentation site
+- `poe docs_deploy` - Deploy documentation to GitHub Pages
+
 ### Publishing
 - `poe publish` - Publish patch version (default)
 - `poe publish_minor` - Publish minor version
@@ -51,6 +56,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `exceptions.py` - Custom exceptions like ColinearPoints
 - `mixins.py` - MixinPoint and MixinDimension for CRect
 - `ellipse.py` - Additional geometric primitives
+- `line.py` - Line segment with geometric operations
 
 ### Key Design Patterns
 
