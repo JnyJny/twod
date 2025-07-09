@@ -64,7 +64,7 @@ def test_point_dot(A, B, expected):
     "A,B,expected",
     [
         [(0, 0), (0, 0), 0],
-        [(7, 2), (4, 3), 29],
+        [(7, 2), (4, 3), 13],  # 7*3 - 2*4 = 21 - 8 = 13
     ],
 )
 def test_point_cross_point(A, B, expected):
