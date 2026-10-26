@@ -29,8 +29,8 @@ _open_report = "open htmlcov/index.html"
 coverage.sequence = [ "_generate_coverage", "_open_report"]
 coverage.help = "Generate and view a code coverage report."
 
-ty.cmd = "ty check src/twod"
-ty.help = "Run ty type checker on source."
+ty.cmd = "ty check src/twod tests"
+ty.help = "Run ty type checker on source and tests."
 
 ruff.cmd = "ruff format src/twod"
 ruff.help = "Run ruff format on library source."

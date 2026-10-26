@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import math
 import operator
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Callable, Optional
 
 from .exceptions import ColinearPoints
-from .point import Point
+from .point import Point, PointLike
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, init=False)
 class Line:
     """A line segment defined by two points.
 
@@ -25,28 +25,33 @@ class Line:
     53.13010235415598
     """
 
-    start: Point = field(default_factory=Point)
-    end: Point = field(default_factory=Point)
+    start: Point
+    end: Point
 
-    def __post_init__(self):
-        """Ensure start and end are Point instances."""
-        if self.start is None:
-            self.start = Point()
-        elif not isinstance(self.start, Point):
-            self.start = (
-                Point(*self.start)
-                if hasattr(self.start, "__iter__")
-                else Point(self.start, 0)
-            )
+    def __init__(
+        self,
+        start: PointLike | float | None = None,
+        end: PointLike | float | None = None,
+    ) -> None:
+        """Create a line segment from two Point-like values.
 
-        if self.end is None:
-            self.end = Point()
-        elif not isinstance(self.end, Point):
-            self.end = (
-                Point(*self.end)
-                if hasattr(self.end, "__iter__")
-                else Point(self.end, 0)
-            )
+        A missing point is the origin and a lone number is a point on the
+        x-axis, so Line(5, 10) runs from (5, 0) to (10, 0).
+
+        Raises TypeError if a value cannot be converted to a Point.
+        """
+        self.start = self._as_point(start)
+        self.end = self._as_point(end)
+
+    @staticmethod
+    def _as_point(value: PointLike | float | None) -> Point:
+        """Returns value as a Point; None is the origin and a number is on
+        the x-axis."""
+        if value is None:
+            return Point()
+        if isinstance(value, (int, float)):
+            return Point(value, 0)
+        return Point.from_point_like(value)
 
     @property
     def length(self) -> float:
@@ -358,10 +363,9 @@ class Line:
         else:
             raise IndexError(f"Line index {key} out of range")
 
-    def __setitem__(self, key: int, value: Point) -> None:
+    def __setitem__(self, key: int, value: PointLike | float) -> None:
         """Set start (0) or end (1) point."""
-        if not isinstance(value, Point):
-            value = Point(*value) if hasattr(value, "__iter__") else Point(value, 0)
+        value = self._as_point(value)
 
         if key == 0:
             self.start = value

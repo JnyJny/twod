@@ -62,10 +62,10 @@ def test_point_polar_assignment():
     assert p == q
 
     with pytest.raises(TypeError):
-        p.polar = 1
+        p.polar = 1  # ty: ignore[invalid-assignment]
 
     with pytest.raises(TypeError):
-        p.polar = "foobar"
+        p.polar = "foobar"  # ty: ignore[invalid-assignment]
 
 
 def test_point_polar_deg_assignment():
@@ -76,10 +76,10 @@ def test_point_polar_deg_assignment():
     assert p == q
 
     with pytest.raises(TypeError):
-        p.polar_deg = 1
+        p.polar_deg = 1  # ty: ignore[invalid-assignment]
 
     with pytest.raises(TypeError):
-        p.polar_deg = "ackqux"
+        p.polar_deg = "ackqux"  # ty: ignore[invalid-assignment]
 
 
 def test_point_polar_calculation():

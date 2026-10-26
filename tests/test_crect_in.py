@@ -108,7 +108,7 @@ def test_rect_intersects_negative_dimensions() -> None:
 
 def test_rect_intersects_invalid_type() -> None:
     with pytest.raises(TypeError):
-        Rect().intersects("foo")
+        Rect().intersects("foo")  # ty: ignore[invalid-argument-type]
 
 
 def test_rect_corner_a_is_a_copy() -> None:

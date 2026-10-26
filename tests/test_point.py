@@ -67,10 +67,10 @@ def test_point_xy_property():
     assert p.x == 2 and p.y == 3
 
     with pytest.raises(TypeError):
-        p.xy = "nonsense"
+        p.xy = "nonsense"  # ty: ignore[invalid-assignment]
 
     with pytest.raises(TypeError):
-        p.xy = 1
+        p.xy = 1  # ty: ignore[invalid-assignment]
 
 
 def test_point_getitem_int_key():

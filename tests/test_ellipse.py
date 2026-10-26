@@ -185,7 +185,7 @@ class TestEllipse:
     def test_contains_rejects_other_types(self):
         """Unconvertible operands raise TypeError"""
         with pytest.raises(TypeError):
-            "foo" in Ellipse(minor_axis=3, major_axis=5)
+            "foo" in Ellipse(minor_axis=3, major_axis=5)  # ty: ignore[unsupported-operator]
 
     def test_negative_axes(self):
         """Test ellipse with negative axes"""
@@ -282,7 +282,7 @@ class TestCircle:
     def test_circle_contains_rejects_other_types(self):
         """Unconvertible operands raise TypeError"""
         with pytest.raises(TypeError):
-            "foo" in Circle(radius=5)
+            "foo" in Circle(radius=5)  # ty: ignore[unsupported-operator]
 
     def test_circle_negative_radius(self):
         """Test circle with negative radius"""

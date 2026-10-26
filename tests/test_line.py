@@ -509,3 +509,17 @@ def test_line_default_points_are_not_shared():
 def test_line_none_points_default_to_origin():
     line = Line(None, Point(1, 1))
     assert line.start == Point(0, 0)
+
+
+def test_line_accepts_any_sequence_of_two_numbers():
+    line = Line(range(0, 2), [3, 4])
+    assert line.start == Point(0, 1)
+    assert line.end == Point(3, 4)
+
+
+@pytest.mark.parametrize("bad", ["ab", b"ab", {1, 2}, {"x": 1, "y": 2}, 3 + 4j])
+def test_line_rejects_values_that_are_not_point_like(bad):
+    with pytest.raises(TypeError):
+        Line(bad, Point())
+    with pytest.raises(TypeError):
+        Line()[0] = bad

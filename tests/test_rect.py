@@ -151,7 +151,7 @@ def test_rect_center_setter() -> None:
 
 def test_rect_contains_invalid_type_message():
     with pytest.raises(TypeError, match="expected Point or Rect, got 'foo'"):
-        "foo" in Rect()
+        "foo" in Rect()  # ty: ignore[unsupported-operator]
 
 
 @pytest.mark.parametrize("w,h", [(3, 4), (-3, 4), (3, -4), (-3, -4), (0, 4)])

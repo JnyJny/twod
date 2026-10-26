@@ -23,7 +23,7 @@ def test_crect_contains_with_invalid_type():
     """Test CRect contains with invalid type raises TypeError"""
     rect = Rect(1, 2, 3, 4)
     with pytest.raises(TypeError):
-        "not a point or rect" in rect
+        "not a point or rect" in rect  # ty: ignore[unsupported-operator]
 
 
 def test_crect_edge_properties():
@@ -75,7 +75,7 @@ def test_crect_ac_bd_diagonals():
 def test_crect_op_method_unsupported_type():
     """Test CRect _op method with unsupported type"""
     rect = Rect(1, 2, 3, 4)
-    result = rect._op("invalid", lambda x, y: x + y)
+    result = rect._op("invalid", lambda x, y: x + y)  # ty: ignore[invalid-argument-type]
     assert result is NotImplemented
 
 
