@@ -62,7 +62,7 @@ print(f"Inside: {test_point.inside(rect.bottom_left, rect.top_right)}")  # Insid
 - **Flexible**: Choose the implementation that best fits your needs
 - **Comprehensive**: Full suite of geometric operations and relationships
 - **Well-Tested**: Extensive test suite ensuring reliability
-- **Modern Python**: Uses Python 3.10+ features like structural pattern matching
+- **Modern Python**: Requires Python 3.11+ and uses structural pattern matching
 
 ## Getting Started
 
