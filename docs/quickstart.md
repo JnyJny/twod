@@ -161,16 +161,15 @@ perpendicular = horizontal.perpendicular_to(vertical)  # True
 ## Ellipses
 
 ```python
-from twod import Point, Ellipse
+from twod import Ellipse
 
-# Create ellipse
-center = Point(0, 0)
-ellipse = Ellipse(center, semi_major_axis=5, semi_minor_axis=3)
+# An ellipse is a Point (its center) with semi-axes along x and y
+ellipse = Ellipse(x=0, y=0, major_axis=5, minor_axis=3)
 
-# Properties
-print(f"Area: {ellipse.area}")  # Area: 47.12388980384689
-print(f"Perimeter: {ellipse.perimeter}")  # Approximate perimeter
-print(f"Eccentricity: {ellipse.eccentricity}")  # 0.8
+print(ellipse.e)  # 0.8
+print(ellipse.focus1, ellipse.focus2)  # Point(x=4.0, y=0) Point(x=-4.0, y=0)
+print(ellipse.vertices)  # [Point(x=5, y=0), Point(x=-5, y=0)]
+print(ellipse.co_vertices)  # [Point(x=0, y=3), Point(x=0, y=-3)]
 ```
 
 ## Choosing Between Implementations

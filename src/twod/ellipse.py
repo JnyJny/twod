@@ -7,42 +7,54 @@ from .point import Point
 
 @dataclass
 class Ellipse(Point):
+    """An ellipse centered at (x, y) with its major axis along the x-axis.
+
+    major_axis and minor_axis are the semi-axes: the distances from the
+    center to the vertices and co-vertices.
+    """
+
     minor_axis: int = 0
     major_axis: int = 0
 
     @property
-    def e(self):
+    def e(self) -> float:
         """The eccentricity of this ellipse expressed as a float."""
         return (1 - (self.minor_axis**2 / self.major_axis**2)) ** 0.5
 
     @property
-    def focus1(self):
-        """The first focus of the ellipse."""
-        return Point(self.e, self.y)
+    def focal_distance(self) -> float:
+        """The distance from the center to each focus."""
+        return self.major_axis * self.e
 
     @property
-    def focus2(self):
-        """The second focus of the ellipse."""
-        return Point(-self.e, self.y)
+    def focus1(self) -> Point:
+        """The focus to the right of the center."""
+        return Point(self.x + self.focal_distance, self.y)
 
     @property
-    def vertices(self):
-        """A list of Points that are major_axis distance
-        from the center of the ellipse on the x-axis.
+    def focus2(self) -> Point:
+        """The focus to the left of the center."""
+        return Point(self.x - self.focal_distance, self.y)
+
+    @property
+    def vertices(self) -> list[Point]:
+        """A list of Points that are major_axis distance from the center
+        of the ellipse on the x-axis: right, then left.
         """
-
-        p = Point(self.x + self.major_axis, self.y)
-        q = Point(-(self.x + self.major_axis), self.y)
-        return [p, q]
+        return [
+            Point(self.x + self.major_axis, self.y),
+            Point(self.x - self.major_axis, self.y),
+        ]
 
     @property
-    def co_vertices(self):
-        """A list of Points that are minor_axis distance
-        from the center of the ellipse on the y-axis.
+    def co_vertices(self) -> list[Point]:
+        """A list of Points that are minor_axis distance from the center
+        of the ellipse on the y-axis: above, then below.
         """
-        p = Point(self.x, self.y + self.minor_axis)
-        q = Point(self.x, -(self.y + self.minor_axis))
-        return [p, q]
+        return [
+            Point(self.x, self.y + self.minor_axis),
+            Point(self.x, self.y - self.minor_axis),
+        ]
 
     @property
     def is_circle(self):

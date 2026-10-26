@@ -3,6 +3,7 @@
 from .constants import Quadrant
 from .cpoint import CPoint
 from .crect import CRect
+from .ellipse import Ellipse
 from .exceptions import ColinearPoints
 from .line import Line
 from .point import Point
@@ -12,6 +13,7 @@ __all__ = [
     "ColinearPoints",
     "CPoint",
     "CRect",
+    "Ellipse",
     "Line",
     "Point",
     "Quadrant",

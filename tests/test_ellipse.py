@@ -3,12 +3,17 @@
 import math
 
 import pytest
+from twod import Ellipse as ExportedEllipse
 from twod import Point
 from twod.ellipse import Circle, Ellipse
 
 
 class TestEllipse:
     """Test cases for Ellipse class"""
+
+    def test_ellipse_exported_from_package(self):
+        """Ellipse is importable from the top level package"""
+        assert ExportedEllipse is Ellipse
 
     def test_ellipse_creation(self):
         """Test basic ellipse creation"""
@@ -56,13 +61,26 @@ class TestEllipse:
         e = Ellipse(x=2, y=3, minor_axis=3, major_axis=5)
         expected_e = math.sqrt(1 - (3**2 / 5**2))
 
+        focus_distance = 5 * expected_e
+
         focus1 = e.focus1
         focus2 = e.focus2
 
-        assert focus1.x == expected_e
-        assert focus1.y == 3
-        assert focus2.x == -expected_e
-        assert focus2.y == 3
+        assert focus1 == Point(2 + focus_distance, 3)
+        assert focus2 == Point(2 - focus_distance, 3)
+
+    def test_focus_points_sum_of_distances_is_major_axis_length(self):
+        """Every point on an ellipse is 2 * major_axis from the foci combined"""
+        e = Ellipse(x=2, y=3, minor_axis=3, major_axis=5)
+        vertex = e.vertices[0]
+        total = vertex.distance(e.focus1) + vertex.distance(e.focus2)
+        assert math.isclose(total, 2 * e.major_axis)
+
+    def test_focus_points_of_circle_are_the_center(self):
+        """A circle's foci coincide with its center"""
+        e = Ellipse(x=2, y=3, minor_axis=5, major_axis=5)
+        assert e.focus1 == Point(2, 3)
+        assert e.focus2 == Point(2, 3)
 
     def test_vertices(self):
         """Test vertices calculation"""
@@ -71,7 +89,7 @@ class TestEllipse:
 
         assert len(vertices) == 2
         assert vertices[0] == Point(2 + 5, 3)  # (7, 3)
-        assert vertices[1] == Point(-(2 + 5), 3)  # (-7, 3)
+        assert vertices[1] == Point(2 - 5, 3)  # (-3, 3)
 
     def test_co_vertices(self):
         """Test co-vertices calculation"""
@@ -80,7 +98,7 @@ class TestEllipse:
 
         assert len(co_vertices) == 2
         assert co_vertices[0] == Point(2, 3 + 3)  # (2, 6)
-        assert co_vertices[1] == Point(2, -(3 + 3))  # (2, -6)
+        assert co_vertices[1] == Point(2, 3 - 3)  # (2, 0)
 
     def test_is_circle_true(self):
         """Test is_circle property when axes are equal"""

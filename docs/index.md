@@ -28,7 +28,7 @@
 
 ### Additional Primitives
 - **`Line`**: Line segment with geometric operations like intersections, distances, and relationships
-- **`Ellipse`**: Ellipse with properties like area, perimeter, and eccentricity
+- **`Ellipse`**: Ellipse with eccentricity, foci, vertices, and co-vertices
 
 ## Quick Example
 
