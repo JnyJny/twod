@@ -54,6 +54,59 @@ class Point:
             point += translate
         return point
 
+    @classmethod
+    def from_any(
+        cls,
+        value: Any,
+        scalar_ok: bool = True,
+        is_polar: bool = False,
+    ) -> Self:
+        """Returns a Point made from a variety of inputs.
+
+        Accepted values:
+        - Point: returned as is
+        - complex: real is x, imaginary is y
+        - dict: keys "x" and "y"
+        - list or tuple: (x, y), or (radius, radians) if is_polar is True
+        - int or float: used for both x and y if scalar_ok is True
+        - str: parsed as a complex number, e.g. "1+2j"
+
+        Raises TypeError if value cannot be converted.
+
+        :param value: Any
+        :param bool scalar_ok: accept a lone number as (value, value)
+        :param bool is_polar: interpret a list or tuple as (radius, radians)
+        :return: Point
+        """
+        match value:
+            case Point():
+                return value
+            case complex():
+                return cls(value.real, value.imag)
+            case dict():
+                return cls(value["x"], value["y"])
+            case list() | tuple():
+                if is_polar:
+                    return cls.from_polar(value[0], value[1])
+                return cls(value[0], value[1])
+            case float() | int():
+                if scalar_ok:
+                    return cls(value, value)
+            case str():
+                try:
+                    z = complex(value)
+                except ValueError:
+                    pass
+                else:
+                    return cls(z.real, z.imag)
+
+        raise TypeError(f"unable to convert {value!r} to {cls.__name__}")
+
+    @staticmethod
+    def _coerce(value: Any) -> Point:
+        """Returns value as a Point without accepting a lone number."""
+        return Point.from_any(value, scalar_ok=False)
+
     @property
     def is_origin(self) -> bool:
         """True if and only if x == 0 and y == 0."""
@@ -315,47 +368,50 @@ class Point:
     def __neg__(self) -> Point:
         return self * -1
 
-    def distance(self, other: Optional[Point] = None) -> float:
+    def distance(self, other: PointLike | None = None) -> float:
         """Return the floating point distance between self and other.
 
         If other is not given, the distance from self to the origin is
         returned.
 
-        :param other: Point
+        :param other: Point or (x, y) sequence
         :return: float
         """
-        other = other or Point()
-        return (self.distance_squared(other)) ** 0.5
+        other = Point() if other is None else self._coerce(other)
+        return math.hypot(other.x - self.x, other.y - self.y)
 
-    def distance_squared(self, other: Optional[Point] = None) -> float:
-        """Return the floating point squared distance between self and other.
+    def distance_squared(self, other: PointLike | None = None) -> float:
+        """Return the squared distance between self and other.
 
         If other is not given, the squared distance from self to the
         origin is returned.
 
-        :param other: Point
+        :param other: Point or (x, y) sequence
         :return: float
         """
-        other = other or Point()
-        return sum(((other - self) ** 2).xy)
+        other = Point() if other is None else self._coerce(other)
+        dx, dy = other.x - self.x, other.y - self.y
+        return dx * dx + dy * dy
 
-    def dot(self, other: Point) -> float:
+    def dot(self, other: PointLike) -> float:
         """Return a scalar dot product of self with other.
 
-        :param other: Point
+        :param other: Point or (x, y) sequence
         :return: float
         """
-        return sum((self * other).xy)
+        other = self._coerce(other)
+        return self.x * other.x + self.y * other.y
 
-    def cross(self, other: Point) -> float:
+    def cross(self, other: PointLike) -> float:
         """Return a scalar cross product of self with other.
 
-        :param other: Point
+        :param other: Point or (x, y) sequence
         :return: float
         """
+        other = self._coerce(other)
         return (self.x * other.y) - (self.y * other.x)
 
-    def ccw(self, b: Point, c: Point) -> float:
+    def ccw(self, b: PointLike, c: PointLike) -> float:
         """Return a floating point value indicating the winding
         direction of the points [self, b, c].
 
@@ -365,82 +421,132 @@ class Point:
 
         Note: ccw is also 2*area of the triangle [self, b, c].
 
-        :param b: Point
-        :param c: Point
+        :param b: Point or (x, y) sequence
+        :param c: Point or (x, y) sequence
         :return: float
         """
+        b, c = self._coerce(b), self._coerce(c)
         return ((b.x - self.x) * (c.y - self.y)) - ((c.x - self.x) * (b.y - self.y))
 
-    def is_ccw(self, b: Point, c: Point) -> bool:
+    def is_ccw(self, b: PointLike, c: PointLike) -> bool:
         """Return True if the angle [self, b, c] has counter clock-wise
         winding, else False.
 
         Raises the exception ColinearPoints if the points compose a line.
 
-        :param b: Point
-        :param c: Point
+        :param b: Point or (x, y) sequence
+        :param c: Point or (x, y) sequence
         :return: bool
         """
-        # EJO ccw can raise IndexError if len(b)|len(c) < 2
         result = self.ccw(b, c)
         if result == 0:
             raise ColinearPoints(self, b, c)
         return result > 0
 
-    def is_colinear(self, b: Point, c: Point) -> bool:
+    def is_colinear(self, b: PointLike, c: PointLike) -> bool:
         """True if the angle [self, b, c ] is a line, else False.
 
-        :param b: Point
-        :param c: Point
+        :param b: Point or (x, y) sequence
+        :param c: Point or (x, y) sequence
         :return: bool
         """
-        # EJO ccw can raise IndexError if len(b)|len(c) < 2
         return self.ccw(b, c) == 0
 
-    def midpoint(self, other: Optional[Point] = None) -> Point:
+    def midpoint(self, other: PointLike | None = None) -> Point:
         """Return a new Point midway between self and other..
 
         If other is not given, the midpoint between self and the
         origin is returned.
 
-        :param other: Point
+        :param other: Point or (x, y) sequence
         :return: Point
         """
-        other = other or Point()
-        return (self + other) / 2
+        other = Point() if other is None else self._coerce(other)
+        return Point((self.x + other.x) / 2, (self.y + other.y) / 2)
 
-    def between(self, p: Point, q: Point) -> bool:
+    def between(self, p: PointLike, q: PointLike) -> bool:
         """True if self is bounded by the points [p, q], else False
 
         The bounds are checked by less than or equal to (<=) so self is
         considered between if it resides on any of the lines constructed
         using [p,q].
 
-        :param p: Point
-        :param q: Point
+        :param p: Point or (x, y) sequence
+        :param q: Point or (x, y) sequence
         :return: bool
         """
+        p, q = self._coerce(p), self._coerce(q)
 
         i = min(p.x, q.x) <= self.x <= max(p.x, q.x)
         j = min(p.y, q.y) <= self.y <= max(p.y, q.y)
 
         return i and j
 
-    def inside(self, p: Point, q: Point) -> bool:
+    def inside(self, p: PointLike, q: PointLike) -> bool:
         """True if point is bounded by the points (p, q), else False
 
         The bounds are checked by less than (<) so point is considered
         inside if it does not reside on any of the lines constructed
         using (p,q).
 
-        :param p: Point
-        :param q: Point
+        :param p: Point or (x, y) sequence
+        :param q: Point or (x, y) sequence
         :return: bool
         """
 
         # XXX re-implement with ccw and a list of points instead of a pair
 
+        p, q = self._coerce(p), self._coerce(q)
+
         i = min(p.x, q.x) < self.x < max(p.x, q.x)
         j = min(p.y, q.y) < self.y < max(p.y, q.y)
 
         return i and j
+
+    def rotate(
+        self,
+        theta: float,
+        origin: PointLike | None = None,
+        is_degrees: bool = False,
+        inplace: bool = True,
+    ) -> Point:
+        """Rotate this point counter-clockwise by theta about origin.
+
+        If origin is not given, the point is rotated about (0, 0).
+
+        :param float theta: angle, in radians unless is_degrees is True
+        :param origin: Point or (x, y) sequence
+        :param bool is_degrees: theta is in degrees
+        :param bool inplace: update this point and return it, otherwise
+            return a new Point
+        :return: Point
+        """
+        if is_degrees:
+            theta = math.radians(theta)
+
+        origin = Point() if origin is None else self._coerce(origin)
+
+        cos, sin = math.cos(theta), math.sin(theta)
+        dx, dy = self.x - origin.x, self.y - origin.y
+        x = origin.x + dx * cos - dy * sin
+        y = origin.y + dx * sin + dy * cos
+
+        if inplace:
+            self.x, self.y = x, y
+            return self
+
+        return Point(x, y)
+
+    def scale(self, factor: float) -> Self:
+        """Multiply both coordinates by factor, in place, and return self.
+
+        :param float factor:
+        :return: Point
+        """
+        self.x *= factor
+        self.y *= factor
+        return self
+
+
+PointLike = Point | tuple[float, float] | list[float]
+"""Anything the geometry methods accept in place of a Point."""
