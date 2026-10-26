@@ -20,10 +20,10 @@ def test_crect_equality_with_invalid_type():
 
 
 def test_crect_contains_with_invalid_type():
-    """Test CRect contains with invalid type returns NotImplemented"""
+    """Test CRect contains with invalid type raises TypeError"""
     rect = Rect(1, 2, 3, 4)
-    result = rect.__contains__("not a point or rect")
-    assert result is NotImplemented
+    with pytest.raises(TypeError):
+        "not a point or rect" in rect
 
 
 def test_crect_edge_properties():
@@ -224,3 +224,10 @@ def test_rect_center_setter() -> None:
     assert r.perimeter == q.perimeter
     assert r.area == q.area
     assert r.sides == q.sides
+
+
+@pytest.mark.parametrize("w,h", [(3, 4), (-3, 4), (3, -4), (-3, -4), (0, 4)])
+def test_crect_sides(w, h):
+    r = Rect(1, 1, w, h)
+    assert r.sides == [abs(w), abs(h), abs(w), abs(h)]
+    assert r.perimeter == 2 * (abs(w) + abs(h))

@@ -152,3 +152,10 @@ def test_rect_center_setter() -> None:
 def test_rect_contains_invalid_type_message():
     with pytest.raises(TypeError, match="expected Point or Rect, got 'foo'"):
         "foo" in Rect()
+
+
+@pytest.mark.parametrize("w,h", [(3, 4), (-3, 4), (3, -4), (-3, -4), (0, 4)])
+def test_rect_sides(w, h):
+    r = Rect(1, 1, w, h)
+    assert r.sides == [abs(w), abs(h), abs(w), abs(h)]
+    assert r.perimeter == 2 * (abs(w) + abs(h))

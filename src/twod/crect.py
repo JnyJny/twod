@@ -35,13 +35,39 @@ class CRect(MixinPoint, MixinDimension):
             case Point():
                 return other.inside(*self.AC) and other.inside(*self.BD)
             case CRect():
-                return any(v in self for v in other.vertices)
+                return all(v in self for v in other.vertices)
 
-        return NotImplemented
+        raise TypeError(f"expected CPoint or CRect, got {other!r}")
+
+    @property
+    def _extent(self) -> tuple[float, float, float, float]:
+        """The (min x, min y, max x, max y) of this rectangle."""
+        x2, y2 = self.x + self.w, self.y + self.h
+        return min(self.x, x2), min(self.y, y2), max(self.x, x2), max(self.y, y2)
+
+    def intersects(self, other: CRect) -> bool:
+        """True if this rectangle and other share any area.
+
+        Rectangles that only touch along an edge or at a corner do not
+        intersect.
+
+        Raises TypeError if other is not a CRect.
+        """
+        if not isinstance(other, CRect):
+            raise TypeError(f"expected CRect, got {other!r}")
+
+        left, top, right, bottom = self._extent
+        other_left, other_top, other_right, other_bottom = other._extent
+        return (
+            left < other_right
+            and other_left < right
+            and top < other_bottom
+            and other_top < bottom
+        )
 
     @property
     def A(self) -> Point:
-        return self._p
+        return Point(self.x, self.y)
 
     @property
     def B(self) -> Point:
@@ -86,13 +112,8 @@ class CRect(MixinPoint, MixinDimension):
     @property
     def sides(self) -> list[float]:
 
-        A, B, C, D = self.vertices
-        return [
-            A.distance(B),
-            B.distance(C),
-            C.distance(D),
-            D.distance(A),
-        ]
+        w, h = abs(self.w), abs(self.h)
+        return [w, h, w, h]
 
     @property
     def perimeter(self) -> float:

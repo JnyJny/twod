@@ -79,7 +79,7 @@ class Rect:
     @property
     def A(self) -> Point:
         """Point at (x,y)."""
-        return self._p
+        return Point(self.x, self.y)
 
     @property
     def B(self) -> Point:
@@ -104,16 +104,8 @@ class Rect:
     @property
     def sides(self) -> list[float]:
         """The lengths of each side: AB, BC, CD, and DA."""
-        # EJO this needs work, why the max? The abs might be
-        #     needed either since direction is clockwise?
-
-        A, B, C, D = self.vertices
-        return [
-            max(abs(A - B).xy),
-            max(abs(B - C).xy),
-            max(abs(C - D).xy),
-            max(abs(D - A).xy),
-        ]
+        w, h = abs(self.w), abs(self.h)
+        return [w, h, w, h]
 
     @property
     def center(self) -> Point:
@@ -143,10 +135,9 @@ class Rect:
         """If other is a twod.Point, returns True if the point is inside this
         rectangle.
 
-        If other is a twod.Rect, returns True if any of other's vertices are
-        inside this rectangle.
-
-        Otherwise returns False.
+        If other is a twod.Rect, returns True if all of other's vertices are
+        inside this rectangle. Rectangles that share an edge or are the same
+        rectangle are not contained; use intersects to test for overlap.
 
         Raises TypeError if other is not a Point or Rect.
         """
@@ -157,7 +148,33 @@ class Rect:
         if isinstance(other, Point):
             return other.inside(self.A, self.C) and other.inside(self.B, self.D)
 
-        return any(v in self for v in other.vertices)
+        return all(v in self for v in other.vertices)
+
+    @property
+    def _extent(self) -> tuple[float, float, float, float]:
+        """The (min x, min y, max x, max y) of this rectangle."""
+        x2, y2 = self.x + self.w, self.y + self.h
+        return min(self.x, x2), min(self.y, y2), max(self.x, x2), max(self.y, y2)
+
+    def intersects(self, other: Rect) -> bool:
+        """True if this rectangle and other share any area.
+
+        Rectangles that only touch along an edge or at a corner do not
+        intersect.
+
+        Raises TypeError if other is not a Rect.
+        """
+        if not isinstance(other, Rect):
+            raise TypeError(f"expected Rect, got {other!r}")
+
+        left, top, right, bottom = self._extent
+        other_left, other_top, other_right, other_bottom = other._extent
+        return (
+            left < other_right
+            and other_left < right
+            and top < other_bottom
+            and other_top < bottom
+        )
 
     def _op(self, other: Point | Rect, op: Callable) -> Rect:
         x = op(self.x, other.x)
