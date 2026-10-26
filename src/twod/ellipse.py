@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from .point import Point
+from .point import Point, PointLike
 
 
 @dataclass
@@ -70,13 +70,35 @@ class Ellipse(Point):
         """Returns True if this ellipse is also a circle."""
         return self.minor_axis == self.major_axis
 
-    def __contains__(self, other):
-        pass
+    def __contains__(self, other: PointLike) -> bool:
+        """True if other is strictly inside this ellipse.
+
+        Points on the ellipse itself are not contained. An ellipse with a
+        zero-length axis contains nothing.
+
+        Raises TypeError if other cannot be converted to a Point.
+        """
+        other = self._coerce(other)
+        dx, dy = other.x - self.x, other.y - self.y
+        a, b = self.major_axis, self.minor_axis
+        return (dx * b) ** 2 + (dy * a) ** 2 < (a * b) ** 2
 
 
 @dataclass
 class Circle(Point):
+    """A circle centered at (x, y).
+
+    Unlike Point.radius, which is the distance from the origin, radius here
+    is the radius of the circle.
+    """
+
     radius: float = 0
 
-    def __contains__(self, other):
-        pass
+    def __contains__(self, other: PointLike) -> bool:
+        """True if other is strictly inside this circle.
+
+        Points on the circle itself are not contained.
+
+        Raises TypeError if other cannot be converted to a Point.
+        """
+        return self.distance_squared(other) < self.radius**2 and self.radius > 0

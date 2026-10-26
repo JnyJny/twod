@@ -115,12 +115,44 @@ class TestEllipse:
         e = Ellipse(minor_axis=0, major_axis=0)
         assert e.is_circle is True
 
-    def test_contains_method_exists(self):
-        """Test that __contains__ method exists but is not implemented"""
+    @pytest.mark.parametrize(
+        "point, expected",
+        [
+            [(0, 0), True],
+            [(4.9, 0), True],
+            [(5, 0), False],
+            [(5.1, 0), False],
+            [(0, 2.9), True],
+            [(0, 3), False],
+            [(0, -3), False],
+            [(3, 2), True],
+            [(4, 2), False],
+            [(3, 1), True],
+            [(-3, -1), True],
+        ],
+    )
+    def test_contains_point(self, point, expected):
+        """Points are strictly inside the ellipse boundary"""
         e = Ellipse(minor_axis=3, major_axis=5)
-        point = Point(1, 1)
-        result = e.__contains__(point)
-        assert result is None
+        assert (point in e) is expected
+        assert (Point(*point) in e) is expected
+
+    def test_contains_uses_center(self):
+        """Containment is relative to the ellipse center"""
+        e = Ellipse(x=10, y=20, minor_axis=3, major_axis=5)
+        assert (10, 20) in e
+        assert (0, 0) not in e
+        assert (14, 20) in e
+
+    def test_contains_zero_axis_contains_nothing(self):
+        """A degenerate ellipse contains no points"""
+        assert (0, 0) not in Ellipse()
+        assert (0, 0) not in Ellipse(minor_axis=0, major_axis=5)
+
+    def test_contains_rejects_other_types(self):
+        """Unconvertible operands raise TypeError"""
+        with pytest.raises(TypeError):
+            "foo" in Ellipse(minor_axis=3, major_axis=5)
 
     def test_negative_axes(self):
         """Test ellipse with negative axes"""
@@ -161,12 +193,44 @@ class TestCircle:
         assert c.distance() == math.hypot(3, 4)
         assert c.xy == (3, 4)
 
-    def test_circle_contains_method_exists(self):
-        """Test that __contains__ method exists but is not implemented"""
+    @pytest.mark.parametrize(
+        "point, expected",
+        [
+            [(0, 0), True],
+            [(3, 3), True],
+            [(3, 4), False],
+            [(5, 0), False],
+            [(-4.9, 0), True],
+            [(4, 4), False],
+        ],
+    )
+    def test_circle_contains_point(self, point, expected):
+        """Points are strictly inside the circle boundary"""
         c = Circle(x=0, y=0, radius=5)
-        point = Point(1, 1)
-        result = c.__contains__(point)
-        assert result is None
+        assert (point in c) is expected
+        assert (Point(*point) in c) is expected
+
+    def test_circle_contains_uses_center(self):
+        """Containment is relative to the circle center"""
+        c = Circle(x=10, y=10, radius=2)
+        assert (11, 11) in c
+        assert (0, 0) not in c
+
+    @pytest.mark.parametrize("radius", [0, -5])
+    def test_circle_without_positive_radius_contains_nothing(self, radius):
+        """A circle with radius <= 0 contains no points"""
+        assert (0, 0) not in Circle(radius=radius)
+
+    def test_circle_exported_from_package(self):
+        """Circle is importable from the top level package"""
+        from twod import Circle as ExportedCircle
+
+        assert ExportedCircle is Circle
+
+    def test_circle_contains_rejects_other_types(self):
+        """Unconvertible operands raise TypeError"""
+        with pytest.raises(TypeError):
+            "foo" in Circle(radius=5)
 
     def test_circle_negative_radius(self):
         """Test circle with negative radius"""
