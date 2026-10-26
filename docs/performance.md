@@ -22,7 +22,7 @@ as relative, not absolute: they vary by machine and Python version.
 | `p.rotate(0.5, inplace=False)`   | 222 ns |
 | `Rect(0, 0, 10, 10)`             | 161 ns |
 | `Point(5, 5) in rect`            | 290 ns |
-| `rect.center`                    | 515 ns |
+| `rect.center`                    | 103 ns |
 
 To measure on your machine:
 

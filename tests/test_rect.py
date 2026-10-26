@@ -199,3 +199,11 @@ def test_rect_ops_reject_other_types(operand):
 def test_rect_contains_point_like(point):
     assert point in Rect(0, 0, 2, 2)
     assert (5, 5) not in Rect(0, 0, 2, 2)
+
+
+def test_rect_center_matches_midpoint_of_diagonal() -> None:
+    values = [-3, 0, 0.1, 0.2, 1 / 3, 7, 1e16]
+    for x in values:
+        for w in values:
+            r = Rect(x, 0.7, w, 0.3)
+            assert r.center == r.A.midpoint(r.C)

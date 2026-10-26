@@ -110,7 +110,8 @@ class Rect:
     @property
     def center(self) -> Point:
         """Point at the center of the rectangle (midpoint of AC)."""
-        return self.A.midpoint(self.C)
+        x, y = self._p.x, self._p.y
+        return Point((x + (x + self._d.x)) / 2, (y + (y + self._d.y)) / 2)
 
     @center.setter
     def center(self, new_center) -> None:
