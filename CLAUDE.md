@@ -53,6 +53,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `constants.py` - Defines Quadrant enum and geometric constants
 - `exceptions.py` - Custom exceptions like ColinearPoints
 - `mixins.py` - MixinPoint and MixinDimension for CRect
+- `centered.py` - Centered mixin for shapes located by a center Point
 - `ellipse.py` - Additional geometric primitives
 - `line.py` - Line segment with geometric operations
 

@@ -2,57 +2,11 @@
 
 from __future__ import annotations
 
+from .centered import Centered
 from .point import Point, PointLike
 
 
-class _Centered:
-    """A shape positioned by the Point at its center.
-
-    The center is held by composition: a shape is not a Point and has none of
-    Point's arithmetic or polar coordinate methods.
-    """
-
-    def __init__(self, x: float = 0.0, y: float = 0.0) -> None:
-        self._p = Point(x, y)
-
-    @property
-    def x(self) -> float:
-        """The x coordinate of the center."""
-        return self._p.x
-
-    @x.setter
-    def x(self, new_x: float) -> None:
-        self._p.x = new_x
-
-    @property
-    def y(self) -> float:
-        """The y coordinate of the center."""
-        return self._p.y
-
-    @y.setter
-    def y(self, new_y: float) -> None:
-        self._p.y = new_y
-
-    @property
-    def xy(self) -> tuple[float, float]:
-        """A tuple of the center's x and y coordinates."""
-        return self._p.xy
-
-    @xy.setter
-    def xy(self, new_xy: PointLike) -> None:
-        self._p.xy = Point.from_any(new_xy, scalar_ok=False).xy
-
-    @property
-    def center(self) -> Point:
-        """A copy of the center Point; assign to move the shape."""
-        return Point(self._p.x, self._p.y)
-
-    @center.setter
-    def center(self, new_center: PointLike) -> None:
-        self.xy = new_center
-
-
-class Ellipse(_Centered):
+class Ellipse(Centered):
     """An ellipse centered at (x, y) with its major axis along the x-axis.
 
     major_axis and minor_axis are the semi-axes: the distances from the
@@ -66,7 +20,7 @@ class Ellipse(_Centered):
         minor_axis: float = 0,
         major_axis: float = 0,
     ) -> None:
-        super().__init__(x, y)
+        self._p = Point(x, y)
         self.minor_axis = minor_axis
         self.major_axis = major_axis
 
@@ -153,11 +107,11 @@ class Ellipse(_Centered):
         return (dx * b) ** 2 + (dy * a) ** 2 < (a * b) ** 2
 
 
-class Circle(_Centered):
+class Circle(Centered):
     """A circle centered at (x, y)."""
 
     def __init__(self, x: float = 0.0, y: float = 0.0, radius: float = 0) -> None:
-        super().__init__(x, y)
+        self._p = Point(x, y)
         self.radius = radius
 
     def __repr__(self) -> str:

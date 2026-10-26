@@ -4,6 +4,7 @@ import importlib
 import warnings
 from typing import TYPE_CHECKING, Any
 
+from .centered import Centered
 from .constants import Quadrant
 from .ellipse import Circle, Ellipse
 from .exceptions import ColinearPoints
@@ -16,6 +17,7 @@ if TYPE_CHECKING:
     from .crect import CRect
 
 __all__ = [
+    "Centered",
     "ColinearPoints",
     "Circle",
     "Ellipse",
