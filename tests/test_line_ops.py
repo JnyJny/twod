@@ -1,9 +1,10 @@
 """Tests for Line arithmetic and geometric operations"""
 
-import pytest
 import math
 import operator
-from twod import Point, Line
+
+import pytest
+from twod import Line, Point
 
 
 class TestLineArithmeticOperations:

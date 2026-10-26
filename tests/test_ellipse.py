@@ -1,9 +1,10 @@
 """Tests for ellipse.py module"""
 
-import pytest
 import math
+
+import pytest
 from twod import Point
-from twod.ellipse import Ellipse, Circle
+from twod.ellipse import Circle, Ellipse
 
 
 class TestEllipse:

@@ -1,8 +1,8 @@
 """ """
 
-import pytest
 import math
 
+import pytest
 from twod import Point
 
 

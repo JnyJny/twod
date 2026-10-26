@@ -1,8 +1,8 @@
 """Tests for mixins.py module"""
 
 import pytest
-from twod.mixins import MixinPoint, MixinDimension
 from twod import CPoint
+from twod.mixins import MixinDimension, MixinPoint
 
 
 class TestMixinPoint:

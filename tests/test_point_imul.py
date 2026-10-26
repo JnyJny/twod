@@ -1,7 +1,6 @@
 """test in-place Point multiplication like a human™"""
 
 import pytest
-
 from twod import Point
 
 

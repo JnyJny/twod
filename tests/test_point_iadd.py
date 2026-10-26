@@ -1,7 +1,6 @@
 """testing Point addition like a human™"""
 
 import pytest
-
 from twod import Point
 
 

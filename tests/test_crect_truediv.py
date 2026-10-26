@@ -1,5 +1,4 @@
 import pytest
-
 from twod import CPoint as Point
 from twod import CRect as Rect
 

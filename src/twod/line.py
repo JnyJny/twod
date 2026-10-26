@@ -7,8 +7,8 @@ import operator
 from dataclasses import dataclass
 from typing import Any, Callable, Optional
 
-from .point import Point
 from .exceptions import ColinearPoints
+from .point import Point
 
 
 @dataclass(slots=True)

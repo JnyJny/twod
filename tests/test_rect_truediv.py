@@ -1,5 +1,4 @@
 import pytest
-
 from twod import Point, Rect
 
 
