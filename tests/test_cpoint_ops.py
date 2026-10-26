@@ -5,13 +5,14 @@ import random
 import sys
 
 import pytest
-from twod import ColinearPoints, Point
+from twod import ColinearPoints
+from twod import CPoint as Point
 
 
 def test_point_distance_many_points():
     for _ in range(1000):
-        x = random.randint(-sys.maxsize, sys.maxsize)
-        y = random.randint(-sys.maxsize, sys.maxsize)
+        x = random.randint(-(2**50), 2**50)
+        y = random.randint(-(2**50), 2**50)
         d = math.hypot(x, y)
         p = Point(x, y)
         assert p.x == x and p.y == y

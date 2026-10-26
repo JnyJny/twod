@@ -66,7 +66,6 @@ def test_point_from_polar_not_origin_all_quadrants(x, y):
     assert p == q == i == j
 
 
-@pytest.mark.skip()
 def test_point_polar_assignment():
     p = Point()
     q = Point(1, 1)
@@ -81,7 +80,6 @@ def test_point_polar_assignment():
         p.polar = "foobar"
 
 
-@pytest.mark.skip()
 def test_point_polar_deg_assignment():
     p = Point()
     q = Point(1, 1)

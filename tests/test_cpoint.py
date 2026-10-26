@@ -142,3 +142,14 @@ def test_cpoint_midpoint_defaults_to_origin():
 def test_cpoint_rotate_defaults_to_origin():
     p = CPoint(1, 0).rotate(90, is_degrees=True, inplace=False)
     assert p == CPoint(0, 1)
+
+
+def test_cpoint_iterates_x_then_y():
+    assert list(CPoint(1, 2)) == [1, 2]
+    x, y = CPoint(3, 4)
+    assert (x, y) == (3, 4)
+
+
+def test_cpoint_distance_squared_is_exact_for_integers():
+    assert CPoint(1, 1).distance_squared(CPoint(4, 5)) == 25
+    assert CPoint(3, 4).distance_squared() == 25

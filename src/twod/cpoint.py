@@ -5,7 +5,7 @@ from __future__ import annotations
 import cmath
 import math
 import operator
-from typing import Any, Callable, Self
+from typing import Any, Callable, Iterable, Iterator, Self
 
 from .constants import Quadrant
 from .exceptions import ColinearPoints
@@ -125,6 +125,31 @@ class CPoint:
     def polar(self) -> tuple[float, float]:
         return cmath.polar(self._z)
 
+    @polar.setter
+    def polar(self, new_polar: Iterable[float | int]) -> None:
+        try:
+            radius, radians, *_ = map(float, new_polar)
+        except (TypeError, ValueError):
+            raise TypeError(
+                f"Expected an Iterable[int | float], got {new_polar!r}"
+            ) from None
+        self._z = cmath.rect(radius, radians)
+
+    @property
+    def polar_deg(self) -> tuple[float, float]:
+        radius, radians = self.polar
+        return (radius, math.degrees(radians))
+
+    @polar_deg.setter
+    def polar_deg(self, new_polar_deg: Iterable[float | int]) -> None:
+        try:
+            radius, degrees, *_ = map(float, new_polar_deg)
+        except (TypeError, ValueError):
+            raise TypeError(
+                f"Expected an Iterable[int | float], got {new_polar_deg!r}"
+            ) from None
+        self._z = cmath.rect(radius, math.radians(degrees))
+
     @property
     def is_origin(self) -> bool:
         return not bool(self._z)
@@ -148,6 +173,9 @@ class CPoint:
 
     def __len__(self) -> int:
         return 2
+
+    def __iter__(self) -> Iterator[float]:
+        return iter(self.xy)
 
     def __getitem__(self, key: int | slice) -> float | tuple[float, ...]:
         match key:
@@ -221,16 +249,27 @@ class CPoint:
         return self._op(other, operator.floordiv, inplace=True)
 
     # EJO unimplemented magic methods
-    #     - pow, ipow: no obvious geometric application
+    #     - pow, ipow: complex powers differ from Point's componentwise pow
     #     - bitwise ops: also nonsensical
 
     def _origin_if_none(self, value: Any) -> Any:
         """Returns the origin if value is None, otherwise value."""
         return self.__class__() if value is None else value
 
+    def __abs__(self) -> Self:
+        return self.__class__(abs(self.x), abs(self.y))
+
+    def __neg__(self) -> Self:
+        return self.__class__(-self.x, -self.y)
+
     def distance(self, other: Any = None) -> float:
         other = self.__class__.from_any(self._origin_if_none(other))
         return abs(self._z - other._z)
+
+    def distance_squared(self, other: Any = None) -> float:
+        other = self.__class__.from_any(self._origin_if_none(other))
+        dz = self._z - other._z
+        return dz.real**2 + dz.imag**2
 
     def _cmul(self, other: Any = None) -> complex:
         """Multiply self._z.conjugate() by other"""
