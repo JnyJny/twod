@@ -93,19 +93,22 @@ q = p.rotate(90, origin=(1, 1), is_degrees=True, inplace=False)  # new Point
 
 ### Creating Rectangles
 
-```python
-from twod import Point, Rect
+A `Rect` is an origin `(x, y)` and dimensions `(w, h)`:
 
-# From two points
-bottom_left = Point(0, 0)
-top_right = Point(10, 20)
-rect = Rect(bottom_left, top_right)
+```python
+from twod import Rect
+
+rect = Rect(0, 0, 10, 20)
 
 # Properties
-print(f"Width: {rect.width}")  # Width: 10
-print(f"Height: {rect.height}")  # Height: 20
+print(f"Width: {rect.w}")  # Width: 10
+print(f"Height: {rect.h}")  # Height: 20
 print(f"Area: {rect.area}")  # Area: 200
-print(f"Center: {rect.center}")  # Center: Point(5, 10)
+print(f"Perimeter: {rect.perimeter}")  # Perimeter: 60
+print(f"Center: {rect.center}")  # Center: Point(x=5.0, y=10.0)
+
+# Corners A, B, C and D
+print(rect.vertices)  # [Point(x=0, y=0), Point(x=10, y=0), Point(x=10, y=20), Point(x=0, y=20)]
 ```
 
 ### Rectangle Operations
@@ -113,15 +116,20 @@ print(f"Center: {rect.center}")  # Center: Point(5, 10)
 ```python
 from twod import Point, Rect
 
-rect = Rect(Point(0, 0), Point(10, 10))
+rect = Rect(0, 0, 10, 10)
 
-# Check if point is inside
-test_point = Point(5, 5)
-inside = test_point.inside(rect.bottom_left, rect.top_right)  # True
+# Check if a point is inside (points on the edge are not inside)
+Point(5, 5) in rect  # True
+(5, 5) in rect  # True, tuples work too
 
-# Rectangle arithmetic
-moved_rect = rect + Point(5, 5)  # Moves rectangle by (5, 5)
-scaled_rect = rect * 2  # Scales rectangle by 2
+# Check if one rectangle is entirely inside another
+Rect(2, 2, 3, 3) in rect  # True
+
+# Check if rectangles share any area
+rect.intersects(Rect(5, 5, 10, 10))  # True
+
+# Move a rectangle
+moved_rect = rect + (5, 5)  # Rect(x=5, y=5, w=10, h=10)
 ```
 
 ## Lines

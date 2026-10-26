@@ -50,24 +50,22 @@ polar_point = Point.from_polar(5, math.pi / 4)  # Point(3.535..., 3.535...)
 ### Rectangle Creation and Properties
 
 ```python
-from twod import Point, Rect
+from twod import Rect
 
-# Create rectangle from corners
-bottom_left = Point(10, 10)
-top_right = Point(50, 30)
-rect = Rect(bottom_left, top_right)
+# Origin (x, y) and dimensions (w, h)
+rect = Rect(10, 10, 40, 20)
 
 # Rectangle properties
-print(f"Width: {rect.width}")  # Width: 40
-print(f"Height: {rect.height}")  # Height: 20
+print(f"Width: {rect.w}")  # Width: 40
+print(f"Height: {rect.h}")  # Height: 20
 print(f"Area: {rect.area}")  # Area: 800
-print(f"Center: {rect.center}")  # Center: Point(30, 20)
+print(f"Center: {rect.center}")  # Center: Point(x=30.0, y=20.0)
 
-# Corner access
-print(f"Bottom-left: {rect.bottom_left}")
-print(f"Top-right: {rect.top_right}")
-print(f"Top-left: {rect.top_left}")
-print(f"Bottom-right: {rect.bottom_right}")
+# Corner access: A is (x, y), then B, C and D around the rectangle
+print(f"A: {rect.A}")  # A: Point(x=10, y=10)
+print(f"B: {rect.B}")  # B: Point(x=50, y=10)
+print(f"C: {rect.C}")  # C: Point(x=50, y=30)
+print(f"D: {rect.D}")  # D: Point(x=10, y=30)
 ```
 
 ### Rectangle Operations
@@ -75,21 +73,21 @@ print(f"Bottom-right: {rect.bottom_right}")
 ```python
 from twod import Point, Rect
 
-rect = Rect(Point(0, 0), Point(10, 10))
+rect = Rect(0, 0, 10, 10)
 
 # Move rectangle
-moved = rect + Point(5, 5)  # Moves to (5,5)-(15,15)
-
-# Scale rectangle
-scaled = rect * 2  # Scales to (0,0)-(20,20)
+moved = rect + Point(5, 5)  # Rect(x=5, y=5, w=10, h=10)
 
 # Check if point is inside
 test_point = Point(5, 5)
-inside = test_point.inside(rect.bottom_left, rect.top_right)  # True
+inside = test_point in rect  # True
 
 # Check if rectangles overlap
-rect2 = Rect(Point(5, 5), Point(15, 15))
-# Would need to implement overlap check manually or use spatial relationships
+rect2 = Rect(5, 5, 10, 10)
+overlap = rect.intersects(rect2)  # True
+
+# Check if one rectangle is entirely inside another
+contained = Rect(2, 2, 3, 3) in rect  # True
 ```
 
 ## Line Geometry
@@ -255,7 +253,7 @@ max_x = max(p.x for p in points)  # 20
 min_y = min(p.y for p in points)  # 5
 max_y = max(p.y for p in points)  # 20
 
-bounding_box = Rect(Point(min_x, min_y), Point(max_x, max_y))
+bounding_box = Rect(min_x, min_y, max_x - min_x, max_y - min_y)
 print(f"Bounding box: {bounding_box}")
 ```
 

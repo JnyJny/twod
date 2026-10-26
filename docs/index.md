@@ -43,9 +43,9 @@ corner = Point(10, 10)
 # Calculate distance
 distance = origin.distance(corner)  # 14.142135623730951
 
-# Create a rectangle
-rect = Rect(origin, corner)
-print(f"Area: {rect.area}")  # Area: 100.0
+# Create a rectangle from its origin (x, y) and dimensions (w, h)
+rect = Rect(0, 0, 10, 10)
+print(f"Area: {rect.area}")  # Area: 100
 
 # Create a line
 line = Line(origin, corner)
@@ -54,7 +54,7 @@ print(f"Angle: {line.angle_degrees}")  # Angle: 45.0
 
 # Check if point is inside rectangle
 test_point = Point(5, 5)
-print(f"Inside: {test_point.inside(rect.bottom_left, rect.top_right)}")  # Inside: True
+print(f"Inside: {test_point in rect}")  # Inside: True
 ```
 
 ## Why twod?

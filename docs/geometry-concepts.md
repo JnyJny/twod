@@ -265,14 +265,16 @@ A point is inside a rectangle if:
 - x-coordinate is between left and right bounds
 - y-coordinate is between bottom and top bounds
 
+Points on the edge of the rectangle are not inside.
+
 ```python
 from twod import Point, Rect
 
-rect = Rect(Point(0, 0), Point(10, 10))
+rect = Rect(0, 0, 10, 10)
 test_point = Point(5, 5)
 
 # Check if point is inside
-inside = test_point.inside(rect.bottom_left, rect.top_right)  # True
+inside = test_point in rect  # True
 ```
 
 ## Performance Considerations
