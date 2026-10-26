@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`twod` is a Python library providing two-dimensional geometric primitives for humans. It offers both traditional float-based and complex number-based implementations of Point and Rect classes.
+`twod` is a Python library providing two-dimensional geometric primitives for humans. It offers float-based Point and Rect classes. The complex number implementations (CPoint and CRect) are deprecated and will be removed in 0.5.0.
 
 ## Development Commands
 
@@ -43,11 +43,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Point Classes:**
 - `Point` (src/twod/point.py) - Traditional float-based 2D point with comprehensive geometric operations
-- `CPoint` (src/twod/cpoint.py) - Complex number-based point implementation with similar API but leveraging Python's complex type
+- `CPoint` (src/twod/cpoint.py) - Deprecated complex number-based point; removed in 0.5.0
 
 **Rectangle Classes:**
 - `Rect` (src/twod/rect.py) - Traditional rectangle using Point internally
-- `CRect` (src/twod/crect.py) - Complex number-based rectangle using CPoint and mixins
+- `CRect` (src/twod/crect.py) - Deprecated complex number-based rectangle; removed in 0.5.0
 
 **Supporting Components:**
 - `constants.py` - Defines Quadrant enum and geometric constants
@@ -58,11 +58,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Key Design Patterns
 
-1. **Dual Implementation Strategy**: The library provides both traditional float-based (Point/Rect) and complex number-based (CPoint/CRect) implementations of the same geometric concepts.
+1. **Single Implementation**: Point and Rect are the supported implementations. CPoint and CRect are deprecated, slower, and kept only until 0.5.0.
 
 2. **Comprehensive Operator Support**: All classes support arithmetic operations (+, -, *, /, //, **) both regular and in-place variants.
 
-3. **Flexible Input Handling**: CPoint.from_any() method accepts various input types (complex, dict, list, tuple, scalar, string) for convenient construction.
+3. **Flexible Input Handling**: Point.from_any() accepts various input types (complex, dict, list, tuple, scalar, string), and geometry methods accept (x, y) tuples and lists.
 
 4. **Geometric Methods**: Both point classes provide distance, dot product, cross product, and winding direction (ccw) calculations.
 
@@ -80,7 +80,7 @@ Each operation type has its own test file (e.g., `test_point_add.py`, `test_cpoi
 
 ### Development Notes
 
-- The project requires Python 3.11+ and uses structural pattern matching in CPoint
+- The project requires Python 3.11+ and uses structural pattern matching in Point.from_any
 - Complex number implementation leverages Python's cmath module for polar coordinates
 - Both implementations maintain API compatibility where possible
 - The library is designed for human-friendly usage with intuitive method names and comprehensive docstrings

@@ -63,23 +63,30 @@ radius = p2.radius  # 5.0
 angle = p2.degrees  # 53.13010235415598
 ```
 
-## Complex Number Points
+## Flexible Input
 
-For performance-critical applications, use `CPoint` which leverages Python's complex number type:
+Geometry methods accept `(x, y)` tuples and lists as well as `Point`s, and
+`Point.from_any` builds a `Point` from several kinds of value:
 
 ```python
-from twod import CPoint
+from twod import Point
 
-# Create from complex number
-cp1 = CPoint(3 + 4j)
-cp2 = CPoint.from_any((5, 6))  # Flexible constructor
+p = Point(3, 4)
 
-# Same operations as Point
-distance = cp1.distance(cp2)
-midpoint = cp1.midpoint(cp2)
+# Methods accept tuples
+distance = p.distance((5, 6))
+midpoint = p.midpoint((5, 6))
 
-# Polar operations (efficient with complex numbers)
-polar_point = CPoint.from_polar(5, 0.927)  # radius=5, angle=0.927 radians
+# Build a Point from other values
+Point.from_any((5, 6))  # from a tuple or list
+Point.from_any({"x": 1, "y": 2})  # from a dict
+Point.from_any(1 + 2j)  # from a complex number
+Point.from_any("1+2j")  # from a string
+Point.from_polar(5, 0.927)  # radius=5, angle=0.927 radians
+
+# Rotate about the origin or another point
+p.rotate(90, is_degrees=True)  # in place
+q = p.rotate(90, origin=(1, 1), is_degrees=True, inplace=False)  # new Point
 ```
 
 ## Rectangles
@@ -170,33 +177,6 @@ print(ellipse.e)  # 0.8
 print(ellipse.focus1, ellipse.focus2)  # Point(x=4.0, y=0) Point(x=-4.0, y=0)
 print(ellipse.vertices)  # [Point(x=5, y=0), Point(x=-5, y=0)]
 print(ellipse.co_vertices)  # [Point(x=0, y=3), Point(x=0, y=-3)]
-```
-
-## Choosing Between Implementations
-
-### Traditional Float-Based Classes
-- **Use when**: You need familiar x, y coordinate access
-- **Classes**: `Point`, `Rect`
-- **Best for**: General geometric calculations, educational purposes
-
-```python
-from twod import Point, Rect
-
-point = Point(3, 4)
-print(f"X: {point.x}, Y: {point.y}")  # Direct coordinate access
-```
-
-### Complex Number-Based Classes
-- **Use when**: You need performance or work with rotations/polar coordinates
-- **Classes**: `CPoint`, `CRect`
-- **Best for**: Performance-critical applications, complex geometric transformations
-
-```python
-from twod import CPoint
-
-point = CPoint(3 + 4j)
-print(f"Radius: {point.radius}")  # Efficient polar coordinates
-rotated = point * (1 + 1j)  # Efficient rotation
 ```
 
 ## Common Patterns

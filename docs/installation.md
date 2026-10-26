@@ -107,12 +107,6 @@ p1 = Point(0, 0)
 p2 = Point(3, 4)
 distance = p1.distance(p2)
 print(f"Distance: {distance}")  # Should print: Distance: 5.0
-
-# Test complex number implementation
-from twod import CPoint
-
-cp = CPoint(3 + 4j)
-print(f"CPoint radius: {cp.radius}")  # Should print: CPoint radius: 5.0
 ```
 
 If this runs without errors, twod is successfully installed!

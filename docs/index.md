@@ -6,29 +6,30 @@
 ![License](https://img.shields.io/pypi/l/twod)
 ![Monthly Downloads](https://img.shields.io/pypi/dm/twod)
 
-**twod** (pronounced "two dee") is a Python library that provides simple, intuitive two-dimensional geometric primitives designed for humans. It offers both traditional float-based and complex number-based implementations of fundamental geometric objects.
+**twod** (pronounced "two dee") is a Python library that provides simple, intuitive two-dimensional geometric primitives designed for humans. It offers points, rectangles, lines, and ellipses with arithmetic operators and common geometric calculations.
 
 ## Features
 
-- **Multiple Implementations**: Choose between traditional float-based (`Point`, `Rect`) and complex number-based (`CPoint`, `CRect`) implementations
 - **Comprehensive Geometry**: Points, rectangles, lines, and ellipses with full geometric operations
 - **Intuitive API**: Human-friendly method names and comprehensive docstrings
-- **Performance Options**: Complex number implementations leverage Python's optimized complex type
+- **Flexible Input**: Geometry methods accept `Point`s or `(x, y)` tuples and lists
 - **Rich Operations**: Full arithmetic operator support, geometric calculations, and spatial relationships
 
 ## Core Classes
 
 ### Point Classes
-- **`Point`**: Traditional float-based 2D point with comprehensive geometric operations
-- **`CPoint`**: Complex number-based point implementation with similar API but leveraging Python's complex type
+- **`Point`**: Mutable 2D point with arithmetic operators, polar coordinates, rotation, and geometric calculations
 
 ### Rectangle Classes  
-- **`Rect`**: Traditional rectangle using Point internally
-- **`CRect`**: Complex number-based rectangle using CPoint and mixins
+- **`Rect`**: Rectangle with an origin and dimensions, containment, and overlap tests
 
 ### Additional Primitives
 - **`Line`**: Line segment with geometric operations like intersections, distances, and relationships
-- **`Ellipse`**: Ellipse with eccentricity, foci, vertices, and co-vertices
+- **`Ellipse`**: Ellipse with eccentricity, foci, vertices, co-vertices, and containment
+- **`Circle`**: Circle with containment
+
+### Deprecated
+- `CPoint` and `CRect`, the complex number implementations, are deprecated and will be removed in 0.5.0. They were slower than `Point` and `Rect` and duplicated their API. `Point.from_any`, `Point.rotate` and `Point.scale` replace the useful parts.
 
 ## Quick Example
 

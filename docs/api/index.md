@@ -5,12 +5,13 @@ This section contains the complete API documentation for all twod classes and mo
 ## Core Classes
 
 ### Point Classes
-- **Point** - Traditional float-based 2D point with comprehensive geometric operations
-- **CPoint** - Complex number-based point implementation with similar API
+- **Point** - Mutable 2D point with arithmetic operators, polar coordinates, and geometric operations
 
 ### Rectangle Classes
-- **Rect** - Traditional rectangle using Point internally
-- **CRect** - Complex number-based rectangle using CPoint and mixins
+- **Rect** - Rectangle with an origin and dimensions
+
+### Deprecated
+- **CPoint**, **CRect** - Complex number implementations, removed in 0.5.0. Use Point and Rect.
 
 ### Additional Primitives
 - **Line** - Line segment with geometric operations

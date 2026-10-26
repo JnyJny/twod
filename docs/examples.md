@@ -158,45 +158,45 @@ dist3 = line.distance_to_point(point_below)  # 2.0
 closest = line.closest_point_on_line(point_above)  # Point(5, 0)
 ```
 
-## Complex Number Points
+## Flexible Input
 
-### Using CPoint for Performance
+### Tuples and Lists
 
 ```python
-from twod import CPoint
+from twod import Point
 
-# Create from complex number
-cp1 = CPoint(3 + 4j)
-cp2 = CPoint(1 + 2j)
+p = Point(3, 4)
 
-# Arithmetic operations (leverages complex number efficiency)
-sum_cp = cp1 + cp2  # CPoint(4+6j)
-diff_cp = cp1 - cp2  # CPoint(2+2j)
-product = cp1 * cp2  # Complex multiplication
-
-# Polar operations are very efficient
-radius = cp1.radius  # 5.0
-angle = cp1.radians  # 0.9272952180016122
-
-# Create from polar coordinates
-polar_cp = CPoint.from_polar(5, 1.57)  # Approximately 5j
+# Geometry methods accept (x, y) sequences
+p.distance((0, 0))  # 5.0
+p.midpoint([5, 6])  # Point(x=4.0, y=5.0)
+p.between((0, 0), (10, 10))  # True
 ```
 
-### Flexible CPoint Construction
+### Building Points with from_any
 
 ```python
-from twod import CPoint
+from twod import Point
 
-# Various ways to create CPoint
-cp1 = CPoint.from_any(3 + 4j)  # From complex
-cp2 = CPoint.from_any((3, 4))  # From tuple
-cp3 = CPoint.from_any([3, 4])  # From list
-cp4 = CPoint.from_any({"x": 3, "y": 4})  # From dict
-cp5 = CPoint.from_any("3+4j")  # From string
-cp6 = CPoint.from_any(5)  # From scalar (5+0j)
+p1 = Point.from_any(3 + 4j)  # From complex
+p2 = Point.from_any((3, 4))  # From tuple
+p3 = Point.from_any([3, 4])  # From list
+p4 = Point.from_any({"x": 3, "y": 4})  # From dict
+p5 = Point.from_any("3+4j")  # From string
+p6 = Point.from_any(5)  # From scalar: Point(5, 5)
 
-# All create equivalent points
-assert cp1 == cp2 == cp3 == cp4 == cp5
+assert p1 == p2 == p3 == p4 == p5
+```
+
+### Rotation and Scaling
+
+```python
+from twod import Point
+
+p = Point(1, 0)
+p.rotate(90, is_degrees=True)  # about the origin, in place
+q = p.rotate(180, origin=(1, 1), is_degrees=True, inplace=False)  # new Point
+p.scale(2)  # in place
 ```
 
 ## Geometric Relationships
@@ -310,36 +310,17 @@ if point_in_circle(test_point, center, 3):
 
 ## Performance Considerations
 
-### When to Use CPoint vs Point
+### Rotating Many Points
 
 ```python
-from twod import Point, CPoint
-import time
+import math
+from twod import Point
 
-# For simple operations, both are similar
-p1 = Point(3, 4)
-cp1 = CPoint(3 + 4j)
-
-
-# For complex rotations, CPoint is more efficient
-def rotate_point_traditional(point, angle):
-    """Rotate using traditional trigonometry."""
-    import math
-
-    cos_a = math.cos(angle)
-    sin_a = math.sin(angle)
-    return Point(point.x * cos_a - point.y * sin_a, point.x * sin_a + point.y * cos_a)
-
-
-def rotate_cpoint(cpoint, angle):
-    """Rotate using complex number multiplication."""
-    import cmath
-
-    rotation = cmath.exp(1j * angle)
-    return cpoint * CPoint(rotation)
-
-
-# CPoint rotation is typically faster for repeated operations
+# Compute cos and sin once for repeated rotations by the same angle
+angle = math.pi / 4
+cos, sin = math.cos(angle), math.sin(angle)
+points = [Point(i, i) for i in range(100)]
+rotated = [Point(p.x * cos - p.y * sin, p.x * sin + p.y * cos) for p in points]
 ```
 
 ### Memory and Speed Tips

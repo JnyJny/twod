@@ -199,50 +199,29 @@ Angles in twod are typically normalized to:
 - **Radians**: [0, 2π) or [-π, π)
 - **Degrees**: [0, 360°) or [-180°, 180°)
 
-## Complex Number Geometry
+## Complex Numbers and Rotation
 
-### Complex Numbers as Points
-
-Complex numbers provide an elegant way to represent 2D points:
-- **Real part**: x-coordinate
-- **Imaginary part**: y-coordinate
-- **Magnitude**: Distance from origin
-- **Argument**: Angle from positive x-axis
+A complex number can stand for a 2D point: the real part is x, the
+imaginary part is y, the magnitude is the distance from the origin, and the
+argument is the angle from the positive x-axis. Multiplying by
+`e^(i*angle)` rotates a point by `angle` radians about the origin:
 
 ```python
-from twod import CPoint
-
-# Complex number 3+4j represents point (3, 4)
-cp = CPoint(3 + 4j)
-print(f"X: {cp.x}")  # 3.0
-print(f"Y: {cp.y}")  # 4.0
-print(f"Radius: {cp.radius}")  # 5.0
-print(f"Angle: {cp.radians}")  # 0.9272952180016122
-```
-
-### Complex Arithmetic
-
-Complex number arithmetic naturally represents geometric operations:
-- **Addition**: Translation
-- **Multiplication by real**: Scaling
-- **Multiplication by complex**: Rotation and scaling
-
-```python
-from twod import CPoint
 import cmath
 
-# Translation
-cp1 = CPoint(1 + 2j)
-cp2 = CPoint(3 + 4j)
-translated = cp1 + cp2  # CPoint(4+6j)
+z = complex(1, 2)
+rotated = z * cmath.exp(1j * 0.5)
+```
 
-# Rotation by 90° (multiply by i)
-rotated = cp1 * CPoint(1j)  # CPoint(-2+1j)
+`Point.rotate` does the same job with `cos` and `sin`, and it can rotate
+about any point:
 
-# Rotation by arbitrary angle
-angle = 0.5  # radians
-rotation = cmath.exp(1j * angle)
-rotated = cp1 * CPoint(rotation)
+```python
+from twod import Point
+
+p = Point(1, 2)
+p.rotate(0.5)  # about the origin, in place
+q = p.rotate(0.5, origin=(1, 1), inplace=False)  # about (1, 1), new Point
 ```
 
 ## Geometric Relationships
@@ -315,31 +294,19 @@ closest = min(points, key=lambda p: origin.distance_squared(p))
 # closest = min(points, key=lambda p: origin.distance(p))
 ```
 
-### Complex vs Float Operations
+### Rotation
 
-Complex number operations can be more efficient for:
-- Rotations
-- Polar coordinate conversions
-- Repeated geometric transformations
+`Point.rotate` computes `cos` and `sin` on each call. To rotate many points
+by the same angle, compute them once:
 
 ```python
-from twod import Point, CPoint
+import math
+from twod import Point
 
-
-# Traditional rotation (slower)
-def rotate_point(point, angle):
-    import math
-
-    cos_a = math.cos(angle)
-    sin_a = math.sin(angle)
-    return Point(point.x * cos_a - point.y * sin_a, point.x * sin_a + point.y * cos_a)
-
-
-# Complex rotation (faster)
-def rotate_cpoint(cpoint, angle):
-    import cmath
-
-    return cpoint * CPoint(cmath.exp(1j * angle))
+angle = math.pi / 4
+cos, sin = math.cos(angle), math.sin(angle)
+points = [Point(i, i) for i in range(100)]
+rotated = [Point(p.x * cos - p.y * sin, p.x * sin + p.y * cos) for p in points]
 ```
 
 ## Numerical Precision
