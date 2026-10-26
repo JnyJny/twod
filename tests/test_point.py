@@ -88,8 +88,10 @@ def test_point_getitem_int_key():
 @pytest.mark.parametrize(
     "A, key, expected",
     [
-        [(1, 2), slice(0, 1), 1],
-        [(1, 2), slice(1, 2), 2],
+        [(1, 2), slice(0, 1), (1,)],
+        [(1, 2), slice(1, 2), (2,)],
+        [(1, 2), slice(None), (1, 2)],
+        [(1, 2), slice(None, None, -1), (2, 1)],
     ],
 )
 def test_point_getitem_slice_key(A, key, expected):
@@ -121,3 +123,15 @@ def test_point_setitem_key_out_of_range(key, point):
 def test_point_setitem_invalid_key(key, point):
     with pytest.raises(TypeError):
         point[key] = 0
+
+
+@pytest.mark.parametrize("other", [None, "foo", 1.0, {}])
+def test_point_equality_unsupported_type(other):
+    p = Point(1, 2)
+    assert p != other
+    assert not p == other
+
+
+def test_point_getitem_index_error_message(point):
+    with pytest.raises(IndexError, match="Key out of range: 2"):
+        point[2]

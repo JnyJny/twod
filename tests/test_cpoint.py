@@ -87,8 +87,10 @@ def test_cpoint_getitem_int_key():
 @pytest.mark.parametrize(
     "A, key, expected",
     [
-        [(1, 2), slice(0, 1), 1],
-        [(1, 2), slice(1, 2), 2],
+        [(1, 2), slice(0, 1), (1,)],
+        [(1, 2), slice(1, 2), (2,)],
+        [(1, 2), slice(None), (1, 2)],
+        [(1, 2), slice(None, None, -1), (2, 1)],
     ],
 )
 def test_cpoint_getitem_slice_key(A, key, expected):
@@ -120,3 +122,23 @@ def test_cpoint_setitem_key_out_of_range(key, point):
 def test_cpoint_setitem_invalid_key(key, point):
     with pytest.raises(TypeError):
         point[key] = 0
+
+
+@pytest.mark.parametrize("other", [None, "foo", object()])
+def test_cpoint_equality_unsupported_type(other):
+    p = CPoint(1, 2)
+    assert p != other
+    assert not p == other
+
+
+def test_cpoint_distance_defaults_to_origin():
+    assert CPoint(3, 4).distance() == 5
+
+
+def test_cpoint_midpoint_defaults_to_origin():
+    assert CPoint(4, 6).midpoint() == CPoint(2, 3)
+
+
+def test_cpoint_rotate_defaults_to_origin():
+    p = CPoint(1, 0).rotate(90, is_degrees=True, inplace=False)
+    assert p == CPoint(0, 1)
