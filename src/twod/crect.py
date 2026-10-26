@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import operator
-from typing import Any, Self
+from typing import Any, Callable, Self
 
-from . import CPoint as Point
+from .cpoint import CPoint as Point
 from .mixins import MixinDimension, MixinPoint
 
 
@@ -24,7 +24,7 @@ class CRect(MixinPoint, MixinDimension):
         name = self.__class__.__name__
         return f"{name}(x={self.x}, y={self.y}, w={self.w}, h={self.h})"
 
-    def __eq__(self, other: CRect) -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, self.__class__):
             return NotImplemented
         return self._p == other._p and self._d == other._d
@@ -135,7 +135,7 @@ class CRect(MixinPoint, MixinDimension):
     def _op(
         self,
         other: CRect | Point,
-        op: operator,
+        op: Callable,
         inplace: bool = False,
     ) -> Self:
 

@@ -67,7 +67,7 @@ class Ellipse(Point):
 
 @dataclass
 class Circle(Point):
-    radius: int = 0
+    radius: float = 0
 
     def __contains__(self, other):
         pass

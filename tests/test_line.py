@@ -497,3 +497,15 @@ class TestLineArithmetic:
         line = Line(Point(1, 2), Point(3, 4))
         result = line._op("invalid", operator.add)
         assert result is NotImplemented
+
+
+def test_line_default_points_are_not_shared():
+    a, b = Line(), Line()
+    a.start.x = 5
+    assert b.start.x == 0
+    assert a.start is not a.end
+
+
+def test_line_none_points_default_to_origin():
+    line = Line(None, Point(1, 1))
+    assert line.start == Point(0, 0)

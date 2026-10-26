@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 import operator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
 
 from .exceptions import ColinearPoints
@@ -25,8 +25,8 @@ class Line:
     53.13010235415598
     """
 
-    start: Point = None
-    end: Point = None
+    start: Point = field(default_factory=Point)
+    end: Point = field(default_factory=Point)
 
     def __post_init__(self):
         """Ensure start and end are Point instances."""

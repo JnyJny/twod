@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from . import CPoint as Point
+from .cpoint import CPoint as Point
 
 
 class MixinPoint:
@@ -53,7 +53,7 @@ class MixinDimension:
         self._d.y = new_h
 
     @property
-    def wh(self) -> tuple[float]:
+    def wh(self) -> tuple[float, float]:
         return self._d.xy
 
     @wh.setter
