@@ -1,5 +1,4 @@
 import pytest
-
 from twod import CPoint as Point
 from twod import CRect as Rect
 
@@ -72,3 +71,20 @@ def test_rect_ifloordiv_nonempty_rect():
     s = Rect(2, 2, 2, 2)
     r //= s
     assert r.x == 1 and r.y == 2 and r.w == 3 and r.h == 4
+
+
+def test_rect_floordiv_floors_not_divides():
+    r = Rect(5, 5, 5, 5)
+    q = r // Rect(2, 2, 2, 2)
+    assert q.x == 2 and q.y == 2 and q.w == 2 and q.h == 2
+
+
+def test_rect_floordiv_point_floors_not_divides():
+    q = Rect(5, 7, 5, 5) // Point(2, 2)
+    assert q.x == 2 and q.y == 3 and q.w == 5 and q.h == 5
+
+
+def test_rect_ifloordiv_floors_not_divides():
+    r = Rect(5, 5, 5, 5)
+    r //= Rect(2, 2, 2, 2)
+    assert r.x == 2 and r.y == 2 and r.w == 2 and r.h == 2

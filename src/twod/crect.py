@@ -159,7 +159,7 @@ class CRect(MixinPoint, MixinDimension):
         return self._op(other, operator.truediv, inplace=True)
 
     def __floordiv__(self, other: CRect | Point) -> CRect:
-        return self._op(other, operator.truediv)
+        return self._op(other, operator.floordiv)
 
     def __ifloordiv__(self, other: CRect | Point) -> CRect:
-        return self._op(other, operator.truediv, inplace=True)
+        return self._op(other, operator.floordiv, inplace=True)

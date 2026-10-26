@@ -214,8 +214,13 @@ class CPoint:
         self._z = complex(self.x / other.x, self.y / other.y)
         return self
 
+    def __floordiv__(self, other: Any) -> CPoint:
+        return self._op(other, operator.floordiv)
+
+    def __ifloordiv__(self, other: Any) -> CPoint:
+        return self._op(other, operator.floordiv, inplace=True)
+
     # EJO unimplemented magic methods
-    #     - floordiv, ifloordiv: nonsensical with complex numbers
     #     - pow, ipow: no obvious geometric application
     #     - bitwise ops: also nonsensical
 
