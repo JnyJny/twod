@@ -29,14 +29,12 @@ _open_report = "open htmlcov/index.html"
 coverage.sequence = [ "_generate_coverage", "_open_report"]
 coverage.help = "Generate and view a code coverage report."
 
-mypy.cmd = "mypy --config-file pyproject.toml src/twod"
-mypy.help = "Run mypy type checker on source."
-
 ty.cmd = "ty check src/twod"
 ty.help = "Run ty type checker on source."
 
-check.sequence = [ "mypy", "ty"]
-check.help = "Run all type checkers on source."
+ruff.cmd = "ruff format src/twod"
+ruff.help = "Run ruff format on library source."
+
 
 # requirements
 
@@ -89,6 +87,10 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [dependency-groups]
+dep = [
+    "ruff>=0.17.2",
+    "ty>=0.0.92",
+]
 dev = [
     "coverage>=7.8.1",
     "poethepoet>=0.34.0",
