@@ -10,17 +10,17 @@ This page contains practical examples showing how to use twod for common geometr
 from twod import Point
 
 # Different ways to create points
-origin = Point()                    # Point(0, 0)
-p1 = Point(3, 4)                   # Point(3, 4)
-p2 = Point(x=10, y=20)             # Point(10, 20)
-p3 = Point((5, 6))                 # From tuple
-p4 = Point([7, 8])                 # From list
+origin = Point()  # Point(0, 0)
+p1 = Point(3, 4)  # Point(3, 4)
+p2 = Point(x=10, y=20)  # Point(10, 20)
+p3 = Point((5, 6))  # From tuple
+p4 = Point([7, 8])  # From list
 
 # Point arithmetic
-result = p1 + p2                   # Point(13, 24)
-difference = p2 - p1               # Point(7, 16)
-scaled = p1 * 2                    # Point(6, 8)
-halved = p1 / 2                    # Point(1.5, 2.0)
+result = p1 + p2  # Point(13, 24)
+difference = p2 - p1  # Point(7, 16)
+scaled = p1 * 2  # Point(6, 8)
+halved = p1 / 2  # Point(1.5, 2.0)
 ```
 
 ### Distance and Angle Calculations
@@ -33,16 +33,16 @@ p1 = Point(0, 0)
 p2 = Point(3, 4)
 
 # Distance calculations
-distance = p1.distance(p2)         # 5.0
+distance = p1.distance(p2)  # 5.0
 dist_squared = p1.distance_squared(p2)  # 25.0 (faster)
 
 # Polar coordinates
-radius = p2.radius                 # 5.0
-angle_rad = p2.radians             # 0.9272952180016122
-angle_deg = p2.degrees             # 53.13010235415598
+radius = p2.radius  # 5.0
+angle_rad = p2.radians  # 0.9272952180016122
+angle_deg = p2.degrees  # 53.13010235415598
 
 # Create point from polar coordinates
-polar_point = Point.from_polar(5, math.pi/4)  # Point(3.535..., 3.535...)
+polar_point = Point.from_polar(5, math.pi / 4)  # Point(3.535..., 3.535...)
 ```
 
 ## Working with Rectangles
@@ -58,10 +58,10 @@ top_right = Point(50, 30)
 rect = Rect(bottom_left, top_right)
 
 # Rectangle properties
-print(f"Width: {rect.width}")         # Width: 40
-print(f"Height: {rect.height}")       # Height: 20
-print(f"Area: {rect.area}")           # Area: 800
-print(f"Center: {rect.center}")       # Center: Point(30, 20)
+print(f"Width: {rect.width}")  # Width: 40
+print(f"Height: {rect.height}")  # Height: 20
+print(f"Area: {rect.area}")  # Area: 800
+print(f"Center: {rect.center}")  # Center: Point(30, 20)
 
 # Corner access
 print(f"Bottom-left: {rect.bottom_left}")
@@ -78,10 +78,10 @@ from twod import Point, Rect
 rect = Rect(Point(0, 0), Point(10, 10))
 
 # Move rectangle
-moved = rect + Point(5, 5)         # Moves to (5,5)-(15,15)
+moved = rect + Point(5, 5)  # Moves to (5,5)-(15,15)
 
 # Scale rectangle
-scaled = rect * 2                  # Scales to (0,0)-(20,20)
+scaled = rect * 2  # Scales to (0,0)-(20,20)
 
 # Check if point is inside
 test_point = Point(5, 5)
@@ -105,14 +105,14 @@ end = Point(6, 8)
 line = Line(start, end)
 
 # Line properties
-print(f"Length: {line.length}")           # Length: 10.0
-print(f"Angle: {line.angle_degrees}")     # Angle: 53.13010235415598
-print(f"Slope: {line.slope}")             # Slope: 1.3333333333333333
-print(f"Midpoint: {line.midpoint}")       # Midpoint: Point(3, 4)
+print(f"Length: {line.length}")  # Length: 10.0
+print(f"Angle: {line.angle_degrees}")  # Angle: 53.13010235415598
+print(f"Slope: {line.slope}")  # Slope: 1.3333333333333333
+print(f"Midpoint: {line.midpoint}")  # Midpoint: Point(3, 4)
 
 # Direction and vector
-print(f"Direction: {line.direction}")     # Unit vector
-print(f"Vector: {line.vector}")           # Vector from start to end
+print(f"Direction: {line.direction}")  # Unit vector
+print(f"Vector: {line.vector}")  # Vector from start to end
 ```
 
 ### Line Intersections
@@ -121,18 +121,18 @@ print(f"Vector: {line.vector}")           # Vector from start to end
 from twod import Point, Line
 
 # Create two intersecting lines
-line1 = Line(Point(0, 0), Point(4, 4))    # Diagonal line
-line2 = Line(Point(0, 4), Point(4, 0))    # Opposite diagonal
+line1 = Line(Point(0, 0), Point(4, 4))  # Diagonal line
+line2 = Line(Point(0, 4), Point(4, 0))  # Opposite diagonal
 
 # Find intersection
 intersection = line1.intersection_point(line2)
-print(f"Intersection: {intersection}")     # Point(2, 2)
+print(f"Intersection: {intersection}")  # Point(2, 2)
 
 # Check if lines intersect
 intersects = line1.intersects_line(line2)  # True
 
 # Parallel lines don't intersect
-line3 = Line(Point(0, 1), Point(4, 5))    # Parallel to line1
+line3 = Line(Point(0, 1), Point(4, 5))  # Parallel to line1
 no_intersection = line1.intersection_point(line3)  # None
 ```
 
@@ -151,8 +151,8 @@ point_below = Point(5, -2)
 
 # Calculate distances
 dist1 = line.distance_to_point(point_on_line)  # 0.0
-dist2 = line.distance_to_point(point_above)    # 3.0
-dist3 = line.distance_to_point(point_below)    # 2.0
+dist2 = line.distance_to_point(point_above)  # 3.0
+dist3 = line.distance_to_point(point_below)  # 2.0
 
 # Find closest point on line
 closest = line.closest_point_on_line(point_above)  # Point(5, 0)
@@ -166,17 +166,17 @@ closest = line.closest_point_on_line(point_above)  # Point(5, 0)
 from twod import CPoint
 
 # Create from complex number
-cp1 = CPoint(3+4j)
-cp2 = CPoint(1+2j)
+cp1 = CPoint(3 + 4j)
+cp2 = CPoint(1 + 2j)
 
 # Arithmetic operations (leverages complex number efficiency)
-sum_cp = cp1 + cp2                 # CPoint(4+6j)
-diff_cp = cp1 - cp2                # CPoint(2+2j)
-product = cp1 * cp2                # Complex multiplication
+sum_cp = cp1 + cp2  # CPoint(4+6j)
+diff_cp = cp1 - cp2  # CPoint(2+2j)
+product = cp1 * cp2  # Complex multiplication
 
 # Polar operations are very efficient
-radius = cp1.radius                # 5.0
-angle = cp1.radians                # 0.9272952180016122
+radius = cp1.radius  # 5.0
+angle = cp1.radians  # 0.9272952180016122
 
 # Create from polar coordinates
 polar_cp = CPoint.from_polar(5, 1.57)  # Approximately 5j
@@ -188,12 +188,12 @@ polar_cp = CPoint.from_polar(5, 1.57)  # Approximately 5j
 from twod import CPoint
 
 # Various ways to create CPoint
-cp1 = CPoint.from_any(3+4j)           # From complex
-cp2 = CPoint.from_any((3, 4))         # From tuple
-cp3 = CPoint.from_any([3, 4])         # From list
+cp1 = CPoint.from_any(3 + 4j)  # From complex
+cp2 = CPoint.from_any((3, 4))  # From tuple
+cp3 = CPoint.from_any([3, 4])  # From list
 cp4 = CPoint.from_any({"x": 3, "y": 4})  # From dict
-cp5 = CPoint.from_any("3+4j")         # From string
-cp6 = CPoint.from_any(5)              # From scalar (5+0j)
+cp5 = CPoint.from_any("3+4j")  # From string
+cp6 = CPoint.from_any(5)  # From scalar (5+0j)
 
 # All create equivalent points
 assert cp1 == cp2 == cp3 == cp4 == cp5
@@ -216,7 +216,7 @@ collinear = p1.is_colinear(p2, p3)  # True
 # Check counter-clockwise orientation
 p4 = Point(1, 2)
 try:
-    ccw = p1.is_ccw(p2, p4)         # True
+    ccw = p1.is_ccw(p2, p4)  # True
 except ColinearPoints:
     print("Points are collinear")
 ```
@@ -247,13 +247,7 @@ angle = horizontal.angle_between(diagonal)  # In radians
 from twod import Point, Rect
 
 # Set of points
-points = [
-    Point(10, 5),
-    Point(20, 15),
-    Point(5, 10),
-    Point(15, 8),
-    Point(12, 20)
-]
+points = [Point(10, 5), Point(20, 15), Point(5, 10), Point(15, 8), Point(12, 20)]
 
 # Find bounding box
 min_x = min(p.x for p in points)  # 5
@@ -275,14 +269,11 @@ vertices = [
     Point(0, 0),
     Point(3, 0),
     Point(1.5, 2.6),
-    Point(0, 0)  # Close the polygon
+    Point(0, 0),  # Close the polygon
 ]
 
 # Calculate perimeter
-perimeter = sum(
-    vertices[i].distance(vertices[i+1]) 
-    for i in range(len(vertices)-1)
-)
+perimeter = sum(vertices[i].distance(vertices[i + 1]) for i in range(len(vertices) - 1))
 print(f"Perimeter: {perimeter}")
 ```
 
@@ -291,13 +282,16 @@ print(f"Perimeter: {perimeter}")
 ```python
 from twod import Point, Line
 
+
 def lines_intersect(line1, line2):
     """Check if two line segments intersect."""
     return line1.intersects_line(line2)
 
+
 def point_in_circle(point, center, radius):
     """Check if point is inside circle."""
     return point.distance(center) <= radius
+
 
 # Example usage
 line1 = Line(Point(0, 0), Point(10, 10))
@@ -324,24 +318,26 @@ import time
 
 # For simple operations, both are similar
 p1 = Point(3, 4)
-cp1 = CPoint(3+4j)
+cp1 = CPoint(3 + 4j)
+
 
 # For complex rotations, CPoint is more efficient
 def rotate_point_traditional(point, angle):
     """Rotate using traditional trigonometry."""
     import math
+
     cos_a = math.cos(angle)
     sin_a = math.sin(angle)
-    return Point(
-        point.x * cos_a - point.y * sin_a,
-        point.x * sin_a + point.y * cos_a
-    )
+    return Point(point.x * cos_a - point.y * sin_a, point.x * sin_a + point.y * cos_a)
+
 
 def rotate_cpoint(cpoint, angle):
     """Rotate using complex number multiplication."""
     import cmath
+
     rotation = cmath.exp(1j * angle)
     return cpoint * CPoint(rotation)
+
 
 # CPoint rotation is typically faster for repeated operations
 ```

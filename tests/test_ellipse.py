@@ -54,10 +54,10 @@ class TestEllipse:
         """Test focus point calculations"""
         e = Ellipse(x=2, y=3, minor_axis=3, major_axis=5)
         expected_e = math.sqrt(1 - (3**2 / 5**2))
-        
+
         focus1 = e.focus1
         focus2 = e.focus2
-        
+
         assert focus1.x == expected_e
         assert focus1.y == 3
         assert focus2.x == -expected_e
@@ -67,7 +67,7 @@ class TestEllipse:
         """Test vertices calculation"""
         e = Ellipse(x=2, y=3, minor_axis=3, major_axis=5)
         vertices = e.vertices
-        
+
         assert len(vertices) == 2
         assert vertices[0] == Point(2 + 5, 3)  # (7, 3)
         assert vertices[1] == Point(-(2 + 5), 3)  # (-7, 3)
@@ -76,7 +76,7 @@ class TestEllipse:
         """Test co-vertices calculation"""
         e = Ellipse(x=2, y=3, minor_axis=3, major_axis=5)
         co_vertices = e.co_vertices
-        
+
         assert len(co_vertices) == 2
         assert co_vertices[0] == Point(2, 3 + 3)  # (2, 6)
         assert co_vertices[1] == Point(2, -(3 + 3))  # (2, -6)

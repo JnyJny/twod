@@ -19,7 +19,7 @@ p3 = Point((5, 6))
 p4 = Point([7, 8])
 
 print(f"Origin: {origin}")  # Origin: Point(0, 0)
-print(f"P1: {p1}")         # P1: Point(3, 4)
+print(f"P1: {p1}")  # P1: Point(3, 4)
 ```
 
 ### Point Arithmetic
@@ -35,11 +35,11 @@ c = a + b  # Point(4, 6)
 d = b - a  # Point(2, 2)
 
 # Multiplication and division
-e = a * 2    # Point(2, 4)
-f = b / 2    # Point(1.5, 2.0)
+e = a * 2  # Point(2, 4)
+f = b / 2  # Point(1.5, 2.0)
 
 # Dot product and cross product
-dot = a.dot(b)    # 11 (1*3 + 2*4)
+dot = a.dot(b)  # 11 (1*3 + 2*4)
 cross = a.cross(b)  # -2 (1*4 - 2*3)
 ```
 
@@ -71,7 +71,7 @@ For performance-critical applications, use `CPoint` which leverages Python's com
 from twod import CPoint
 
 # Create from complex number
-cp1 = CPoint(3+4j)
+cp1 = CPoint(3 + 4j)
 cp2 = CPoint.from_any((5, 6))  # Flexible constructor
 
 # Same operations as Point
@@ -95,9 +95,9 @@ top_right = Point(10, 20)
 rect = Rect(bottom_left, top_right)
 
 # Properties
-print(f"Width: {rect.width}")    # Width: 10
+print(f"Width: {rect.width}")  # Width: 10
 print(f"Height: {rect.height}")  # Height: 20
-print(f"Area: {rect.area}")      # Area: 200
+print(f"Area: {rect.area}")  # Area: 200
 print(f"Center: {rect.center}")  # Center: Point(5, 10)
 ```
 
@@ -114,7 +114,7 @@ inside = test_point.inside(rect.bottom_left, rect.top_right)  # True
 
 # Rectangle arithmetic
 moved_rect = rect + Point(5, 5)  # Moves rectangle by (5, 5)
-scaled_rect = rect * 2           # Scales rectangle by 2
+scaled_rect = rect * 2  # Scales rectangle by 2
 ```
 
 ## Lines
@@ -130,10 +130,10 @@ end = Point(3, 4)
 line = Line(start, end)
 
 # Properties
-print(f"Length: {line.length}")           # Length: 5.0
-print(f"Angle: {line.angle_degrees}")     # Angle: 53.13010235415598
-print(f"Midpoint: {line.midpoint}")       # Midpoint: Point(1.5, 2.0)
-print(f"Slope: {line.slope}")             # Slope: 1.3333333333333333
+print(f"Length: {line.length}")  # Length: 5.0
+print(f"Angle: {line.angle_degrees}")  # Angle: 53.13010235415598
+print(f"Midpoint: {line.midpoint}")  # Midpoint: Point(1.5, 2.0)
+print(f"Slope: {line.slope}")  # Slope: 1.3333333333333333
 ```
 
 ### Line Operations
@@ -146,7 +146,7 @@ line2 = Line(Point(0, 2), Point(2, 0))
 
 # Intersection
 intersection = line1.intersection_point(line2)  # Point(1, 1)
-intersects = line1.intersects_line(line2)       # True
+intersects = line1.intersects_line(line2)  # True
 
 # Distance from point to line
 test_point = Point(1, 0)
@@ -168,8 +168,8 @@ center = Point(0, 0)
 ellipse = Ellipse(center, semi_major_axis=5, semi_minor_axis=3)
 
 # Properties
-print(f"Area: {ellipse.area}")           # Area: 47.12388980384689
-print(f"Perimeter: {ellipse.perimeter}") # Approximate perimeter
+print(f"Area: {ellipse.area}")  # Area: 47.12388980384689
+print(f"Perimeter: {ellipse.perimeter}")  # Approximate perimeter
 print(f"Eccentricity: {ellipse.eccentricity}")  # 0.8
 ```
 
@@ -195,9 +195,9 @@ print(f"X: {point.x}, Y: {point.y}")  # Direct coordinate access
 ```python
 from twod import CPoint
 
-point = CPoint(3+4j)
-print(f"Radius: {point.radius}")       # Efficient polar coordinates
-rotated = point * (1+1j)               # Efficient rotation
+point = CPoint(3 + 4j)
+print(f"Radius: {point.radius}")  # Efficient polar coordinates
+rotated = point * (1 + 1j)  # Efficient rotation
 ```
 
 ## Common Patterns
@@ -231,7 +231,7 @@ line1 = Line(Point(0, 0), Point(1, 0))  # Horizontal
 line2 = Line(Point(0, 0), Point(1, 1))  # 45 degrees
 
 angle_rad = line1.angle_between(line2)  # π/4 radians
-angle_deg = angle_rad * 180 / 3.14159   # ~45 degrees
+angle_deg = angle_rad * 180 / 3.14159  # ~45 degrees
 ```
 
 ## Next Steps

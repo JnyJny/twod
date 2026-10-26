@@ -147,33 +147,33 @@ class TestMixinIntegration:
     def test_mixin_integration_with_crect(self):
         """Test that mixins work properly with CRect"""
         from twod import CRect
-        
+
         rect = CRect(1, 2, 3, 4)
-        
+
         # Test MixinPoint functionality
         assert rect.x == 1
         assert rect.y == 2
         assert rect.xy == (1, 2)
-        
+
         # Test MixinDimension functionality
         assert rect.w == 3
         assert rect.h == 4
         assert rect.wh == (3, 4)
-        
+
         # Test setters
         rect.x = 10
         rect.y = 20
         rect.w = 30
         rect.h = 40
-        
+
         assert rect.x == 10
         assert rect.y == 20
         assert rect.w == 30
         assert rect.h == 40
-        
+
         # Test xy and wh setters
         rect.xy = (5, 6)
         rect.wh = (7, 8)
-        
+
         assert rect.xy == (5, 6)
         assert rect.wh == (7, 8)

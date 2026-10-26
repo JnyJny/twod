@@ -110,7 +110,8 @@ print(f"Distance: {distance}")  # Should print: Distance: 5.0
 
 # Test complex number implementation
 from twod import CPoint
-cp = CPoint(3+4j)
+
+cp = CPoint(3 + 4j)
 print(f"CPoint radius: {cp.radius}")  # Should print: CPoint radius: 5.0
 ```
 

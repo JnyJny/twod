@@ -1,5 +1,4 @@
-""" test in-place Point multiplication like a human™
-"""
+"""test in-place Point multiplication like a human™"""
 
 import pytest
 

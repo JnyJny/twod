@@ -36,7 +36,6 @@ $ poetry shell
 ## Usage Examples
 
 ```python
-
 from twod import Point
 
 o = Point()

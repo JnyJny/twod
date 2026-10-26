@@ -46,7 +46,8 @@ class TestCPointFromAny:
     def test_from_any_list_polar(self):
         """Test from_any with list in polar coordinates"""
         import math
-        radius, theta = 5, math.pi/4
+
+        radius, theta = 5, math.pi / 4
         result = CPoint.from_any([radius, theta], is_polar=True)
         expected_x = radius * math.cos(theta)
         expected_y = radius * math.sin(theta)
@@ -56,7 +57,8 @@ class TestCPointFromAny:
     def test_from_any_tuple_polar(self):
         """Test from_any with tuple in polar coordinates"""
         import math
-        radius, theta = 3, math.pi/6
+
+        radius, theta = 3, math.pi / 6
         result = CPoint.from_any((radius, theta), is_polar=True)
         expected_x = radius * math.cos(theta)
         expected_y = radius * math.sin(theta)

@@ -1,5 +1,5 @@
-"""testing in-place Point subtraction like a human™
-"""
+"""testing in-place Point subtraction like a human™"""
+
 import pytest
 
 from twod import CPoint as Point

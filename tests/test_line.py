@@ -88,15 +88,15 @@ class TestLineProperties:
         """Test angle in radians"""
         line = Line(Point(0, 0), Point(1, 0))
         assert line.angle_radians == 0.0
-        
+
         line = Line(Point(0, 0), Point(0, 1))
-        assert abs(line.angle_radians - math.pi/2) < 1e-10
+        assert abs(line.angle_radians - math.pi / 2) < 1e-10
 
     def test_angle_degrees(self):
         """Test angle in degrees"""
         line = Line(Point(0, 0), Point(1, 0))
         assert line.angle_degrees == 0.0
-        
+
         line = Line(Point(0, 0), Point(0, 1))
         assert abs(line.angle_degrees - 90.0) < 1e-10
 
@@ -108,10 +108,10 @@ class TestLineProperties:
     def test_slope_vertical(self):
         """Test slope of vertical line"""
         line = Line(Point(5, 0), Point(5, 10))
-        assert line.slope == float('inf')
-        
+        assert line.slope == float("inf")
+
         line = Line(Point(5, 10), Point(5, 0))
-        assert line.slope == float('-inf')
+        assert line.slope == float("-inf")
 
     def test_slope_diagonal(self):
         """Test slope of diagonal line"""
@@ -137,7 +137,7 @@ class TestLineProperties:
         """Test horizontal line detection"""
         line = Line(Point(0, 5), Point(10, 5))
         assert line.is_horizontal
-        
+
         line = Line(Point(0, 0), Point(0, 5))
         assert not line.is_horizontal
 
@@ -145,7 +145,7 @@ class TestLineProperties:
         """Test vertical line detection"""
         line = Line(Point(5, 0), Point(5, 10))
         assert line.is_vertical
-        
+
         line = Line(Point(0, 0), Point(5, 0))
         assert not line.is_vertical
 
@@ -221,8 +221,12 @@ class TestLineOperations:
         """Test finding closest point on line"""
         line = Line(Point(0, 0), Point(10, 0))
         assert line.closest_point_on_line(Point(5, 3)) == Point(5, 0)
-        assert line.closest_point_on_line(Point(-2, 0)) == Point(0, 0)  # Clamped to start
-        assert line.closest_point_on_line(Point(15, 0)) == Point(10, 0)  # Clamped to end
+        assert line.closest_point_on_line(Point(-2, 0)) == Point(
+            0, 0
+        )  # Clamped to start
+        assert line.closest_point_on_line(Point(15, 0)) == Point(
+            10, 0
+        )  # Clamped to end
 
 
 class TestLineIntersections:
@@ -305,7 +309,7 @@ class TestLineRelationships:
         line1 = Line(Point(0, 0), Point(1, 0))
         line2 = Line(Point(0, 0), Point(0, 1))
         angle = line1.angle_between(line2)
-        assert abs(angle - math.pi/2) < 1e-10
+        assert abs(angle - math.pi / 2) < 1e-10
 
     def test_angle_between_parallel(self):
         """Test angle between parallel lines"""
@@ -319,7 +323,7 @@ class TestLineRelationships:
         line1 = Line(Point(0, 0), Point(1, 0))
         line2 = Line(Point(0, 0), Point(1, 1))
         angle = line1.angle_between(line2)
-        assert abs(angle - math.pi/4) < 1e-10
+        assert abs(angle - math.pi / 4) < 1e-10
 
     def test_contains_point_true(self):
         """Test point containment on line"""
