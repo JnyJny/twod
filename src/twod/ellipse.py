@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from .centered import Centered
+from .mixins import Centered
 from .point import Point, PointLike
 
 

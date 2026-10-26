@@ -4,11 +4,11 @@ import importlib
 import warnings
 from typing import TYPE_CHECKING, Any
 
-from .centered import Centered
 from .constants import Quadrant
 from .ellipse import Circle, Ellipse
 from .exceptions import ColinearPoints
 from .line import Line
+from .mixins import Centered
 from .point import Point
 from .rect import Rect
 

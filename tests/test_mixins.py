@@ -1,4 +1,4 @@
-"""Tests for mixins.py module"""
+"""Tests for the mixins package"""
 
 import pytest
 from twod import CPoint

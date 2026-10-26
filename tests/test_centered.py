@@ -10,9 +10,9 @@ class Disc(Centered):
 
 
 def test_centered_exported_from_package():
-    import twod.centered
+    import twod.mixins
 
-    assert Centered is twod.centered.Centered
+    assert Centered is twod.mixins.Centered
 
 
 def test_centered_properties():

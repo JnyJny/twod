@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from .point import Point, PointLike
+from ..point import Point, PointLike
 
 
 class Centered:
