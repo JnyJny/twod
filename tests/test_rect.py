@@ -159,3 +159,43 @@ def test_rect_sides(w, h):
     r = Rect(1, 1, w, h)
     assert r.sides == [abs(w), abs(h), abs(w), abs(h)]
     assert r.perimeter == 2 * (abs(w) + abs(h))
+
+
+@pytest.mark.parametrize("operand", [(2, 3), [2, 3], Point(2, 3)])
+def test_rect_ops_accept_point_like(operand):
+    r = Rect(10, 20, 4, 6)
+    assert r + operand == Rect(12, 23, 4, 6)
+    assert r - operand == Rect(8, 17, 4, 6)
+    assert r * operand == Rect(20, 60, 4, 6)
+    assert r / operand == Rect(5, 20 / 3, 4, 6)
+    assert r // operand == Rect(5, 6, 4, 6)
+
+
+@pytest.mark.parametrize("operand", [(2, 3), [2, 3]])
+def test_rect_inplace_ops_accept_point_like(operand):
+    r = Rect(10, 20, 4, 6)
+    r += operand
+    assert r == Rect(12, 23, 4, 6)
+    r -= operand
+    assert r == Rect(10, 20, 4, 6)
+    r *= operand
+    assert r == Rect(20, 60, 4, 6)
+    r //= operand
+    assert r == Rect(10, 20, 4, 6)
+    r /= operand
+    assert r == Rect(5, 20 / 3, 4, 6)
+
+
+@pytest.mark.parametrize("operand", ["foo", None, object(), 3])
+def test_rect_ops_reject_other_types(operand):
+    r = Rect(1, 2, 3, 4)
+    with pytest.raises(TypeError):
+        r + operand
+    with pytest.raises(TypeError):
+        r += operand
+
+
+@pytest.mark.parametrize("point", [(1, 1), [1, 1]])
+def test_rect_contains_point_like(point):
+    assert point in Rect(0, 0, 2, 2)
+    assert (5, 5) not in Rect(0, 0, 2, 2)

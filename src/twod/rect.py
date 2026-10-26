@@ -5,7 +5,7 @@ from __future__ import annotations
 import operator
 from typing import Callable, Self
 
-from .point import Point
+from .point import Point, PointLike
 
 
 class Rect:
@@ -131,7 +131,7 @@ class Rect:
             return NotImplemented
         return self._p == other._p and self._d == other._d
 
-    def __contains__(self, other: Point | Rect) -> bool:
+    def __contains__(self, other: Rect | PointLike) -> bool:
         """If other is a twod.Point, returns True if the point is inside this
         rectangle.
 
@@ -141,6 +141,9 @@ class Rect:
 
         Raises TypeError if other is not a Point or Rect.
         """
+
+        if isinstance(other, (tuple, list)):
+            other = Point.from_any(other)
 
         if not isinstance(other, (Rect, Point)):
             raise TypeError(f"expected Point or Rect, got {other!r}")
@@ -176,7 +179,20 @@ class Rect:
             and other_top < bottom
         )
 
-    def _op(self, other: Point | Rect, op: Callable) -> Rect:
+    @staticmethod
+    def _operand(other: object) -> Point | Rect | None:
+        """Returns other as a Point or Rect, or None if it is neither."""
+        if isinstance(other, (tuple, list)):
+            return Point.from_any(other)
+        if isinstance(other, (Point, Rect)):
+            return other
+        return None
+
+    def _op(self, other: Rect | PointLike, op: Callable) -> Rect:
+        operand = self._operand(other)
+        if operand is None:
+            return NotImplemented
+        other = operand
         x = op(self.x, other.x)
         y = op(self.y, other.y)
         if isinstance(other, Rect):
@@ -187,7 +203,11 @@ class Rect:
             h = self.h
         return Rect(x, y, w, h)
 
-    def _iop(self, other: Point | Rect, op: Callable) -> Self:
+    def _iop(self, other: Rect | PointLike, op: Callable) -> Self:
+        operand = self._operand(other)
+        if operand is None:
+            return NotImplemented
+        other = operand
         self.x = op(self.x, other.x)
         self.y = op(self.y, other.y)
         if isinstance(other, Rect):
@@ -195,43 +215,43 @@ class Rect:
             self.h = op(self.h, other.h)
         return self
 
-    def __add__(self, other: Point | Rect) -> Rect:
+    def __add__(self, other: Rect | PointLike) -> Rect:
         return self._op(other, operator.add)
 
-    def __iadd__(self, other: Point | Rect) -> Self:
+    def __iadd__(self, other: Rect | PointLike) -> Self:
         return self._iop(other, operator.add)
 
-    def __sub__(self, other: Point | Rect) -> Rect:
+    def __sub__(self, other: Rect | PointLike) -> Rect:
         return self._op(other, operator.sub)
 
-    def __isub__(self, other: Point | Rect) -> Self:
+    def __isub__(self, other: Rect | PointLike) -> Self:
         return self._iop(other, operator.sub)
 
-    def __mul__(self, other: Point | Rect) -> Rect:
+    def __mul__(self, other: Rect | PointLike) -> Rect:
         return self._op(other, operator.mul)
 
-    def __imul__(self, other: Point | Rect) -> Self:
+    def __imul__(self, other: Rect | PointLike) -> Self:
         return self._iop(other, operator.mul)
 
-    def __truediv__(self, other: Point | Rect) -> Rect:
+    def __truediv__(self, other: Rect | PointLike) -> Rect:
         try:
             return self._op(other, operator.truediv)
         except ZeroDivisionError:
             raise ZeroDivisionError(repr(other)) from None
 
-    def __itruediv__(self, other: Point | Rect) -> Self:
+    def __itruediv__(self, other: Rect | PointLike) -> Self:
         try:
             return self._iop(other, operator.truediv)
         except ZeroDivisionError:
             raise ZeroDivisionError(repr(other)) from None
 
-    def __floordiv__(self, other: Point | Rect) -> Rect:
+    def __floordiv__(self, other: Rect | PointLike) -> Rect:
         try:
             return self._op(other, operator.floordiv)
         except ZeroDivisionError:
             raise ZeroDivisionError(repr(other)) from None
 
-    def __ifloordiv__(self, other: Point | Rect) -> Self:
+    def __ifloordiv__(self, other: Rect | PointLike) -> Self:
         try:
             return self._iop(other, operator.floordiv)
         except ZeroDivisionError:
