@@ -245,11 +245,45 @@ class TestLineIntersections:
         line2 = Line(Point(0, 1), Point(2, 1))
         assert not line1.intersects_line(line2)
 
-    def test_intersects_line_collinear(self):
-        """Test intersection of collinear lines"""
+    def test_intersects_line_collinear_overlapping(self):
+        """Collinear segments that overlap intersect"""
         line1 = Line(Point(0, 0), Point(2, 0))
         line2 = Line(Point(1, 0), Point(3, 0))
-        assert not line1.intersects_line(line2)  # Parallel but collinear
+        assert line1.intersects_line(line2)
+        assert line2.intersects_line(line1)
+
+    def test_intersects_line_collinear_contained(self):
+        """A collinear segment inside another intersects it"""
+        line1 = Line(Point(0, 0), Point(4, 4))
+        line2 = Line(Point(1, 1), Point(2, 2))
+        assert line1.intersects_line(line2)
+        assert line2.intersects_line(line1)
+
+    def test_intersects_line_collinear_touching(self):
+        """Collinear segments sharing only an endpoint intersect"""
+        line1 = Line(Point(0, 0), Point(1, 0))
+        line2 = Line(Point(1, 0), Point(2, 0))
+        assert line1.intersects_line(line2)
+
+    def test_intersects_line_collinear_disjoint(self):
+        """Collinear segments with a gap do not intersect"""
+        line1 = Line(Point(0, 0), Point(1, 0))
+        line2 = Line(Point(2, 0), Point(3, 0))
+        assert not line1.intersects_line(line2)
+        assert not line2.intersects_line(line1)
+
+    def test_intersects_line_point_on_line(self):
+        """A zero-length segment on a line intersects it"""
+        line = Line(Point(0, 0), Point(2, 0))
+        assert line.intersects_line(Line(Point(1, 0), Point(1, 0)))
+        assert Line(Point(1, 0), Point(1, 0)).intersects_line(line)
+        assert not line.intersects_line(Line(Point(1, 1), Point(1, 1)))
+
+    def test_intersection_point_collinear_overlapping(self):
+        """Overlapping collinear segments share no single intersection point"""
+        line1 = Line(Point(0, 0), Point(2, 0))
+        line2 = Line(Point(1, 0), Point(3, 0))
+        assert line1.intersection_point(line2) is None
 
     def test_intersection_point_crossing(self):
         """Test intersection point of crossing lines"""

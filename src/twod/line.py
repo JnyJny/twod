@@ -201,9 +201,32 @@ class Line:
             other: Other line segment to check intersection with
 
         Returns:
-            True if the line segments intersect
+            True if the line segments share at least one point, including
+            collinear segments that overlap or touch
         """
-        return self.intersection_point(other) is not None
+        if self.intersection_point(other) is not None:
+            return True
+        return self._overlaps_collinear(other)
+
+    def _overlaps_collinear(self, other: Line) -> bool:
+        """True if other lies on the same line as this segment and
+        shares at least one point with it."""
+        if self.is_point:
+            return other.contains_point(self.start)
+        if other.is_point:
+            return self.contains_point(other.start)
+
+        v = self.vector
+        if (
+            abs(v.cross(other.start - self.start)) > 1e-10
+            or abs(v.cross(other.end - self.start)) > 1e-10
+        ):
+            return False
+
+        length_squared = v.dot(v)
+        t0 = (other.start - self.start).dot(v) / length_squared
+        t1 = (other.end - self.start).dot(v) / length_squared
+        return max(min(t0, t1), 0) <= min(max(t0, t1), 1)
 
     def intersection_point(self, other: Line) -> Optional[Point]:
         """Find the intersection point of two line segments.
@@ -212,7 +235,9 @@ class Line:
             other: Other line segment to find intersection with
 
         Returns:
-            Intersection point if it exists, None otherwise
+            Intersection point if the segments cross at a single point, None
+            otherwise. Parallel and collinear segments return None, even if
+            collinear segments overlap; use intersects_line to test those.
         """
         # Get line segment vectors
         d1 = self.vector
