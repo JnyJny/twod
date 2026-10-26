@@ -18,8 +18,17 @@ class Ellipse(Point):
 
     @property
     def e(self) -> float:
-        """The eccentricity of this ellipse expressed as a float."""
-        return (1 - (self.minor_axis**2 / self.major_axis**2)) ** 0.5
+        """The eccentricity of this ellipse expressed as a float.
+
+        Raises ValueError if minor_axis is longer than major_axis.
+        """
+        ratio = self.minor_axis**2 / self.major_axis**2
+        if ratio > 1:
+            raise ValueError(
+                f"minor_axis {self.minor_axis} is longer than "
+                f"major_axis {self.major_axis}"
+            )
+        return (1 - ratio) ** 0.5
 
     @property
     def focal_distance(self) -> float:

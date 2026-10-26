@@ -6,7 +6,7 @@ from .cpoint import CPoint as Point
 
 
 class MixinPoint:
-    _p = Point()
+    _p: Point
 
     @property
     def x(self) -> float:
@@ -34,7 +34,7 @@ class MixinPoint:
 
 
 class MixinDimension:
-    _d = Point()
+    _d: Point
 
     @property
     def w(self) -> float:

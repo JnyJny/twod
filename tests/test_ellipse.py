@@ -177,3 +177,9 @@ class TestCircle:
         """Test circle with zero radius"""
         c = Circle(radius=0)
         assert c.radius == 0
+
+
+def test_eccentricity_minor_longer_than_major_raises():
+    e = Ellipse(minor_axis=5, major_axis=3)
+    with pytest.raises(ValueError, match="longer than"):
+        _ = e.e

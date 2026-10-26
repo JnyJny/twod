@@ -177,3 +177,8 @@ class TestMixinIntegration:
 
         assert rect.xy == (5, 6)
         assert rect.wh == (7, 8)
+
+
+def test_mixin_point_has_no_shared_default():
+    assert not hasattr(MixinPoint, "_p")
+    assert not hasattr(MixinDimension, "_d")
