@@ -13,17 +13,22 @@ from .exceptions import ColinearPoints
 
 @dataclass(slots=True)
 class Point:
-    x: float = 0.0
-    y: float = 0.0
     """A two dimensional geometric point.
 
     The Point class represents a geometric point with 'x' and 'y' attributes
     and has many helpful properties and methods.
 
+    Points are mutable, so they are not hashable and cannot be put in a set
+    or used as a dictionary key. Use the xy property when you need a
+    hashable value.
+
     >>> p = Point()
     >>> p.is_origin
     True
     """
+
+    x: float = 0.0
+    y: float = 0.0
 
     @classmethod
     def from_polar(

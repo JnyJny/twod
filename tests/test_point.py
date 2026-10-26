@@ -134,3 +134,14 @@ def test_point_equality_unsupported_type(other):
 def test_point_getitem_index_error_message(point):
     with pytest.raises(IndexError, match="Key out of range: 2"):
         point[2]
+
+
+def test_point_has_class_docstring():
+    assert Point.__doc__ and "two dimensional" in Point.__doc__
+
+
+def test_point_is_unhashable_and_xy_is_hashable():
+    p = Point(1, 2)
+    with pytest.raises(TypeError):
+        hash(p)
+    assert {p.xy: "found"}[(1, 2)] == "found"
