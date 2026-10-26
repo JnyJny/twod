@@ -50,7 +50,7 @@ class Centered:
 
     @xy.setter
     def xy(self, new_xy: PointLike) -> None:
-        self._p.xy = Point.from_any(new_xy, scalar_ok=False).xy
+        self._p.xy = Point.from_point_like(new_xy).xy
 
     @property
     def center(self) -> Point:

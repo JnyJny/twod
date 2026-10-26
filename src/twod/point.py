@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import math
 import operator
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
-from typing import Any, Callable, Iterable, Optional, Self
+from typing import Any, Callable, Optional, Self
 
 from .constants import EPSILON_EXP_MINUS_1, Quadrant
 from .exceptions import ColinearPoints
@@ -55,6 +56,29 @@ class Point:
         return point
 
     @classmethod
+    def from_point_like(cls, value: Any) -> Self:
+        """Returns a Point made from a Point or a sequence of two numbers.
+
+        This is the conversion used wherever a Point is expected, so lists,
+        tuples, ranges and other Sequences work in place of a Point. Strings,
+        bytes, sets, dicts, complex numbers and iterators are not accepted;
+        use from_any for the more lenient conversions.
+
+        Raises TypeError if value is neither a Point nor a Sequence, and
+        IndexError if a Sequence has fewer than two items.
+
+        :param value: Point or Sequence[float]
+        :return: Point
+        """
+        if isinstance(value, Point):
+            return value
+        if isinstance(value, Sequence) and not isinstance(
+            value, (str, bytes, bytearray)
+        ):
+            return cls(value[0], value[1])
+        raise TypeError(f"expected a Point or a sequence of two numbers, got {value!r}")
+
+    @classmethod
     def from_any(
         cls,
         value: Any,
@@ -67,7 +91,7 @@ class Point:
         - Point: returned as is
         - complex: real is x, imaginary is y
         - dict: keys "x" and "y"
-        - list or tuple: (x, y), or (radius, radians) if is_polar is True
+        - Sequence: (x, y), or (radius, radians) if is_polar is True
         - int or float: used for both x and y if scalar_ok is True
         - str: parsed as a complex number, e.g. "1+2j"
 
@@ -75,7 +99,7 @@ class Point:
 
         :param value: Any
         :param bool scalar_ok: accept a lone number as (value, value)
-        :param bool is_polar: interpret a list or tuple as (radius, radians)
+        :param bool is_polar: interpret a Sequence as (radius, radians)
         :return: Point
         """
         match value:
@@ -85,10 +109,6 @@ class Point:
                 return cls(value.real, value.imag)
             case dict():
                 return cls(value["x"], value["y"])
-            case list() | tuple():
-                if is_polar:
-                    return cls.from_polar(value[0], value[1])
-                return cls(value[0], value[1])
             case float() | int():
                 if scalar_ok:
                     return cls(value, value)
@@ -99,15 +119,14 @@ class Point:
                     pass
                 else:
                     return cls(z.real, z.imag)
+            case bytes() | bytearray():
+                pass
+            case Sequence():
+                if is_polar:
+                    return cls.from_polar(value[0], value[1])
+                return cls.from_point_like(value)
 
         raise TypeError(f"unable to convert {value!r} to {cls.__name__}")
-
-    @staticmethod
-    def _coerce(value: Any) -> Point:
-        """Returns value as a Point without accepting a lone number."""
-        if isinstance(value, Point):
-            return value
-        return Point.from_any(value, scalar_ok=False)
 
     @property
     def is_origin(self) -> bool:
@@ -191,15 +210,9 @@ class Point:
         return (self.radius, self.radians)
 
     @polar.setter
-    def polar(self, new_values: Iterable[int | float]) -> None:
-        try:
-            radius, radians, *_ = map(float, new_values)
-            self._polar_to_cartesian(radius, radians)
-            return
-        except (TypeError, ValueError):
-            raise TypeError(
-                f"Expected a Iterable[int |float], got {new_values!r}"
-            ) from None
+    def polar(self, new_values: PointLike) -> None:
+        radius, radians = self._floats(new_values)
+        self._polar_to_cartesian(radius, radians)
 
     @property
     def polar_deg(self) -> tuple[float, float]:
@@ -212,15 +225,9 @@ class Point:
         return (radius, math.degrees(radians))
 
     @polar_deg.setter
-    def polar_deg(self, new_values: Iterable[int | float]) -> None:
-        try:
-            radius, degrees, *_ = map(float, new_values)
-            self._polar_to_cartesian(radius=radius, radians=math.radians(degrees))
-            return
-        except (TypeError, ValueError):
-            raise TypeError(
-                f"Expected a Iterable[int|float], got {new_values!r}"
-            ) from None
+    def polar_deg(self, new_values: PointLike) -> None:
+        radius, degrees = self._floats(new_values)
+        self._polar_to_cartesian(radius=radius, radians=math.radians(degrees))
 
     @property
     def xy(self) -> tuple[float, float]:
@@ -228,16 +235,24 @@ class Point:
         return (self.x, self.y)
 
     @xy.setter
-    def xy(self, new_values: Iterable[int | float]) -> None:
+    def xy(self, new_values: PointLike) -> None:
+        self.x, self.y = self._floats(new_values)
+
+    @staticmethod
+    def _floats(value: Any) -> tuple[float, float]:
+        """Returns the two numbers in a Point-like value as floats.
+
+        Raises TypeError if value is not Point-like or does not hold numbers.
+        """
         try:
-            self.x, self.y, *_ = map(float, new_values)
-            return
-        except (TypeError, ValueError):
+            point = Point.from_point_like(value)
+            return float(point.x), float(point.y)
+        except (TypeError, ValueError, IndexError):
             raise TypeError(
-                f"Expected a Iterable[int | float], got {new_values!r}"
+                f"Expected a Point or a sequence of two numbers, got {value!r}"
             ) from None
 
-    def __iter__(self) -> Iterable[float]:
+    def __iter__(self) -> Iterator[float]:
         """An iterator over x and y coordinates."""
         return iter(self.xy)
 
@@ -279,81 +294,85 @@ class Point:
             return
         raise IndexError(f"Key out of range: {key}")
 
+    @staticmethod
+    def _operands(other: Any) -> tuple[float, float] | None:
+        """Returns the x and y operands for other, or None if unsupported.
+
+        A lone number applies to both coordinates.
+        """
+        if isinstance(other, Point):
+            return other.x, other.y
+        if isinstance(other, (float, int)):
+            return other, other
+        try:
+            point = Point.from_point_like(other)
+        except TypeError:
+            return None
+        return point.x, point.y
+
     def _op(self, other: Any, op: Callable) -> Point:
         """Applies op to each component of Point and other."""
-
         if isinstance(other, Point):
             return Point(op(self.x, other.x), op(self.y, other.y))
-
-        if isinstance(other, (list, tuple)):
-            return Point(op(self[0], other[0]), op(self[1], other[1]))
-
-        if isinstance(other, (float, int)):
-            return Point(op(self.x, other), op(self.y, other))
-
-        return NotImplemented
+        operands = self._operands(other)
+        if operands is None:
+            return NotImplemented
+        return Point(op(self.x, operands[0]), op(self.y, operands[1]))
 
     def _iop(self, other: Any, op: Callable) -> Self:
         """Updates the current Point by applying op to each component
         of other."""
-
         if isinstance(other, Point):
-            self.x = op(self.x, other.x)
-            self.y = op(self.y, other.y)
+            x, y = op(self.x, other.x), op(self.y, other.y)
+            self.x, self.y = x, y
             return self
+        operands = self._operands(other)
+        if operands is None:
+            return NotImplemented
+        x, y = op(self.x, operands[0]), op(self.y, operands[1])
+        self.x, self.y = x, y
+        return self
 
-        if isinstance(other, (list, tuple)):
-            self.x = op(self.x, other[0])
-            self.y = op(self.y, other[1])
-            return self
-
-        if isinstance(other, (float, int)):
-            self.x = op(self.x, other)
-            self.y = op(self.y, other)
-            return self
-
-        return NotImplemented
-
-    def __add__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+    def __add__(self, other: PointLike | float) -> Point:
         return self._op(other, operator.add)
 
-    def __iadd__(self, other: Point | Iterable[int | float] | int | float) -> Self:
+    def __iadd__(self, other: PointLike | float) -> Self:
         return self._iop(other, operator.add)
 
-    def __sub__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+    def __sub__(self, other: PointLike | float) -> Point:
         return self._op(other, operator.sub)
 
-    def __isub__(self, other: Point | Iterable[int | float] | int | float) -> Self:
+    def __isub__(self, other: PointLike | float) -> Self:
         return self._iop(other, operator.sub)
 
-    def __mul__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+    def __mul__(self, other: PointLike | float) -> Point:
         return self._op(other, operator.mul)
 
-    def __imul__(self, other: Point | Iterable[int | float] | int | float) -> Self:
+    def __imul__(self, other: PointLike | float) -> Self:
         try:
             return self._iop(other, operator.mul)
         except ZeroDivisionError:
             raise ZeroDivisionError(repr(other)) from None
 
-    def __truediv__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+    def __truediv__(self, other: PointLike | float) -> Point:
         try:
             return self._op(other, operator.truediv)
         except ZeroDivisionError:
             raise ZeroDivisionError(repr(other)) from None
 
-    def __itruediv__(self, other: Point | Iterable[int | float] | int | float) -> Self:
+    def __itruediv__(self, other: PointLike | float) -> Self:
         try:
             return self._iop(other, operator.truediv)
         except ZeroDivisionError:
             raise ZeroDivisionError(repr(other)) from None
 
-    def __floordiv__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+    def __floordiv__(self, other: PointLike | float) -> Point:
         try:
             return self._op(other, operator.floordiv)
         except ZeroDivisionError:
             raise ZeroDivisionError(repr(other)) from None
 
-    def __ifloordiv__(self, other: Point | Iterable[int | float] | int | float) -> Self:
+    def __ifloordiv__(self, other: PointLike | float) -> Self:
         return self._iop(other, operator.floordiv)
 
     def __pow__(self, exponent: float) -> Point:
@@ -379,7 +398,7 @@ class Point:
         :param other: Point or (x, y) sequence
         :return: float
         """
-        other = Point() if other is None else self._coerce(other)
+        other = Point() if other is None else Point.from_point_like(other)
         return math.hypot(other.x - self.x, other.y - self.y)
 
     def distance_squared(self, other: PointLike | None = None) -> float:
@@ -391,7 +410,7 @@ class Point:
         :param other: Point or (x, y) sequence
         :return: float
         """
-        other = Point() if other is None else self._coerce(other)
+        other = Point() if other is None else Point.from_point_like(other)
         dx, dy = other.x - self.x, other.y - self.y
         return dx * dx + dy * dy
 
@@ -401,7 +420,7 @@ class Point:
         :param other: Point or (x, y) sequence
         :return: float
         """
-        other = self._coerce(other)
+        other = Point.from_point_like(other)
         return self.x * other.x + self.y * other.y
 
     def cross(self, other: PointLike) -> float:
@@ -410,7 +429,7 @@ class Point:
         :param other: Point or (x, y) sequence
         :return: float
         """
-        other = self._coerce(other)
+        other = Point.from_point_like(other)
         return (self.x * other.y) - (self.y * other.x)
 
     def ccw(self, b: PointLike, c: PointLike) -> float:
@@ -427,7 +446,7 @@ class Point:
         :param c: Point or (x, y) sequence
         :return: float
         """
-        b, c = self._coerce(b), self._coerce(c)
+        b, c = Point.from_point_like(b), Point.from_point_like(c)
         return ((b.x - self.x) * (c.y - self.y)) - ((c.x - self.x) * (b.y - self.y))
 
     def is_ccw(self, b: PointLike, c: PointLike) -> bool:
@@ -463,7 +482,7 @@ class Point:
         :param other: Point or (x, y) sequence
         :return: Point
         """
-        other = Point() if other is None else self._coerce(other)
+        other = Point() if other is None else Point.from_point_like(other)
         return Point((self.x + other.x) / 2, (self.y + other.y) / 2)
 
     def between(self, p: PointLike, q: PointLike) -> bool:
@@ -477,7 +496,7 @@ class Point:
         :param q: Point or (x, y) sequence
         :return: bool
         """
-        p, q = self._coerce(p), self._coerce(q)
+        p, q = Point.from_point_like(p), Point.from_point_like(q)
 
         i = min(p.x, q.x) <= self.x <= max(p.x, q.x)
         j = min(p.y, q.y) <= self.y <= max(p.y, q.y)
@@ -498,7 +517,7 @@ class Point:
 
         # XXX re-implement with ccw and a list of points instead of a pair
 
-        p, q = self._coerce(p), self._coerce(q)
+        p, q = Point.from_point_like(p), Point.from_point_like(q)
 
         i = min(p.x, q.x) < self.x < max(p.x, q.x)
         j = min(p.y, q.y) < self.y < max(p.y, q.y)
@@ -526,7 +545,7 @@ class Point:
         if is_degrees:
             theta = math.radians(theta)
 
-        origin = Point() if origin is None else self._coerce(origin)
+        origin = Point() if origin is None else Point.from_point_like(origin)
 
         cos, sin = math.cos(theta), math.sin(theta)
         dx, dy = self.x - origin.x, self.y - origin.y
@@ -550,5 +569,5 @@ class Point:
         return self
 
 
-PointLike = Point | tuple[float, float] | list[float]
+PointLike = Point | Sequence[float]
 """Anything the geometry methods accept in place of a Point."""

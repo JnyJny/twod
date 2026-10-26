@@ -15,8 +15,8 @@ p1 = Point(3, 4)
 p2 = Point(x=10, y=20)
 
 # From tuple or list
-p3 = Point((5, 6))
-p4 = Point([7, 8])
+p3 = Point.from_any((5, 6))
+p4 = Point.from_any([7, 8])
 
 print(f"Origin: {origin}")  # Origin: Point(0, 0)
 print(f"P1: {p1}")  # P1: Point(3, 4)
@@ -65,15 +65,16 @@ angle = p2.degrees  # 53.13010235415598
 
 ## Flexible Input
 
-Geometry methods accept `(x, y)` tuples and lists as well as `Point`s, and
-`Point.from_any` builds a `Point` from several kinds of value:
+Geometry methods and operators accept a `Point` or any sequence of two
+numbers, such as a tuple, list or range. `Point.from_any` builds a `Point` from
+several more kinds of value:
 
 ```python
 from twod import Point
 
 p = Point(3, 4)
 
-# Methods accept tuples
+# Methods accept any sequence of two numbers
 distance = p.distance((5, 6))
 midpoint = p.midpoint((5, 6))
 

@@ -62,7 +62,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 2. **Comprehensive Operator Support**: All classes support arithmetic operations (+, -, *, /, //, **) both regular and in-place variants.
 
-3. **Flexible Input Handling**: Point.from_any() accepts various input types (complex, dict, list, tuple, scalar, string), and geometry methods accept (x, y) tuples and lists.
+3. **Flexible Input Handling**: Point.from_any() accepts various input types (complex, dict, list, tuple, scalar, string), and Point.from_point_like() is the conversion used wherever a Point is expected: a Point or a Sequence of two numbers, not strings, sets, dicts, complex numbers or iterators.
 
 4. **Geometric Methods**: Both point classes provide distance, dot product, cross product, and winding direction (ccw) calculations.
 

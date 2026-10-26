@@ -13,8 +13,8 @@ from twod import Point
 origin = Point()  # Point(0, 0)
 p1 = Point(3, 4)  # Point(3, 4)
 p2 = Point(x=10, y=20)  # Point(10, 20)
-p3 = Point((5, 6))  # From tuple
-p4 = Point([7, 8])  # From list
+p3 = Point.from_any((5, 6))  # From tuple
+p4 = Point.from_any([7, 8])  # From list
 
 # Point arithmetic
 result = p1 + p2  # Point(13, 24)

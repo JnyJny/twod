@@ -12,7 +12,7 @@
 
 - **Comprehensive Geometry**: Points, rectangles, lines, and ellipses with full geometric operations
 - **Intuitive API**: Human-friendly method names and comprehensive docstrings
-- **Flexible Input**: Geometry methods accept `Point`s or `(x, y)` tuples and lists
+- **Flexible Input**: Geometry methods accept a `Point` or any sequence of two numbers, such as a tuple or list
 - **Rich Operations**: Full arithmetic operator support, geometric calculations, and spatial relationships
 
 ## Core Classes

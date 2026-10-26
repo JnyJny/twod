@@ -101,7 +101,7 @@ class Ellipse(Centered):
 
         Raises TypeError if other cannot be converted to a Point.
         """
-        other = Point.from_any(other, scalar_ok=False)
+        other = Point.from_point_like(other)
         dx, dy = other.x - self.x, other.y - self.y
         a, b = self.major_axis, self.minor_axis
         return (dx * b) ** 2 + (dy * a) ** 2 < (a * b) ** 2
@@ -132,6 +132,6 @@ class Circle(Centered):
 
         Raises TypeError if other cannot be converted to a Point.
         """
-        other = Point.from_any(other, scalar_ok=False)
+        other = Point.from_point_like(other)
         dx, dy = other.x - self.x, other.y - self.y
         return self.radius > 0 and dx * dx + dy * dy < self.radius**2

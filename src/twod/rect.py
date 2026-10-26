@@ -143,11 +143,11 @@ class Rect:
         Raises TypeError if other is not a Point or Rect.
         """
 
-        if isinstance(other, (tuple, list)):
-            other = Point.from_any(other)
-
-        if not isinstance(other, (Rect, Point)):
-            raise TypeError(f"expected Point or Rect, got {other!r}")
+        if not isinstance(other, Rect):
+            try:
+                other = Point.from_point_like(other)
+            except TypeError:
+                raise TypeError(f"expected Point or Rect, got {other!r}") from None
 
         left, top, right, bottom = self._extent
 
@@ -192,11 +192,12 @@ class Rect:
     @staticmethod
     def _operand(other: object) -> Point | Rect | None:
         """Returns other as a Point or Rect, or None if it is neither."""
-        if isinstance(other, (tuple, list)):
-            return Point.from_any(other)
-        if isinstance(other, (Point, Rect)):
+        if isinstance(other, Rect):
             return other
-        return None
+        try:
+            return Point.from_point_like(other)
+        except TypeError:
+            return None
 
     def _op(self, other: Rect | PointLike, op: Callable) -> Rect:
         operand = self._operand(other)
