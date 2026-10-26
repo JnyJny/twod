@@ -109,8 +109,7 @@ def test_point_radius_property():
     assert p.radius == r
 
     p.radius *= 3
-    # XXX epsilons are biting me here.
-    assert round(p.radius, 13) == round(3 * r, 13)
+    assert p.radius == pytest.approx(3 * r)
 
     p.radius = 0
     assert p.radius == 0 and p.is_origin

@@ -4,9 +4,6 @@ import pytest
 from twod import CPoint as Point
 from twod import CRect as Rect
 
-# EJO Needs more literal edge case testing where points are on the
-#     edges of a rectangle.
-
 
 def test_point_in_crect() -> None:
     p = Point(1, 1)

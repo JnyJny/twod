@@ -515,8 +515,6 @@ class Point:
         :return: bool
         """
 
-        # XXX re-implement with ccw and a list of points instead of a pair
-
         p, q = Point.from_point_like(p), Point.from_point_like(q)
 
         i = min(p.x, q.x) < self.x < max(p.x, q.x)
