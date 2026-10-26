@@ -3,9 +3,6 @@
 import pytest
 from twod import Point, Rect
 
-# EJO Needs more literal edge case testing where points are on the
-#     edges of a rectangle.
-
 
 def test_point_in_rect() -> None:
     p = Point(1, 1)
@@ -117,3 +114,51 @@ def test_rect_corner_a_is_a_copy() -> None:
     r = Rect(1, 2, 3, 4)
     r.A.x = 99
     assert r.x == 1
+
+
+def corner_contains(rect: Rect, point: Point) -> bool:
+    """The definition of containment via the rectangle's corners."""
+    return point.inside(rect.A, rect.C) and point.inside(rect.B, rect.D)
+
+
+RECT_ARGS = [
+    (x, y, w, h)
+    for x in (-2, 0, 1.5)
+    for y in (-1, 0, 2)
+    for w in (-3, 0, 1, 4)
+    for h in (-2, 0, 1, 3)
+]
+GRID = [(x / 2, y / 2) for x in range(-8, 10) for y in range(-8, 10)]
+
+
+def test_point_in_rect_matches_corner_definition() -> None:
+    for args in RECT_ARGS:
+        rect = Rect(*args)
+        for xy in GRID:
+            assert (xy in rect) is corner_contains(rect, Point(*xy)), (args, xy)
+
+
+def test_rect_in_rect_matches_corner_definition() -> None:
+    outer = Rect(0, 0, 10, 10)
+    for args in RECT_ARGS:
+        inner = Rect(*args)
+        expected = all(corner_contains(outer, v) for v in inner.vertices)
+        assert (inner in outer) is expected, args
+
+
+@pytest.mark.parametrize(
+    "point",
+    [(0, 0), (5, 0), (10, 0), (0, 5), (10, 5), (0, 10), (5, 10), (10, 10)],
+)
+def test_point_on_rect_edge_or_corner_is_not_inside(point) -> None:
+    assert point not in Rect(0, 0, 10, 10)
+
+
+def test_point_in_rect_with_negative_dimensions() -> None:
+    assert (-1, -1) in Rect(0, 0, -5, -5)
+    assert (1, 1) not in Rect(0, 0, -5, -5)
+
+
+def test_nothing_is_inside_a_zero_area_rect() -> None:
+    assert (0, 0) not in Rect(0, 0, 0, 0)
+    assert (1, 0) not in Rect(0, 0, 2, 0)

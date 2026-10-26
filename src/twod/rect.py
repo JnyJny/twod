@@ -148,16 +148,25 @@ class Rect:
         if not isinstance(other, (Rect, Point)):
             raise TypeError(f"expected Point or Rect, got {other!r}")
 
-        if isinstance(other, Point):
-            return other.inside(self.A, self.C) and other.inside(self.B, self.D)
+        left, top, right, bottom = self._extent
 
-        return all(v in self for v in other.vertices)
+        if isinstance(other, Point):
+            return left < other.x < right and top < other.y < bottom
+
+        other_left, other_top, other_right, other_bottom = other._extent
+        return (
+            left < other_left
+            and other_right < right
+            and top < other_top
+            and other_bottom < bottom
+        )
 
     @property
     def _extent(self) -> tuple[float, float, float, float]:
         """The (min x, min y, max x, max y) of this rectangle."""
-        x2, y2 = self.x + self.w, self.y + self.h
-        return min(self.x, x2), min(self.y, y2), max(self.x, x2), max(self.y, y2)
+        x, y = self._p.x, self._p.y
+        x2, y2 = x + self._d.x, y + self._d.y
+        return min(x, x2), min(y, y2), max(x, x2), max(y, y2)
 
     def intersects(self, other: Rect) -> bool:
         """True if this rectangle and other share any area.
