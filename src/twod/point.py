@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 import operator
 from dataclasses import dataclass
-from typing import Any, Callable, Iterable, Optional
+from typing import Any, Callable, Iterable, Optional, Self
 
 from .constants import EPSILON_EXP_MINUS_1, Quadrant
 from .exceptions import ColinearPoints
@@ -37,7 +37,7 @@ class Point:
         theta: float,
         is_radians: bool = True,
         translate: Optional[Point] = None,
-    ) -> Point:
+    ) -> Self:
         """Returns a Point with polar coordinates (R, ϴ).
 
         The point is genrated relative to the origin.
@@ -238,7 +238,7 @@ class Point:
 
         return NotImplemented
 
-    def _iop(self, other: Any, op: Callable) -> Point:
+    def _iop(self, other: Any, op: Callable) -> Self:
         """Updates the current Point by applying op to each component
         of other."""
 
@@ -262,19 +262,19 @@ class Point:
     def __add__(self, other: Point | Iterable[int | float] | int | float) -> Point:
         return self._op(other, operator.add)
 
-    def __iadd__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+    def __iadd__(self, other: Point | Iterable[int | float] | int | float) -> Self:
         return self._iop(other, operator.add)
 
     def __sub__(self, other: Point | Iterable[int | float] | int | float) -> Point:
         return self._op(other, operator.sub)
 
-    def __isub__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+    def __isub__(self, other: Point | Iterable[int | float] | int | float) -> Self:
         return self._iop(other, operator.sub)
 
     def __mul__(self, other: Point | Iterable[int | float] | int | float) -> Point:
         return self._op(other, operator.mul)
 
-    def __imul__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+    def __imul__(self, other: Point | Iterable[int | float] | int | float) -> Self:
         try:
             return self._iop(other, operator.mul)
         except ZeroDivisionError:
@@ -286,7 +286,7 @@ class Point:
         except ZeroDivisionError:
             raise ZeroDivisionError(repr(other)) from None
 
-    def __itruediv__(self, other: Point | Iterable[int | float] | int | float) -> Point:
+    def __itruediv__(self, other: Point | Iterable[int | float] | int | float) -> Self:
         try:
             return self._iop(other, operator.truediv)
         except ZeroDivisionError:
@@ -298,15 +298,13 @@ class Point:
         except ZeroDivisionError:
             raise ZeroDivisionError(repr(other)) from None
 
-    def __ifloordiv__(
-        self, other: Point | Iterable[int | float] | int | float
-    ) -> Point:
+    def __ifloordiv__(self, other: Point | Iterable[int | float] | int | float) -> Self:
         return self._iop(other, operator.floordiv)
 
     def __pow__(self, exponent: float) -> Point:
         return Point(self.x**exponent, self.y**exponent)
 
-    def __ipow__(self, exponent: float) -> Point:
+    def __ipow__(self, exponent: float) -> Self:
         self.x **= exponent
         self.y **= exponent
         return self

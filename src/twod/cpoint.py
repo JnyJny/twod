@@ -5,7 +5,7 @@ from __future__ import annotations
 import cmath
 import math
 import operator
-from typing import Any, Callable
+from typing import Any, Callable, Self
 
 from .constants import Quadrant
 from .exceptions import ColinearPoints
@@ -20,7 +20,7 @@ class CPoint:
         value: Any,
         scalar_ok: bool = True,
         is_polar: bool = False,
-    ) -> CPoint:
+    ) -> Self:
         match value:
             case cls():
                 return value
@@ -46,7 +46,7 @@ class CPoint:
         raise TypeError(f"unable to convert {value!r} to {cls}")
 
     @classmethod
-    def from_complex(cls, z: complex) -> CPoint:
+    def from_complex(cls, z: complex) -> Self:
         return cls(z.real, z.imag)
 
     @classmethod
@@ -56,7 +56,7 @@ class CPoint:
         theta: float,
         is_radians: bool = True,
         translate: Any = None,
-    ) -> CPoint:
+    ) -> Self:
 
         if not is_radians:
             theta = math.radians(theta)
@@ -175,7 +175,7 @@ class CPoint:
             return NotImplemented
         return cmath.isclose(self._z, other._z)
 
-    def _op(self, other: Any, op: Callable, inplace: bool = False) -> CPoint:
+    def _op(self, other: Any, op: Callable, inplace: bool = False) -> Self:
         try:
             other = self.__class__.from_any(other)
             x, y = op(self.x, other.x), op(self.y, other.y)
@@ -187,37 +187,37 @@ class CPoint:
         except (TypeError, IndexError, KeyError):
             return NotImplemented
 
-    def __add__(self, other: Any) -> CPoint:
+    def __add__(self, other: Any) -> Self:
         return self._op(other, operator.add)
 
-    def __iadd__(self, other: Any) -> CPoint:
+    def __iadd__(self, other: Any) -> Self:
         return self._op(other, operator.add, inplace=True)
 
-    def __sub__(self, other: Any) -> CPoint:
+    def __sub__(self, other: Any) -> Self:
         return self._op(other, operator.sub)
 
-    def __isub__(self, other: Any) -> CPoint:
+    def __isub__(self, other: Any) -> Self:
         return self._op(other, operator.sub, inplace=True)
 
-    def __mul__(self, other: Any) -> CPoint:
+    def __mul__(self, other: Any) -> Self:
         return self._op(other, operator.mul)
 
-    def __imul__(self, other: Any) -> CPoint:
+    def __imul__(self, other: Any) -> Self:
         return self._op(other, operator.mul, inplace=True)
 
-    def __truediv__(self, other: Any) -> CPoint:
+    def __truediv__(self, other: Any) -> Self:
         other = self.__class__.from_any(other)
         return self.__class__(self.x / other.x, self.y / other.y)
 
-    def __itruediv__(self, other: Any) -> CPoint:
+    def __itruediv__(self, other: Any) -> Self:
         other = self.__class__.from_any(other)
         self._z = complex(self.x / other.x, self.y / other.y)
         return self
 
-    def __floordiv__(self, other: Any) -> CPoint:
+    def __floordiv__(self, other: Any) -> Self:
         return self._op(other, operator.floordiv)
 
-    def __ifloordiv__(self, other: Any) -> CPoint:
+    def __ifloordiv__(self, other: Any) -> Self:
         return self._op(other, operator.floordiv, inplace=True)
 
     # EJO unimplemented magic methods
@@ -268,7 +268,7 @@ class CPoint:
     def is_colinear(self, b: Any, c: Any) -> bool:
         return self.ccw(b, c) == 0
 
-    def midpoint(self, other: Any = None) -> CPoint:
+    def midpoint(self, other: Any = None) -> Self:
         other = self.__class__.from_any(self._origin_if_none(other))
         return (self + other) / 2
 
@@ -298,7 +298,7 @@ class CPoint:
         origin: Any = None,
         is_degrees: bool = False,
         inplace: bool = True,
-    ) -> CPoint:
+    ) -> Self:
 
         if is_degrees:
             theta = math.radians(theta)
@@ -315,6 +315,6 @@ class CPoint:
 
         return self.__class__.from_complex(result)
 
-    def scale(self, scale: float | int) -> CPoint:
+    def scale(self, scale: float | int) -> Self:
         self._z *= cmath.rect(scale, 0)
         return self

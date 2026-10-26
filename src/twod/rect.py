@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import operator
-from typing import Callable
+from typing import Callable, Self
 
 from .point import Point
 
@@ -187,7 +187,7 @@ class Rect:
             h = self.h
         return Rect(x, y, w, h)
 
-    def _iop(self, other: Point | Rect, op: Callable) -> Rect:
+    def _iop(self, other: Point | Rect, op: Callable) -> Self:
         self.x = op(self.x, other.x)
         self.y = op(self.y, other.y)
         if isinstance(other, Rect):
@@ -198,19 +198,19 @@ class Rect:
     def __add__(self, other: Point | Rect) -> Rect:
         return self._op(other, operator.add)
 
-    def __iadd__(self, other: Point | Rect) -> Rect:
+    def __iadd__(self, other: Point | Rect) -> Self:
         return self._iop(other, operator.add)
 
     def __sub__(self, other: Point | Rect) -> Rect:
         return self._op(other, operator.sub)
 
-    def __isub__(self, other: Point | Rect) -> Rect:
+    def __isub__(self, other: Point | Rect) -> Self:
         return self._iop(other, operator.sub)
 
     def __mul__(self, other: Point | Rect) -> Rect:
         return self._op(other, operator.mul)
 
-    def __imul__(self, other: Point | Rect) -> Rect:
+    def __imul__(self, other: Point | Rect) -> Self:
         return self._iop(other, operator.mul)
 
     def __truediv__(self, other: Point | Rect) -> Rect:
@@ -219,7 +219,7 @@ class Rect:
         except ZeroDivisionError:
             raise ZeroDivisionError(repr(other)) from None
 
-    def __itruediv__(self, other: Point | Rect) -> Rect:
+    def __itruediv__(self, other: Point | Rect) -> Self:
         try:
             return self._iop(other, operator.truediv)
         except ZeroDivisionError:
@@ -231,7 +231,7 @@ class Rect:
         except ZeroDivisionError:
             raise ZeroDivisionError(repr(other)) from None
 
-    def __ifloordiv__(self, other: Point | Rect) -> Rect:
+    def __ifloordiv__(self, other: Point | Rect) -> Self:
         try:
             return self._iop(other, operator.floordiv)
         except ZeroDivisionError:

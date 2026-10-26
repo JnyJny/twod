@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import operator
-from typing import Any
+from typing import Any, Self
 
 from . import CPoint as Point
 from .mixins import MixinDimension, MixinPoint
@@ -137,7 +137,7 @@ class CRect(MixinPoint, MixinDimension):
         other: CRect | Point,
         op: operator,
         inplace: bool = False,
-    ) -> CRect:
+    ) -> Self:
 
         match other:
             case CRect():
@@ -155,32 +155,32 @@ class CRect(MixinPoint, MixinDimension):
             return self
         return self.__class__(p.x, p.y, d.x, d.y)
 
-    def __add__(self, other: CRect | Point) -> CRect:
+    def __add__(self, other: CRect | Point) -> Self:
         return self._op(other, operator.add)
 
-    def __iadd__(self, other: CRect | Point) -> CRect:
+    def __iadd__(self, other: CRect | Point) -> Self:
         return self._op(other, operator.add, inplace=True)
 
-    def __sub__(self, other: CRect | Point) -> CRect:
+    def __sub__(self, other: CRect | Point) -> Self:
         return self._op(other, operator.sub)
 
-    def __isub__(self, other: CRect | Point) -> CRect:
+    def __isub__(self, other: CRect | Point) -> Self:
         return self._op(other, operator.sub, inplace=True)
 
-    def __mul__(self, other: CRect | Point) -> CRect:
+    def __mul__(self, other: CRect | Point) -> Self:
         return self._op(other, operator.mul)
 
-    def __imul__(self, other: CRect | Point) -> CRect:
+    def __imul__(self, other: CRect | Point) -> Self:
         return self._op(other, operator.mul, inplace=True)
 
-    def __truediv__(self, other: CRect | Point) -> CRect:
+    def __truediv__(self, other: CRect | Point) -> Self:
         return self._op(other, operator.truediv)
 
-    def __itruediv__(self, other: CRect | Point) -> CRect:
+    def __itruediv__(self, other: CRect | Point) -> Self:
         return self._op(other, operator.truediv, inplace=True)
 
-    def __floordiv__(self, other: CRect | Point) -> CRect:
+    def __floordiv__(self, other: CRect | Point) -> Self:
         return self._op(other, operator.floordiv)
 
-    def __ifloordiv__(self, other: CRect | Point) -> CRect:
+    def __ifloordiv__(self, other: CRect | Point) -> Self:
         return self._op(other, operator.floordiv, inplace=True)
