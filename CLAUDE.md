@@ -15,14 +15,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `poe coverage` - Generate and view code coverage report
 
 ### Type Checking
-- `poe mypy` - Run mypy type checker
-- `poe ty` - Run ty type checker  
-- `poe check` - Run all type checkers
+- `poe ty` - Run ty type checker
 
 ### Code Quality
 - `ruff check` - Run linter
 - `ruff format` - Format code
-- `black .` - Format code with black
+- `poe ruff` - Format library source
 
 ### Package Management
 - `uv sync` - Install dependencies

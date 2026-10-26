@@ -6,7 +6,7 @@
 ![Release Date][release-date]
 ![Python Version][python-version]
 ![License][license]
-![Code Style: black][code-style-black]
+![Code Style: ruff][code-style-ruff]
 ![Monthly Downloads][monthly-downloads]
 
 [twod][0] (pronounced "two dee") is a geometry library that supplies
@@ -54,6 +54,6 @@ assert b.distance(o) == 10.0
 [dependencies]: https://img.shields.io/librariesio/github/JnyJny/twod
 [monthly-downloads]: https://img.shields.io/pypi/dm/twod
 [release-date]: https://img.shields.io/github/release-date/JnyJny/twod
-[code-style-black]: https://img.shields.io/badge/code%20style-black-000000.svg
+[code-style-ruff]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
 [release-badge]: https://github.com/JnyJny/twod/actions/workflows/release.yaml/badge.svg
 [release]: https://github.com/JnyJny/twod/actions/workflows/release.yaml
