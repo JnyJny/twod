@@ -152,7 +152,7 @@ class Rect:
         """
 
         if not isinstance(other, (Rect, Point)):
-            raise TypeError("expected Point or Rect, got {other!r}")
+            raise TypeError(f"expected Point or Rect, got {other!r}")
 
         if isinstance(other, Point):
             return other.inside(self.A, self.C) and other.inside(self.B, self.D)

@@ -192,19 +192,19 @@ class Point:
         if isinstance(other, (tuple, list)):
             return self.x == other[0] and self.y == other[1]
 
-        raise NotImplementedError
+        return NotImplemented
 
-    def __getitem__(self, key: int | slice) -> float:
+    def __getitem__(self, key: int | slice) -> float | tuple[float, ...]:
 
         if isinstance(key, int):
             if key == 0:
                 return self.x
             if key == 1:
                 return self.y
-            raise IndexError("Key out of range: {key}")
+            raise IndexError(f"Key out of range: {key}")
 
         if isinstance(key, slice):
-            return [self.x, self.y][key][0]
+            return self.xy[key]
 
         raise TypeError(f"Expected int or slice key, not {key!r}")
 

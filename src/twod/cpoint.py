@@ -149,12 +149,12 @@ class CPoint:
     def __len__(self) -> int:
         return 2
 
-    def __getitem__(self, key: int | slice) -> float:
+    def __getitem__(self, key: int | slice) -> float | tuple[float, ...]:
         match key:
             case int():
                 return self.xy[key]
             case slice():
-                return self.xy[key][0]
+                return self.xy[key]
         raise TypeError(f"Unknown key {key} expected int or slice")
 
     def __setitem__(self, key: int, value: float | int) -> None:
@@ -169,7 +169,10 @@ class CPoint:
         raise IndexError(f"Key out of range: {key}")
 
     def __eq__(self, other: Any) -> bool:
-        other = self.__class__.from_any(other)
+        try:
+            other = self.__class__.from_any(other)
+        except (TypeError, IndexError, KeyError):
+            return NotImplemented
         return cmath.isclose(self._z, other._z)
 
     def _op(self, other: Any, op: Callable, inplace: bool = False) -> CPoint:
@@ -216,8 +219,12 @@ class CPoint:
     #     - pow, ipow: no obvious geometric application
     #     - bitwise ops: also nonsensical
 
+    def _origin_if_none(self, value: Any) -> Any:
+        """Returns the origin if value is None, otherwise value."""
+        return self.__class__() if value is None else value
+
     def distance(self, other: Any = None) -> float:
-        other = self.__class__.from_any(other)
+        other = self.__class__.from_any(self._origin_if_none(other))
         return abs(self._z - other._z)
 
     def _cmul(self, other: Any = None) -> complex:
@@ -235,8 +242,8 @@ class CPoint:
         """Returns a float indicating the winding direction of
         the points [self, b, c].
 
-        If result > 0, clock-wise winding.
-        If result < 0, counter clock-wise winding (ccw).
+        If result > 0, counter clock-wise winding (ccw).
+        If result < 0, clock-wise winding.
         If result = 0, the three points are colinear.
 
         Note: ccw is also 2*area of the triangle [self, b, c]
@@ -257,7 +264,7 @@ class CPoint:
         return self.ccw(b, c) == 0
 
     def midpoint(self, other: Any = None) -> CPoint:
-        other = self.__class__.from_any(other)
+        other = self.__class__.from_any(self._origin_if_none(other))
         return (self + other) / 2
 
     def _bounds(self, p: Any, q: Any, op: Callable) -> bool:
@@ -291,7 +298,7 @@ class CPoint:
         if is_degrees:
             theta = math.radians(theta)
 
-        origin = self.__class__.from_any(origin)
+        origin = self.__class__.from_any(self._origin_if_none(origin))
 
         rotator = complex(math.cos(theta), math.sin(theta))
 

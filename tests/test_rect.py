@@ -147,3 +147,8 @@ def test_rect_center_setter() -> None:
     assert r.perimeter == q.perimeter
     assert r.area == q.area
     assert r.sides == q.sides
+
+
+def test_rect_contains_invalid_type_message():
+    with pytest.raises(TypeError, match="expected Point or Rect, got 'foo'"):
+        "foo" in Rect()
