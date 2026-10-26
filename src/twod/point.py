@@ -105,6 +105,8 @@ class Point:
     @staticmethod
     def _coerce(value: Any) -> Point:
         """Returns value as a Point without accepting a lone number."""
+        if isinstance(value, Point):
+            return value
         return Point.from_any(value, scalar_ok=False)
 
     @property
