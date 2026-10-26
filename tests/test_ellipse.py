@@ -31,12 +31,45 @@ class TestEllipse:
         assert e.minor_axis == 0
         assert e.major_axis == 0
 
-    def test_ellipse_inherits_from_point(self):
-        """Test that Ellipse inherits Point functionality"""
+    def test_ellipse_is_not_a_point(self):
+        """An ellipse is not a point and has none of its methods"""
         e = Ellipse(x=2, y=3, minor_axis=4, major_axis=6)
-        assert isinstance(e, Point)
-        assert e.radius == math.hypot(2, 3)
+        assert not isinstance(e, Point)
+        assert not hasattr(e, "polar")
+        assert not hasattr(e, "dot")
+
+    def test_ellipse_center_is_a_copy(self):
+        """Changing the center Point does not move the ellipse"""
+        e = Ellipse(x=2, y=3, minor_axis=4, major_axis=6)
+        assert e.center == Point(2, 3)
+        e.center.x = 99
+        assert e.x == 2
+
+    def test_ellipse_position_properties(self):
+        """x, y, xy and center read and write the center"""
+        e = Ellipse(x=2, y=3, minor_axis=4, major_axis=6)
         assert e.xy == (2, 3)
+        e.x = 5
+        e.y = 6
+        assert e.xy == (5, 6)
+        e.xy = (7, 8)
+        assert e.center == Point(7, 8)
+        e.center = (9, 10)
+        assert (e.x, e.y) == (9, 10)
+
+    def test_ellipse_equality_and_repr(self):
+        """Ellipses compare by center and axes"""
+        a = Ellipse(1, 2, 3, 4)
+        assert a == Ellipse(1, 2, 3, 4)
+        assert a != Ellipse(1, 2, 3, 5)
+        assert a != Circle(1, 2, 3)
+        assert a != "ellipse"
+        assert repr(a) == "Ellipse(x=1, y=2, minor_axis=3, major_axis=4)"
+
+    def test_ellipse_is_unhashable(self):
+        """Ellipses are mutable and so are not hashable"""
+        with pytest.raises(TypeError):
+            hash(Ellipse())
 
     def test_eccentricity_calculation(self):
         """Test eccentricity calculation"""
@@ -186,12 +219,31 @@ class TestCircle:
         assert c.y == 0.0
         assert c.radius == 0
 
-    def test_circle_inherits_from_point(self):
-        """Test that Circle inherits Point functionality"""
-        c = Circle(x=3, y=4, radius=5)
-        assert isinstance(c, Point)
-        assert c.distance() == math.hypot(3, 4)
+    def test_circle_is_not_a_point(self):
+        """A circle is not a point, so its radius is only the circle's radius"""
+        c = Circle(x=3, y=4, radius=2)
+        assert not isinstance(c, Point)
+        assert not hasattr(c, "polar")
+        assert c.radius == 2
+
+    def test_circle_position_properties(self):
+        """x, y, xy and center read and write the center"""
+        c = Circle(x=3, y=4, radius=2)
         assert c.xy == (3, 4)
+        c.xy = (5, 6)
+        assert c.center == Point(5, 6)
+        c.center = (7, 8)
+        assert (c.x, c.y) == (7, 8)
+        c.center.x = 99
+        assert c.x == 7
+
+    def test_circle_equality_and_repr(self):
+        """Circles compare by center and radius"""
+        c = Circle(1, 2, 3)
+        assert c == Circle(1, 2, 3)
+        assert c != Circle(1, 2, 4)
+        assert c != Circle(2, 2, 3)
+        assert repr(c) == "Circle(x=1, y=2, radius=3)"
 
     @pytest.mark.parametrize(
         "point, expected",

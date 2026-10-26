@@ -1,20 +1,89 @@
 """an ellipse for humans™"""
 
-from dataclasses import dataclass
+from __future__ import annotations
 
 from .point import Point, PointLike
 
 
-@dataclass
-class Ellipse(Point):
+class _Centered:
+    """A shape positioned by the Point at its center.
+
+    The center is held by composition: a shape is not a Point and has none of
+    Point's arithmetic or polar coordinate methods.
+    """
+
+    def __init__(self, x: float = 0.0, y: float = 0.0) -> None:
+        self._p = Point(x, y)
+
+    @property
+    def x(self) -> float:
+        """The x coordinate of the center."""
+        return self._p.x
+
+    @x.setter
+    def x(self, new_x: float) -> None:
+        self._p.x = new_x
+
+    @property
+    def y(self) -> float:
+        """The y coordinate of the center."""
+        return self._p.y
+
+    @y.setter
+    def y(self, new_y: float) -> None:
+        self._p.y = new_y
+
+    @property
+    def xy(self) -> tuple[float, float]:
+        """A tuple of the center's x and y coordinates."""
+        return self._p.xy
+
+    @xy.setter
+    def xy(self, new_xy: PointLike) -> None:
+        self._p.xy = Point.from_any(new_xy, scalar_ok=False).xy
+
+    @property
+    def center(self) -> Point:
+        """A copy of the center Point; assign to move the shape."""
+        return Point(self._p.x, self._p.y)
+
+    @center.setter
+    def center(self, new_center: PointLike) -> None:
+        self.xy = new_center
+
+
+class Ellipse(_Centered):
     """An ellipse centered at (x, y) with its major axis along the x-axis.
 
     major_axis and minor_axis are the semi-axes: the distances from the
     center to the vertices and co-vertices.
     """
 
-    minor_axis: int = 0
-    major_axis: int = 0
+    def __init__(
+        self,
+        x: float = 0.0,
+        y: float = 0.0,
+        minor_axis: float = 0,
+        major_axis: float = 0,
+    ) -> None:
+        super().__init__(x, y)
+        self.minor_axis = minor_axis
+        self.major_axis = major_axis
+
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}(x={self.x}, y={self.y}, "
+            f"minor_axis={self.minor_axis}, major_axis={self.major_axis})"
+        )
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Ellipse):
+            return NotImplemented
+        return (
+            self.xy == other.xy
+            and self.minor_axis == other.minor_axis
+            and self.major_axis == other.major_axis
+        )
 
     @property
     def e(self) -> float:
@@ -66,7 +135,7 @@ class Ellipse(Point):
         ]
 
     @property
-    def is_circle(self):
+    def is_circle(self) -> bool:
         """Returns True if this ellipse is also a circle."""
         return self.minor_axis == self.major_axis
 
@@ -78,27 +147,37 @@ class Ellipse(Point):
 
         Raises TypeError if other cannot be converted to a Point.
         """
-        other = self._coerce(other)
+        other = Point.from_any(other, scalar_ok=False)
         dx, dy = other.x - self.x, other.y - self.y
         a, b = self.major_axis, self.minor_axis
         return (dx * b) ** 2 + (dy * a) ** 2 < (a * b) ** 2
 
 
-@dataclass
-class Circle(Point):
-    """A circle centered at (x, y).
+class Circle(_Centered):
+    """A circle centered at (x, y)."""
 
-    Unlike Point.radius, which is the distance from the origin, radius here
-    is the radius of the circle.
-    """
+    def __init__(self, x: float = 0.0, y: float = 0.0, radius: float = 0) -> None:
+        super().__init__(x, y)
+        self.radius = radius
 
-    radius: float = 0
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}(x={self.x}, y={self.y}, radius={self.radius})"
+        )
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Circle):
+            return NotImplemented
+        return self.xy == other.xy and self.radius == other.radius
 
     def __contains__(self, other: PointLike) -> bool:
         """True if other is strictly inside this circle.
 
-        Points on the circle itself are not contained.
+        Points on the circle itself are not contained. A circle without a
+        positive radius contains nothing.
 
         Raises TypeError if other cannot be converted to a Point.
         """
-        return self.distance_squared(other) < self.radius**2 and self.radius > 0
+        other = Point.from_any(other, scalar_ok=False)
+        dx, dy = other.x - self.x, other.y - self.y
+        return self.radius > 0 and dx * dx + dy * dy < self.radius**2
