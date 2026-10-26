@@ -15,9 +15,9 @@ twod uses the standard Cartesian coordinate system where:
 from twod import Point
 
 origin = Point(0, 0)
-right = Point(1, 0)    # 1 unit right
-up = Point(0, 1)       # 1 unit up
-diagonal = Point(1, 1) # 1 unit right and up
+right = Point(1, 0)  # 1 unit right
+up = Point(0, 1)  # 1 unit up
+diagonal = Point(1, 1)  # 1 unit right and up
 ```
 
 ### Polar Coordinates
@@ -137,10 +137,10 @@ Lines in twod are represented as line segments with start and end points. Key pr
 from twod import Point, Line
 
 line = Line(Point(0, 0), Point(3, 4))
-print(f"Length: {line.length}")         # 5.0
-print(f"Direction: {line.direction}")   # Unit vector (0.6, 0.8)
-print(f"Slope: {line.slope}")           # 4/3 ≈ 1.333
-print(f"Angle: {line.angle_degrees}")   # ~53.13°
+print(f"Length: {line.length}")  # 5.0
+print(f"Direction: {line.direction}")  # Unit vector (0.6, 0.8)
+print(f"Slope: {line.slope}")  # 4/3 ≈ 1.333
+print(f"Angle: {line.angle_degrees}")  # ~53.13°
 ```
 
 ### Line Intersection
@@ -190,7 +190,7 @@ line1 = Line(Point(0, 0), Point(1, 0))  # Horizontal
 line2 = Line(Point(0, 0), Point(1, 1))  # 45° diagonal
 
 angle_rad = line1.angle_between(line2)  # π/4 radians
-angle_deg = angle_rad * 180 / math.pi   # 45 degrees
+angle_deg = angle_rad * 180 / math.pi  # 45 degrees
 ```
 
 ### Angle Normalization
@@ -213,9 +213,9 @@ Complex numbers provide an elegant way to represent 2D points:
 from twod import CPoint
 
 # Complex number 3+4j represents point (3, 4)
-cp = CPoint(3+4j)
-print(f"X: {cp.x}")        # 3.0
-print(f"Y: {cp.y}")        # 4.0
+cp = CPoint(3 + 4j)
+print(f"X: {cp.x}")  # 3.0
+print(f"Y: {cp.y}")  # 4.0
 print(f"Radius: {cp.radius}")  # 5.0
 print(f"Angle: {cp.radians}")  # 0.9272952180016122
 ```
@@ -232,8 +232,8 @@ from twod import CPoint
 import cmath
 
 # Translation
-cp1 = CPoint(1+2j)
-cp2 = CPoint(3+4j)
+cp1 = CPoint(1 + 2j)
+cp2 = CPoint(3 + 4j)
 translated = cp1 + cp2  # CPoint(4+6j)
 
 # Rotation by 90° (multiply by i)
@@ -325,19 +325,20 @@ Complex number operations can be more efficient for:
 ```python
 from twod import Point, CPoint
 
+
 # Traditional rotation (slower)
 def rotate_point(point, angle):
     import math
+
     cos_a = math.cos(angle)
     sin_a = math.sin(angle)
-    return Point(
-        point.x * cos_a - point.y * sin_a,
-        point.x * sin_a + point.y * cos_a
-    )
+    return Point(point.x * cos_a - point.y * sin_a, point.x * sin_a + point.y * cos_a)
+
 
 # Complex rotation (faster)
 def rotate_cpoint(cpoint, angle):
     import cmath
+
     return cpoint * CPoint(cmath.exp(1j * angle))
 ```
 
@@ -357,6 +358,7 @@ from twod import Point
 p1 = Point(0.1, 0.2)
 p2 = Point(0.3, 0.0)
 sum_point = p1 + p2  # May not be exactly Point(0.4, 0.2)
+
 
 # Use tolerance for comparisons
 def points_equal(p1, p2, tolerance=1e-10):

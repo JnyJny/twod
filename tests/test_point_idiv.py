@@ -1,5 +1,5 @@
-""" test in-place Point division like a human™
-"""
+"""test in-place Point division like a human™"""
+
 import pytest
 
 from twod import Point

@@ -1,5 +1,4 @@
-"""pytest twod configuration for humans™
-"""
+"""pytest twod configuration for humans™"""
 
 import pytest
 from twod import Point

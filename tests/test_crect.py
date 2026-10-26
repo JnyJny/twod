@@ -29,25 +29,25 @@ def test_crect_contains_with_invalid_type():
 def test_crect_edge_properties():
     """Test CRect edge properties AB, BC, CD, DA"""
     rect = Rect(1, 2, 3, 4)
-    
+
     # Test AB edge (from A to B)
     ab = rect.AB
     assert ab == (rect.A, rect.B)
     assert ab[0] == Point(1, 2)
     assert ab[1] == Point(4, 2)
-    
+
     # Test BC edge (from B to C)
     bc = rect.BC
     assert bc == (rect.B, rect.C)
     assert bc[0] == Point(4, 2)
     assert bc[1] == Point(4, 6)
-    
+
     # Test CD edge (from C to D)
     cd = rect.CD
     assert cd == (rect.C, rect.D)
     assert cd[0] == Point(4, 6)
     assert cd[1] == Point(1, 6)
-    
+
     # Test DA edge (from D to A)
     da = rect.DA
     assert da == (rect.D, rect.A)
@@ -58,13 +58,13 @@ def test_crect_edge_properties():
 def test_crect_ac_bd_diagonals():
     """Test CRect diagonal properties AC and BD"""
     rect = Rect(1, 2, 3, 4)
-    
+
     # Test AC diagonal
     ac = rect.AC
     assert ac == (rect.A, rect.C)
     assert ac[0] == Point(1, 2)
     assert ac[1] == Point(4, 6)
-    
+
     # Test BD diagonal
     bd = rect.BD
     assert bd == (rect.B, rect.D)
@@ -77,6 +77,7 @@ def test_crect_op_method_unsupported_type():
     rect = Rect(1, 2, 3, 4)
     result = rect._op("invalid", lambda x, y: x + y)
     assert result is NotImplemented
+
 
 A_RANGE = list(range(-10, 10))
 
