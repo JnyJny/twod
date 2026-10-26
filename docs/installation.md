@@ -2,7 +2,7 @@
 
 ## Requirements
 
-twod requires Python 3.10 or higher. You can check your Python version with:
+twod requires Python 3.11 or higher. You can check your Python version with:
 
 ```bash
 python --version
@@ -90,7 +90,7 @@ pip install twod
 ### Using conda
 
 ```bash
-conda create -n twod-env python=3.10
+conda create -n twod-env python=3.11
 conda activate twod-env
 pip install twod
 ```
@@ -127,9 +127,9 @@ If you encounter issues with Python version compatibility:
 python --version
 
 # If you have multiple Python versions, try:
-python3.10 -m pip install twod
-# or
 python3.11 -m pip install twod
+# or
+python3.12 -m pip install twod
 ```
 
 ### Import Errors

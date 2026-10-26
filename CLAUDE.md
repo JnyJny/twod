@@ -82,7 +82,7 @@ Each operation type has its own test file (e.g., `test_point_add.py`, `test_cpoi
 
 ### Development Notes
 
-- The project uses Python 3.10+ features like structural pattern matching in CPoint
+- The project requires Python 3.11+ and uses structural pattern matching in CPoint
 - Complex number implementation leverages Python's cmath module for polar coordinates
 - Both implementations maintain API compatibility where possible
 - The library is designed for human-friendly usage with intuitive method names and comprehensive docstrings
