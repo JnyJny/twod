@@ -82,6 +82,12 @@ docs_deploy.cmd = "mkdocs gh-deploy"
 docs_deploy.help = "Deploy documentation to GitHub Pages."
 
 
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore:twod.CPoint is deprecated:DeprecationWarning",
+    "ignore:twod.CRect is deprecated:DeprecationWarning",
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

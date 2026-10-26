@@ -1,4 +1,4 @@
-""" """
+"""mixins for CRect (deprecated along with CRect)"""
 
 from typing import Any
 

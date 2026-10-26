@@ -1,4 +1,4 @@
-""" """
+"""a complex number point (deprecated: use twod.Point)"""
 
 from __future__ import annotations
 

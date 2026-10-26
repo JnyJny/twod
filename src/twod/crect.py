@@ -1,4 +1,4 @@
-""" """
+"""a complex number rectangle (deprecated: use twod.Rect)"""
 
 from __future__ import annotations
 
